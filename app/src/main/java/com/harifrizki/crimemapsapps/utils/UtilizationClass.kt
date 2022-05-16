@@ -314,8 +314,11 @@ fun errorMessage(errorMessage: String? = null,
     if (!TextUtils.isEmpty(errorResponse?.errorMessage))
         message += errorResponse?.errorMessage + SPACE_STRING
 
-    if (!TextUtils.isEmpty(errorResponse?.errorRaw))
-        message += errorResponse?.errorRaw + SPACE_STRING
+    if (!TextUtils.isEmpty(errorResponse?.errorTime))
+        message += errorResponse?.errorTime + SPACE_STRING
+
+    if (!TextUtils.isEmpty(errorResponse?.errorUrl))
+        message += errorResponse?.errorUrl + SPACE_STRING
 
     if (!TextUtils.isEmpty(errorResponse?.errorThrow))
         message += errorResponse?.errorThrow + SPACE_STRING

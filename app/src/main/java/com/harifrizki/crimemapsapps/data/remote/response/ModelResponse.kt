@@ -6,7 +6,9 @@ import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Handshake
 import com.harifrizki.crimemapsapps.model.Message
 import com.harifrizki.crimemapsapps.model.Utilization
+import com.harifrizki.crimemapsapps.utils.EMPTY_STRING
 import kotlinx.parcelize.Parcelize
+import org.json.JSONObject
 import retrofit2.Response
 
 data class LoginResponse(
@@ -32,8 +34,8 @@ data class MessageResponse(
 data class ErrorResponse(
     var errorCode: String? = null,
     var errorMessage: String? = null,
-    var errorHeader: String? = null,
-    var errorRaw: String? = null,
+    var errorUrl: String? = null,
+    var errorTime: String? = null,
     var errorThrow: String? = null
 ) : Parcelable {
     companion object {
@@ -44,13 +46,12 @@ data class ErrorResponse(
             }
         }
 
-        fun <T> errorResponse(response: Response<T>): ErrorResponse {
+        fun <T> errorResponse(response: Response<T>, jsonError: JSONObject): ErrorResponse {
             return ErrorResponse().apply {
-                errorHeader = response.headers().toString()
-                errorCode = response.code().toString()
-                errorRaw = response.raw().toString()
-                errorMessage = response.errorBody().toString()
-                errorThrow = response.message()
+                errorUrl = response.raw().networkResponse?.request?.url?.toUrl().toString()
+                errorCode = response.raw().code.toString()
+                errorTime = jsonError.getString("timestamp")
+                errorMessage = jsonError.getString("error")
             }
         }
     }

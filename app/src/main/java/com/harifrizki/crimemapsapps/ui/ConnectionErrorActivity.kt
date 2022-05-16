@@ -1,15 +1,13 @@
 package com.harifrizki.crimemapsapps.ui
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityConnectionErrorBinding
-import com.harifrizki.crimemapsapps.utils.ERROR_MESSAGE
-import com.harifrizki.crimemapsapps.utils.ERROR_RESPONSE
-import com.harifrizki.crimemapsapps.utils.IS_AFTER_ERROR
-import com.harifrizki.crimemapsapps.utils.errorMessage
+import com.harifrizki.crimemapsapps.utils.*
 
 class ConnectionErrorActivity : AppCompatActivity() {
 
@@ -29,14 +27,32 @@ class ConnectionErrorActivity : AppCompatActivity() {
             errorResponse = intent.getParcelableExtra(ERROR_RESPONSE)
         }
 
-        binding.apply {
-            tvMessage.text = if (resources.getBoolean(R.bool.app_debug_mode))
-                errorMessage(message, errorResponse)
-            else getString(R.string.message_error_general)
-            btnBack.setOnClickListener {
-                onBackPressed()
+        if (resources.getBoolean(R.bool.app_debug_mode))
+        {
+            if (errorResponse?.errorThrow == null)
+                binding.apply {
+                    tvTitleMessage.text = errorResponse?.errorCode?.plus(SPACE_STRING)?.plus(errorResponse?.errorMessage)
+                    tvMessage.text = makeSpannable(
+                        true,
+                        getString(R.string.message_error_network,
+                            errorResponse?.errorUrl,
+                            errorResponse?.errorMessage,
+                            errorResponse?.errorTime),
+                        SPAN_REGEX,
+                        Color.BLACK)
+                }
+            else binding.apply {
+                tvTitleMessage.text = errorResponse?.errorMessage
+                tvMessage.text = errorResponse?.errorThrow
+            }
+        } else {
+            binding.apply {
+                tvTitleMessage.text = getString(R.string.message_error_title_general)
+                tvMessage.text = getString(R.string.message_error_general)
             }
         }
+
+        binding.btnBack.setOnClickListener { onBackPressed() }
     }
 
     override fun onBackPressed() {

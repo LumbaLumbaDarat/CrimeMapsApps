@@ -47,7 +47,9 @@
     <string name="message_logout_option">Apakah Anda ingin [keluar] dari aplikasi ?</string>
 
     <string name="message_no_network">Tidak Ada Koneksi Internet</string>
-    <string name="message_error_general">Mohon Maaf, terjadi kesalahan…</string>
+    <string name="message_error_title_general">Mohon Maaf, terjadi kesalahan</string>
+    <string name="message_error_general">Tetap tenang, Kami melakukan yang terbaik untuk Anda, dan Kami akan segera kembali</string>
+    <string name="message_error_network">[%s] %s, Hit Time in %s</string>
 
     <string name="message_error_empty">%s harus diisi, [Tidak Boleh kosong]</string>
     <string name="message_error_not_valid">%s yang Anda masukkan [Tidak Valid]</string>

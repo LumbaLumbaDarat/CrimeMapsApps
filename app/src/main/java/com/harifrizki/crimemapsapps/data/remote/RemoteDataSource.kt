@@ -14,6 +14,7 @@ import com.harifrizki.crimemapsapps.utils.Status.EMPTY
 import com.harifrizki.crimemapsapps.utils.Status.ERROR
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -121,17 +122,18 @@ class RemoteDataSource {
         return result
     }
 
-    fun <T> convertResponse(
+    private fun <T> convertResponse(
         response: Response<T>,
         modelResponse: T,
         result: MutableLiveData<ApiResponse<T>>)
     {
         if (response.isSuccessful)
             result.value = ApiResponse.success(response.body()!!)
-        else result.value = ApiResponse.error(modelResponse, errorResponse(response))
+        else result.value = ApiResponse.error(modelResponse,
+            errorResponse(response, JSONObject(response.errorBody()?.string())))
     }
 
-    fun <T> convertResponse(
+    private fun <T> convertResponse(
         modelResponse: T,
         result: MutableLiveData<ApiResponse<T>>,
         throwable: Throwable,

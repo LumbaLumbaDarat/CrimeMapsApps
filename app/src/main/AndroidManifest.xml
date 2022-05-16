@@ -25,10 +25,10 @@
             android:name=".ui.dashboard.DashboardActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.splash.SplashScreenActivity"
+            android:name=".ui.login.LoginActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name=".ui.splash.SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
