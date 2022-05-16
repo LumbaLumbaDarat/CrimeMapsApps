@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">Crime Maps Admin Apps</string>
+    <string name="app_package">com.harifrizki.crimemapsapps</string>
+
+    <bool name="app_debug_mode"
+        translatable="false">true</bool>
+    <string name="file_provider_name"
+        translatable="false">.provider</string>
+
+    <string name="version_apps">Versi %s</string>
+
+    <string name="title">Title</string>
+    <string name="back">Kembali</string>
+    <string name="cancel">Batalkan</string>
+    <string name="ok">OK</string>
+
+    <string name="label_login">Masuk</string>
+    <string name="label_username_login">Email</string>
+    <string name="label_password_login">Kata Sandi</string>
+
+    <string name="label_welcome_greeting_main">Selamat Datang</string>
+
+    <string name="label_count_data">%s</string>
+    <string name="label_count_today">Data input per hari ini</string>
+    <string name="label_count_month">Data input per bulan ini</string>
+
+    <string name="admin_menu">Admin</string>
+    <string name="crime_location_menu">Lokasi Rawan Kriminal</string>
+    <string name="province_menu">Provinsi</string>
+    <string name="city_menu">Kota / Kabupaten</string>
+    <string name="sub_district_menu">Kecamatan</string>
+    <string name="urban_village_menu">Kelurahan</string>
+
+    <string name="setting_debug_mode_menu">Mode Debug</string>
+    <string name="setting_profile_menu">Profil</string>
+    <string name="setting_exit_apps_menu">Keluar Aplikasi</string>
+
+    <string name="notification_error_title">Kesalahan</string>
+    <string name="notification_warning_title">Peringatan</string>
+    <string name="notification_information_title">Informasi</string>
+    <string name="notification_success_title">Berhasil</string>
+
+    <string name="message_loading">Mohon menunggu…</string>
+    <string name="message_loading_splash">Memuat koneksi, mohon menunggu…</string>
+    <string name="message_loading_login">Mencari data Credential, Mohon menunggu…</string>
+
+    <string name="message_logout_option">Apakah Anda ingin [keluar] dari aplikasi ?</string>
+
+    <string name="message_no_network">Tidak Ada Koneksi Internet</string>
+    <string name="message_error_general">Mohon Maaf, terjadi kesalahan…</string>
+
+    <string name="message_error_empty">%s harus diisi, [Tidak Boleh kosong]</string>
+    <string name="message_error_not_valid">%s yang Anda masukkan [Tidak Valid]</string>
+</resources>
