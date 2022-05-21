@@ -590,18 +590,19 @@ open class BaseActivity() : AppCompatActivity(), SwipeRefreshLayout.OnRefreshLis
     fun doGlide(
         context: Context?,
         imageView: ImageView?,
-        imageName: String?
+        imageName: String?,
+        imageError: Int? = R.drawable.ic_round_broken_image_primary_24
     ) {
         val url = PreferencesManager.getInstance(context!!).getPreferences(URL_CONNECTION_API_IMAGE_ADMIN)
         if (url?.isNotEmpty()!!)
             imageView?.let {
                 Glide.with(context).applyDefaultRequestOptions(requestOptions)
-                    .load(url.plus(imageName)).error(R.drawable.ic_round_broken_image_primary_24)
+                    .load(url.plus(imageName)).error(imageError)
                     .into(it)
             }
         else
             imageView?.let {
-                Glide.with(context).load(R.drawable.ic_round_broken_image_primary_24)
+                Glide.with(context).load(imageError)
                     .into(it)
             }
     }
@@ -610,10 +611,11 @@ open class BaseActivity() : AppCompatActivity(), SwipeRefreshLayout.OnRefreshLis
     fun doGlide(
         context: Context?,
         imageView: ImageView?,
-        uri: Uri?
+        uri: Uri?,
+        imageError: Int? = R.drawable.ic_round_broken_image_primary_24
     ) {
         Glide.with(context!!).applyDefaultRequestOptions(requestOptions)
-            .load(uri).error(R.drawable.ic_round_broken_image_primary_24)
+            .load(uri).error(imageError)
             .into(imageView!!)
     }
 

@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,7 +9,7 @@
         android:id="@+id/tv_admin_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="@dimen/margin_half_default"
         android:text="@string/title"
         app:layout_constraintBottom_toBottomOf="@+id/iv_btn_edit_admin_name"
         app:layout_constraintEnd_toStartOf="@+id/iv_btn_edit_admin_name"
@@ -22,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button_secondary_ripple_primary"
-        android:padding="5dp"
+        android:padding="@dimen/padding_half_half_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -36,8 +35,8 @@
         android:id="@+id/tv_email_admin_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:drawablePadding="5dp"
+        android:layout_marginTop="@dimen/margin_half_half_default"
+        android:drawablePadding="@dimen/padding_half_half_default"
         android:gravity="start|center"
         android:text="@string/title"
         app:drawableStartCompat="@drawable/ic_round_email_24"
@@ -49,7 +48,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/margin_half_default"
         android:orientation="horizontal"
         android:gravity="start|center"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -64,7 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="10dp"
+            android:padding="@dimen/padding_half_default"
             android:gravity="center"
             android:background="@drawable/frame_background_primary"
             android:text="@string/title"
@@ -75,8 +74,8 @@
             android:id="@+id/iv_admin_reset_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:padding="8dp"
+            android:layout_marginStart="@dimen/margin_half_default"
+            android:padding="@dimen/padding_half_half_add_default"
             android:background="@drawable/button_primary_ripple_white"
             app:srcCompat="@drawable/ic_round_vpn_key_24" />
 
@@ -84,8 +83,8 @@
             android:id="@+id/iv_admin_lock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:padding="8dp"
+            android:layout_marginStart="@dimen/margin_half_default"
+            android:padding="@dimen/padding_half_half_add_default"
             android:background="@drawable/button_red_ripple_white"
             app:srcCompat="@drawable/ic_round_lock_24" />
 
@@ -93,8 +92,8 @@
             android:id="@+id/iv_admin_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:padding="8dp"
+            android:layout_marginStart="@dimen/margin_half_default"
+            android:padding="@dimen/padding_half_half_add_default"
             android:background="@drawable/button_red_ripple_white"
             app:srcCompat="@drawable/ic_round_delete_forever_24" />
     </LinearLayout>

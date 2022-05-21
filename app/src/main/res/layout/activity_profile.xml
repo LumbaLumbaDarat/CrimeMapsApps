@@ -6,6 +6,8 @@
     android:id="@+id/srl_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".ui.module.profile.ProfileActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,22 +41,38 @@
                     android:id="@+id/ll_content_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
+                    android:padding="@dimen/padding_default"
                     android:orientation="horizontal">
 
-                    <include
-                        android:id="@+id/i_photo_profile"
-                        layout="@layout/photo_profile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"/>
+                    <com.github.florent37.shapeofview.shapes.RoundRectView
+                        android:id="@+id/rrv_admin_photo_profile"
+                        android:layout_width="@dimen/image_square_multiple_add_default"
+                        android:layout_height="@dimen/image_square_multiple_add_default"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
+                        app:shape_roundRect_bottomLeftRadius="@dimen/round_default"
+                        app:shape_roundRect_bottomRightRadius="@dimen/round_default"
+                        app:shape_roundRect_topLeftRadius="@dimen/round_default"
+                        app:shape_roundRect_topRightRadius="@dimen/round_default">
+
+                        <ImageView
+                            android:id="@+id/iv_admin_photo_profile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_round_account_box_primary_24" />
+                    </com.github.florent37.shapeofview.shapes.RoundRectView>
 
                     <include
                         android:id="@+id/i_add_profile"
                         layout="@layout/add_admin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="@dimen/margin_half_default"
                         android:visibility="gone" />
 
                     <include
@@ -62,7 +80,7 @@
                         layout="@layout/edit_admin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="@dimen/margin_half_default"
                         android:visibility="gone" />
 
                     <include
@@ -70,7 +88,7 @@
                         layout="@layout/detail_admin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="@dimen/margin_half_default"
                         android:visibility="gone" />
                 </LinearLayout>
 
@@ -84,22 +102,41 @@
                         android:id="@+id/ll_content_profile_shimmer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="20dp"
+                        android:padding="@dimen/padding_default"
                         android:orientation="horizontal">
 
-                        <include
-                            android:id="@+id/i_photo_profile_shimmer"
-                            layout="@layout/photo_profile"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"/>
+                        <com.github.florent37.shapeofview.shapes.RoundRectView
+                            android:id="@+id/rrv_admin_photo_profile_shimmer"
+                            android:layout_width="@dimen/image_square_multiple_add_default"
+                            android:layout_height="@dimen/image_square_multiple_add_default"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="@drawable/button_transparent_ripple_primary"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.0"
+                            app:shape_roundRect_bottomLeftRadius="@dimen/round_default"
+                            app:shape_roundRect_bottomRightRadius="@dimen/round_default"
+                            app:shape_roundRect_topLeftRadius="@dimen/round_default"
+                            app:shape_roundRect_topRightRadius="@dimen/round_default">
+
+                            <ImageView
+                                android:id="@+id/iv_admin_photo_profile_shimmer"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_round_account_box_primary_24" />
+                        </com.github.florent37.shapeofview.shapes.RoundRectView>
 
                         <include
                             android:id="@+id/i_add_profile_shimmer"
                             layout="@layout/add_admin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="@dimen/margin_half_default"
                             android:visibility="gone" />
 
                         <include
@@ -107,7 +144,7 @@
                             layout="@layout/edit_admin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="@dimen/margin_half_default"
                             android:visibility="gone" />
 
                         <include
@@ -115,7 +152,7 @@
                             layout="@layout/detail_admin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="@dimen/margin_half_default"
                             android:visibility="gone" />
                     </LinearLayout>
                 </com.facebook.shimmer.ShimmerFrameLayout>
@@ -124,7 +161,7 @@
                     android:id="@+id/til_name_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginHorizontal="@dimen/margin_default"
                     android:background="@drawable/frame_text_input_layout"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp"
@@ -146,8 +183,8 @@
                     android:id="@+id/til_email_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="@dimen/margin_half_default"
+                    android:layout_marginHorizontal="@dimen/padding_default"
                     android:background="@drawable/frame_text_input_layout"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp"
@@ -158,7 +195,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/frame_text_input_layout_inner"
-                        android:hint="@string/label_enter_of"
                         android:inputType="textPersonName"
                         android:singleLine="true"
                         app:boxStrokeWidth="0dp"
@@ -169,11 +205,11 @@
                     android:id="@+id/btn_submit_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="@dimen/margin_multiple_default"
+                    android:layout_marginHorizontal="@dimen/margin_default"
+                    android:layout_marginBottom="@dimen/margin_half_half_default"
                     android:text="@string/label_add_on"
-                    app:cornerRadius="10dp"
+                    app:cornerRadius="@dimen/round_default"
                     android:visibility="gone" />
 
                 <include
@@ -200,9 +236,9 @@
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginHorizontal="@dimen/margin_default"
                     android:text="@string/back"
-                    app:cornerRadius="10dp" />
+                    app:cornerRadius="@dimen/round_default" />
 
                 <com.facebook.shimmer.ShimmerFrameLayout
                     android:id="@+id/sfl_back_profile"
@@ -215,9 +251,9 @@
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginHorizontal="@dimen/margin_default"
                         android:text="@string/back"
-                        app:cornerRadius="10dp" />
+                        app:cornerRadius="@dimen/round_default" />
                 </com.facebook.shimmer.ShimmerFrameLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

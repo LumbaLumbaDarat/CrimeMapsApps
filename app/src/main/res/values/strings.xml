@@ -13,9 +13,9 @@
     <string name="ok">OK</string>
 
     <string name="label_login">Masuk</string>
-    <string name="label_username_login">Email</string>
-    <string name="label_password_login">Kata Sandi</string>
     <string name="label_name">Nama</string>
+    <string name="label_username">Email</string>
+    <string name="label_password">Kata Sandi</string>
 
     <string name="label_welcome_greeting_main">Selamat Datang</string>
 
@@ -57,7 +57,7 @@
     <string name="notification_information_title">Informasi</string>
     <string name="notification_success_title">Berhasil</string>
 
-    <string name="message_loading">Mohon menunggu…</string>
+    <string name="message_loading">[Mohon menunggu]\nKami sedang mencari apa yang Anda butuhkan</string>
     <string name="message_loading_splash">Memuat koneksi, mohon menunggu…</string>
     <string name="message_loading_login">Mencari data Credential, Mohon menunggu…</string>
 

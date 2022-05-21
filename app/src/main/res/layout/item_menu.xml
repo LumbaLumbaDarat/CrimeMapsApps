@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_background_menu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:layout_margin="5dp"
+    android:padding="@dimen/padding_half_half_default"
+    android:layout_margin="@dimen/margin_half_half_default"
     android:orientation="horizontal"
     android:background="@drawable/frame_background_primary"
     android:gravity="start|center">
@@ -19,8 +18,8 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lt_menu"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/image_square_min_default"
+        android:layout_height="@dimen/image_square_min_default"
         android:visibility="gone"
         app:lottie_autoPlay="true"
         app:lottie_fileName="debug_mode.json"
@@ -31,7 +30,7 @@
         android:id="@+id/tv_name_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="@dimen/margin_half_default"
         android:text="@string/title"
         android:textColor="@color/white"/>
 </LinearLayout>

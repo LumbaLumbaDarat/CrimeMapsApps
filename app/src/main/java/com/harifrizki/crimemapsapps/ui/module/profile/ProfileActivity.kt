@@ -92,7 +92,7 @@ class ProfileActivity : BaseActivity() {
     override fun onRefresh() {
         super.onRefresh()
         binding.srlProfile.isRefreshing = false
-        adminById(admin)
+        if (crud == READ) adminById(admin)
     }
 
     override fun onBackPressed() {
@@ -145,8 +145,7 @@ class ProfileActivity : BaseActivity() {
         }
         widgetStartDrawableShimmer(
             arrayOf(
-                binding.iPhotoProfileShimmer.ivAdminPhotoProfile,
-                binding.iPhotoProfileShimmer.ivBtnEditPhotoProfile,
+                binding.ivAdminPhotoProfileShimmer,
 
                 binding.iDetailProfileShimmer.ivBtnEditAdminName
             ), this
@@ -165,8 +164,20 @@ class ProfileActivity : BaseActivity() {
         binding.apply {
             iAddProfile.root.visibility = View.VISIBLE
             iAddProfileShimmer.root.visibility = View.VISIBLE
-            tieEmailProfile.visibility = View.VISIBLE
-            tieNameProfile.visibility = View.VISIBLE
+            tilEmailProfile.apply {
+                hint = getString(
+                    R.string.label_enter_of,
+                    getString(R.string.label_name),
+                    getString(R.string.admin_menu))
+                visibility = View.VISIBLE
+            }
+            tilNameProfile.apply {
+                hint = getString(
+                    R.string.label_enter_of,
+                    getString(R.string.label_username),
+                    getString(R.string.admin_menu))
+                visibility = View.VISIBLE
+            }
             btnSubmitProfile.visibility = View.VISIBLE
             iCreatedAndUpdatedProfile.root.visibility = View.GONE
         }
@@ -249,8 +260,9 @@ class ProfileActivity : BaseActivity() {
                 binding.apply {
                     doGlide(
                         this@ProfileActivity,
-                        iPhotoProfile.ivAdminPhotoProfile,
-                        admin?.adminImage)
+                        ivAdminPhotoProfile,
+                        admin?.adminImage,
+                        R.drawable.ic_round_account_box_primary_24)
                     iDetailProfile.apply {
                         tvAdminName.text = admin?.adminName
                         tvEmailAdminName.text = admin?.adminUsername

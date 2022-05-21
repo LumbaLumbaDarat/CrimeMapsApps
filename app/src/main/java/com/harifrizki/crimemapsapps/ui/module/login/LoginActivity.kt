@@ -128,15 +128,15 @@ class LoginActivity : BaseActivity() {
                 else showWarning(
                     getString(
                         R.string.message_error_empty,
-                        getString(R.string.label_password_login)))
+                        getString(R.string.label_password)))
             } else showWarning(
                 getString(
                     R.string.message_error_not_valid,
-                    getString(R.string.label_username_login)))
+                    getString(R.string.label_username)))
         } else showWarning(
             getString(
                 R.string.message_error_empty,
-                getString(R.string.label_username_login)))
+                getString(R.string.label_username)))
     }
 
     private fun isHidePassword() {

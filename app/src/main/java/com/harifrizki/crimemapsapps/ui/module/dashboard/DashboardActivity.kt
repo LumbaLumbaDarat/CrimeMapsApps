@@ -205,7 +205,11 @@ class DashboardActivity : BaseActivity() {
             tvGreeting.text = getString(R.string.label_welcome_greeting_main)
             tvAccountName.text = admin?.adminName
             admin?.adminImage?.let {
-                doGlide(this@DashboardActivity, ivAccountPhotoProfile, it) }
+                doGlide(
+                    this@DashboardActivity,
+                    ivAccountPhotoProfile,
+                    it,
+                    R.drawable.ic_round_account_box_primary_24) }
             ivIconAccount.setOnClickListener {
                 popupWindow.showAsDropDown(
                     it, ZERO, TWENTY

@@ -5,7 +5,7 @@
     android:id="@+id/cl_background_layout_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp">
+    android:padding="@dimen/padding_half_half_default">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"

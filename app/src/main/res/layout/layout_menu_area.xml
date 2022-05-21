@@ -2,12 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_background_menu_area"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp"
-    android:layout_margin="10dp"
+    android:padding="@dimen/padding_default"
+    android:layout_margin="@dimen/margin_half_default"
     android:background="@drawable/button_secondary_ripple_primary">
 
     <ImageView
@@ -28,8 +27,8 @@
         android:layout_height="wrap_content"
         android:text="@string/title"
         android:fontFamily="@font/open_sans_bold"
-        android:textSize="18sp"
-        android:layout_marginHorizontal="10dp"
+        android:textSize="@dimen/text_big"
+        android:layout_marginHorizontal="@dimen/margin_half_default"
         app:layout_constraintBottom_toBottomOf="@+id/iv_icon_menu_area"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_icon_menu_area"
@@ -39,7 +38,7 @@
         android:id="@+id/tv_title_menu_area"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/margin_half_default"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/title"
         app:layout_constraintBottom_toBottomOf="parent"

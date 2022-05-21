@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginVertical="10dp"
+        android:layout_marginVertical="@dimen/margin_half_default"
         android:orientation="horizontal">
 
         <TextView
@@ -23,8 +23,8 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginEnd="10dp"
-            android:padding="10dp"
+            android:layout_marginEnd="@dimen/margin_half_default"
+            android:padding="@dimen/padding_half_default"
             android:gravity="center"
             android:background="@drawable/button_primary_ripple_white"
             android:fontFamily="@font/open_sans_bold"
@@ -38,8 +38,8 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginStart="10dp"
-            android:padding="10dp"
+            android:layout_marginStart="@dimen/margin_half_default"
+            android:padding="@dimen/padding_half_default"
             android:gravity="center"
             android:background="@drawable/button_transparent_ripple_primary"
             android:fontFamily="@font/open_sans_bold"
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        android:padding="10dp"
+        android:padding="@dimen/padding_half_default"
         android:gravity="center"
         android:background="@drawable/button_red_ripple_white"
         android:fontFamily="@font/open_sans_bold"

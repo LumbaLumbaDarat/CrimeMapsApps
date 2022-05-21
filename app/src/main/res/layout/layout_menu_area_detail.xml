@@ -2,19 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_background_menu_area_detail"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/frame_background_secondary"
-    android:padding="20dp"
-    android:layout_margin="10dp">
+    android:padding="@dimen/padding_default"
+    android:layout_margin="@dimen/margin_half_default">
 
     <TextView
         android:id="@+id/tv_name_area_detail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="@dimen/margin_half_default"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/title"
         android:textColor="@color/primary"
@@ -30,8 +29,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/frame_background_primary"
         android:fontFamily="@font/open_sans_light"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="2dp"
+        android:paddingHorizontal="@dimen/margin_half_default"
+        android:paddingVertical="@dimen/padding_smallest_default"
         android:text="@string/title"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -43,11 +42,11 @@
 
     <ImageView
         android:id="@+id/iv_icon_today"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="@dimen/image_square_default"
+        android:layout_height="@dimen/image_square_default"
+        android:layout_marginTop="@dimen/margin_default"
         android:background="@drawable/frame_background_primary"
-        android:padding="10dp"
+        android:padding="@dimen/padding_half_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -60,7 +59,7 @@
         android:id="@+id/tv_label_count_today"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="@dimen/margin_half_default"
         android:text="@string/label_count_today"
         android:textColor="@color/primary"
         app:layout_constraintBottom_toBottomOf="@+id/iv_icon_today"
@@ -76,7 +75,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/label_count_data"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_big"
         android:textColor="@color/primary"
         app:layout_constraintBottom_toBottomOf="@+id/iv_icon_today"
         app:layout_constraintEnd_toEndOf="@+id/tv_label_count_today"
@@ -85,24 +84,24 @@
 
     <ImageView
         android:id="@+id/iv_icon_month"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="@dimen/image_square_default"
+        android:layout_height="@dimen/image_square_default"
+        android:layout_marginTop="@dimen/margin_default"
         android:background="@drawable/frame_background_primary"
-        android:padding="10dp"
+        android:padding="@dimen/padding_half_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/iv_icon_today"
         app:layout_constraintTop_toBottomOf="@+id/iv_icon_today"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_round_date_range_24" />
+        app:srcCompat="@drawable/ic_round_date_range_24"/>
 
     <TextView
         android:id="@+id/tv_label_count_month"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="@dimen/margin_half_default"
         android:text="@string/label_count_month"
         android:textColor="@color/primary"
         app:layout_constraintBottom_toBottomOf="@+id/iv_icon_month"
@@ -110,7 +109,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iv_icon_month"
         app:layout_constraintTop_toTopOf="@+id/iv_icon_month"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"/>
 
     <TextView
         android:id="@+id/tv_count_data_month"
@@ -118,10 +117,10 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/label_count_data"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_big"
         android:textColor="@color/primary"
         app:layout_constraintBottom_toBottomOf="@+id/iv_icon_month"
         app:layout_constraintEnd_toEndOf="@+id/tv_label_count_month"
         app:layout_constraintStart_toStartOf="@+id/tv_label_count_month"
-        app:layout_constraintTop_toBottomOf="@+id/tv_label_count_month" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_label_count_month"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
