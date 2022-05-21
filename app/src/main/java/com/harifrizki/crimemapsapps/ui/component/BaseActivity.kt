@@ -64,6 +64,14 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     @Override
     override fun onRefresh() {}
 
+    @Override
+    fun onBackPressed(map: HashMap<String, Any>?) {
+        Intent().apply {
+            putExtra(INTENT_DATA, map)
+            setResult(RESULT_OK, this)
+        }
+    }
+
     private fun createLoading() {
         loading.apply {
             context?.let { create(it) }

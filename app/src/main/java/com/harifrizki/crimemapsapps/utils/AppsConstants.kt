@@ -32,7 +32,6 @@ const val ROLE_ADMIN = "ROLE_ADMIN"
 
 const val LOGIN_MODEL = "LOGIN_MODEL"
 
-const val ERROR_MESSAGE  = "ERROR_MESSAGE"
 const val ERROR_RESPONSE = "ERROR_RESPONSE"
 const val IS_AFTER_ERROR = "IS_AFTER_ERROR"
 const val ERROR_STATE    = "IS_NO_NETWORK"
@@ -44,6 +43,7 @@ const val LOTTIE_SUCCESS_JSON      = "success.json"
 const val LOTTIE_QUESTION_JSON     = "question.json"
 const val LOTTIE_DEBUG_MODE_JSON   = "debug_mode.json"
 
-const val INTENT_DATA    = "INTENT_DATA"
-const val FROM_ACTIVITY  = "FROM_ACTIVITY"
-const val OPERATION_CRUD = "OPERATION_CRUD"
+const val INTENT_DATA           = "INTENT_DATA"
+const val FROM_ACTIVITY         = "FROM_ACTIVITY"
+const val OPERATION_CRUD        = "OPERATION_CRUD"
+const val IS_PROCEDURE_EXECUTED = "IS_PROCEDURE_EXECUTED"

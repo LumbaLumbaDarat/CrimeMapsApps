@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -30,11 +31,14 @@ import com.harifrizki.crimemapsapps.ui.module.login.LoginActivity
 import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
+import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
 import com.harifrizki.crimemapsapps.utils.MenuSetting.*
 import com.harifrizki.crimemapsapps.utils.CRUD.*
+import com.harifrizki.crimemapsapps.utils.CRUD.Companion.getEnumCRUD
+import com.lumbalumbadrt.colortoast.ColorToast
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -58,7 +62,6 @@ class DashboardActivity : BaseActivity() {
     private var menuAreaDetailCrimeLocation: MenuAreaDetail? = null
     private var menuAreaAdmin: MenuArea? = null
     private var menuAreaDetailAdmin: MenuAreaDetail? = null
-    private var admin: Admin? = null
 
     private var menuAreaAdapter: MenuAreaAdapter? = null
     private var menuAreaDetailAdapter: MenuAreaDetailAdapter? = null
@@ -74,7 +77,10 @@ class DashboardActivity : BaseActivity() {
             setOnRefreshListener(this@DashboardActivity)
         }
 
-        initializeAccount()
+        initializeAccount(PreferencesManager.
+        getInstance(this).
+        getPreferences(LOGIN_MODEL, Admin::class.java))
+
         initializeMenuAreaCrimeLocation()
         initializeMenuAreaAdmin()
         initializeMenuArea()
@@ -89,7 +95,39 @@ class DashboardActivity : BaseActivity() {
     )
     {
         if (it.resultCode == Activity.RESULT_OK)
-            utilization()
+        {
+            if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
+                utilization()
+            else {
+                val map = getMap(it.data)
+                val fromActivity = getEnumActivityName(map[FROM_ACTIVITY].toString())
+                when (getEnumCRUD(map[OPERATION_CRUD] as String))
+                {
+                    CREATE -> {
+
+                    }
+                    UPDATE -> {
+                        when (fromActivity)
+                        {
+                            PROFILE -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(R.string.message_success_update,
+                                        getString(R.string.setting_profile_menu)),
+                                    Toast.LENGTH_LONG)
+                                initializeAccount(PreferencesManager.
+                                getInstance(this).
+                                getPreferences(LOGIN_MODEL, Admin::class.java),
+                                    false)
+                            }
+                            else -> {}
+                        }
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
     override fun onRefresh() {
@@ -198,9 +236,7 @@ class DashboardActivity : BaseActivity() {
         }
     }
 
-    private fun initializeAccount() {
-        admin = PreferencesManager.getInstance(this).
-        getPreferences(LOGIN_MODEL, Admin::class.java)
+    private fun initializeAccount(admin: Admin?, isInitialize: Boolean? = true) {
         binding.iUserAccount.apply {
             tvGreeting.text = getString(R.string.label_welcome_greeting_main)
             tvAccountName.text = admin?.adminName
@@ -210,11 +246,10 @@ class DashboardActivity : BaseActivity() {
                     ivAccountPhotoProfile,
                     it,
                     R.drawable.ic_round_account_box_primary_24) }
-            ivIconAccount.setOnClickListener {
-                popupWindow.showAsDropDown(
-                    it, ZERO, TWENTY
-                )
-            }
+            if (isInitialize!!)
+                ivIconAccount.setOnClickListener {
+                    popupWindow.showAsDropDown(it, ZERO, TWENTY)
+                }
         }
     }
 

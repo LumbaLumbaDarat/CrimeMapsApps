@@ -1,5 +1,6 @@
 package com.harifrizki.crimemapsapps.ui.module.profile
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -14,6 +15,7 @@ import com.harifrizki.crimemapsapps.ui.component.BaseActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
+import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 
@@ -37,9 +39,10 @@ class ProfileActivity : BaseActivity() {
 
     private var adminFromResponse: Admin? = null
     private var map: HashMap<String, Any>? = null
-    private var fromActivity: String? = null
     private var appBarTitle: String? = null
+    private var fromActivity: ActivityName? = null
     private var crud: CRUD? = null
+    private var isAfterCRUD: CRUD? = NONE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,17 +50,23 @@ class ProfileActivity : BaseActivity() {
         create(this, resultLauncher)
 
         map = getMap(intent)
-        fromActivity = map!![FROM_ACTIVITY].toString()
         crud = map!![OPERATION_CRUD] as CRUD
-        when (fromActivity?.let { getEnumActivityName(it) })
+        fromActivity = getEnumActivityName(map!![FROM_ACTIVITY].toString())
+        when (crud)
         {
-            DASHBOARD -> {
-                appBarTitle = getString(R.string.setting_profile_menu)
-                initializeDetailProfile()
-                initializeCreatedAndUpdated()
-                adminById(admin)
+            READ -> {
+                when (fromActivity)
+                {
+                    DASHBOARD -> {
+                        appBarTitle = getString(R.string.setting_profile_menu)
+                        initializeDetailProfile()
+                        initializeCreatedAndUpdated()
+                        adminById(admin)
+                    }
+                    else -> {}
+                }
             }
-            LIST_OF_ADMIN -> {
+            CREATE -> {
                 appBarTitle = getString(
                     R.string.label_add,
                     getString(R.string.admin_menu))
@@ -97,6 +106,11 @@ class ProfileActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
+        onBackPressed(
+            hashMapOf(
+                FROM_ACTIVITY to getNameOfActivity(PROFILE),
+                OPERATION_CRUD to isAfterCRUD!!.name)
+        )
         super.onBackPressed()
     }
 
@@ -148,6 +162,10 @@ class ProfileActivity : BaseActivity() {
             SUCCESS -> {
                 dismissLoading()
                 setAdmin(it.data?.admin)
+                if (it.data?.admin?.adminId.equals(admin?.adminId))
+                    PreferencesManager.getInstance(this).
+                    setPreferences(LOGIN_MODEL, it.data?.admin)
+                isAfterCRUD = UPDATE
             }
             ERROR -> {
                 dismissLoading()
@@ -304,28 +322,36 @@ class ProfileActivity : BaseActivity() {
         when (crud)
         {
             READ -> {
-                binding.apply {
-                    doGlide(
-                        this@ProfileActivity,
-                        ivAdminPhotoProfile,
-                        admin?.adminImage,
-                        R.drawable.ic_round_account_box_primary_24)
-                    iDetailProfile.apply {
-                        tvAdminName.text = admin?.adminName
-                        tvEmailAdminName.text = admin?.adminUsername
+                when (fromActivity) {
+                    DASHBOARD -> {
+                        binding.apply {
+                            doGlide(
+                                this@ProfileActivity,
+                                ivAdminPhotoProfile,
+                                admin?.adminImage,
+                                R.drawable.ic_round_account_box_primary_24
+                            )
+                            iDetailProfile.apply {
+                                tvAdminName.text = admin?.adminName
+                                tvEmailAdminName.text = admin?.adminUsername
+                            }
+                            iCreatedAndUpdatedProfile.apply {
+                                tvCreated.text = makeSpannable(
+                                    true,
+                                    getCreated(admin),
+                                    SPAN_REGEX,
+                                    Color.BLACK
+                                )
+                                tvUpdated.text = makeSpannable(
+                                    true,
+                                    getUpdated(admin),
+                                    SPAN_REGEX,
+                                    Color.BLACK
+                                )
+                            }
+                        }
                     }
-                    iCreatedAndUpdatedProfile.apply {
-                        tvCreated.text = makeSpannable(
-                            true,
-                            getCreated(admin),
-                            SPAN_REGEX,
-                            Color.BLACK)
-                        tvUpdated.text = makeSpannable(
-                            true,
-                            getUpdated(admin),
-                            SPAN_REGEX,
-                            Color.BLACK)
-                    }
+                    else -> {}
                 }
             }
             else -> {}
