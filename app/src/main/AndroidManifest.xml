@@ -19,16 +19,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CrimeMapsApps">
         <activity
-            android:name=".ui.ConnectionErrorActivity"
+            android:name=".ui.module.admin.ListOfAdminActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.dashboard.DashboardActivity"
+            android:name=".ui.module.profile.ProfileActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name=".ui.module.ConnectionErrorActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.splash.SplashScreenActivity"
+            android:name=".ui.module.dashboard.DashboardActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.module.login.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.module.splash.SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

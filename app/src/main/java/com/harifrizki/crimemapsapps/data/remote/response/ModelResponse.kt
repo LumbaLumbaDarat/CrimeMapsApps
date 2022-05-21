@@ -2,10 +2,7 @@ package com.harifrizki.crimemapsapps.data.remote.response
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.model.Handshake
-import com.harifrizki.crimemapsapps.model.Message
-import com.harifrizki.crimemapsapps.model.Utilization
+import com.harifrizki.crimemapsapps.model.*
 import com.harifrizki.crimemapsapps.utils.EMPTY_STRING
 import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
@@ -24,6 +21,13 @@ data class HandshakeResponse(
 data class UtilizationResponse(
     @SerializedName("utilization") var utilization : Utilization? = null,
     @SerializedName("message")     var message : Message? = null
+)
+
+data class AdminResponse(
+    @SerializedName("admin")   var admin: Admin? = null,
+    @SerializedName("admins")  var adminArrayList: ArrayList<Admin>? = null,
+    @SerializedName("page")    var page: Page? = null,
+    @SerializedName("message") var message : Message? = null
 )
 
 data class MessageResponse(

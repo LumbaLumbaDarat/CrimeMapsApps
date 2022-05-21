@@ -2,16 +2,13 @@ package com.harifrizki.crimemapsapps.data.remote
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse.Companion.errorResponse
-import com.harifrizki.crimemapsapps.data.remote.response.HandshakeResponse
-import com.harifrizki.crimemapsapps.data.remote.response.LoginResponse
-import com.harifrizki.crimemapsapps.data.remote.response.MessageResponse
-import com.harifrizki.crimemapsapps.data.remote.response.UtilizationResponse
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Admin.Companion.jsonObject
-import com.harifrizki.crimemapsapps.utils.Status
-import com.harifrizki.crimemapsapps.utils.Status.EMPTY
-import com.harifrizki.crimemapsapps.utils.Status.ERROR
+import com.harifrizki.crimemapsapps.utils.ApiResource
+import com.harifrizki.crimemapsapps.utils.ResponseStatus
+import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import org.json.JSONObject
@@ -19,7 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RemoteDataSource {
+class RemoteDataSource(): DataSource {
     companion object {
         private val TAG: String =
             RemoteDataSource::javaClass.name
@@ -33,8 +30,8 @@ class RemoteDataSource {
         Logger.addLogAdapter(AndroidLogAdapter())
     }
 
-    fun handshake(): LiveData<ApiResponse<HandshakeResponse>> {
-        val result = MutableLiveData<ApiResponse<HandshakeResponse>>()
+    override fun handshake(): LiveData<ApiResource<HandshakeResponse>> {
+        val result = MutableLiveData<ApiResource<HandshakeResponse>>()
         try
         {
             val client = NetworkApi.connectToApi().handshake()
@@ -56,8 +53,8 @@ class RemoteDataSource {
         return result
     }
 
-    fun login(admin: Admin?): LiveData<ApiResponse<LoginResponse>> {
-        val result = MutableLiveData<ApiResponse<LoginResponse>>()
+    override fun login(admin: Admin?): LiveData<ApiResource<LoginResponse>> {
+        val result = MutableLiveData<ApiResource<LoginResponse>>()
         try
         {
             val client = NetworkApi.connectToApi().login(jsonObject(admin))
@@ -76,8 +73,8 @@ class RemoteDataSource {
         return result
     }
 
-    fun logout(admin: Admin?): LiveData<ApiResponse<MessageResponse>> {
-        val result = MutableLiveData<ApiResponse<MessageResponse>>()
+    override fun logout(admin: Admin?): LiveData<ApiResource<MessageResponse>> {
+        val result = MutableLiveData<ApiResource<MessageResponse>>()
         try
         {
             val client = NetworkApi.connectToApi().logout(jsonObject(admin))
@@ -99,8 +96,8 @@ class RemoteDataSource {
         return result
     }
 
-    fun utilization(): LiveData<ApiResponse<UtilizationResponse>> {
-        val result = MutableLiveData<ApiResponse<UtilizationResponse>>()
+    override fun utilization(): LiveData<ApiResource<UtilizationResponse>> {
+        val result = MutableLiveData<ApiResource<UtilizationResponse>>()
         try
         {
             val client = NetworkApi.connectToApi().utilization()
@@ -122,32 +119,56 @@ class RemoteDataSource {
         return result
     }
 
+    override fun adminById(adminId: String?): LiveData<ApiResource<AdminResponse>> {
+        val result = MutableLiveData<ApiResource<AdminResponse>>()
+        try
+        {
+            val client = adminId?.let { NetworkApi.connectToApi().adminById(it) }
+            client?.enqueue(object : Callback<AdminResponse> {
+                override fun onResponse(
+                    call: Call<AdminResponse>,
+                    response: Response<AdminResponse>
+                ) {
+                    convertResponse(response, AdminResponse(), result)
+                }
+
+                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
+                    convertResponse(AdminResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(AdminResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+
     private fun <T> convertResponse(
         response: Response<T>,
         modelResponse: T,
-        result: MutableLiveData<ApiResponse<T>>)
+        result: MutableLiveData<ApiResource<T>>)
     {
         if (response.isSuccessful)
-            result.value = ApiResponse.success(response.body()!!)
-        else result.value = ApiResponse.error(modelResponse,
+            result.value = ApiResource.success(response.body()!!)
+        else result.value = ApiResource.error(modelResponse,
             errorResponse(response, JSONObject(response.errorBody()?.string())))
     }
 
     private fun <T> convertResponse(
         modelResponse: T,
-        result: MutableLiveData<ApiResponse<T>>,
+        result: MutableLiveData<ApiResource<T>>,
         throwable: Throwable,
-        status: Status
+        responseStatus: ResponseStatus
     )
     {
         Logger.e(throwable.message.toString());
-        when (status)
+        when (responseStatus)
         {
             ERROR -> {
-                result.value = ApiResponse.error(modelResponse, errorResponse(throwable))
+                result.value = ApiResource.error(modelResponse, errorResponse(throwable))
             }
             else -> {
-                result.value = ApiResponse.empty(modelResponse, errorResponse(throwable))
+                result.value = ApiResource.empty(modelResponse, errorResponse(throwable))
             }
         }
     }

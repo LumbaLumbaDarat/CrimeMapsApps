@@ -2,10 +2,8 @@
     <string name="app_name">Crime Maps Admin Apps</string>
     <string name="app_package">com.harifrizki.crimemapsapps</string>
 
-    <bool name="app_debug_mode"
-        translatable="false">true</bool>
-    <string name="file_provider_name"
-        translatable="false">.provider</string>
+    <bool name="app_debug_mode" translatable="false">true</bool>
+    <string name="file_provider_name" translatable="false">.provider</string>
 
     <string name="version_apps">Versi %s</string>
 
@@ -17,12 +15,31 @@
     <string name="label_login">Masuk</string>
     <string name="label_username_login">Email</string>
     <string name="label_password_login">Kata Sandi</string>
+    <string name="label_name">Nama</string>
 
     <string name="label_welcome_greeting_main">Selamat Datang</string>
 
     <string name="label_count_data">%s</string>
     <string name="label_count_today">Data input per hari ini</string>
     <string name="label_count_month">Data input per bulan ini</string>
+
+    <string name="label_role_state">Jadikan Admin ini sebagai ?</string>
+    <string name="label_role_root">Root</string>
+    <string name="label_role_admin">Admin</string>
+
+    <string name="label_active_admin_now">Aktifkan Admin</string>
+    <string name="label_non_active_admin_now">Non-Aktifkan Admin</string>
+
+    <string name="label_change_password">Ganti Password</string>
+
+    <string name="label_create_by_and_created_date">Dibuat oleh [%s], pada [%s]</string>
+    <string name="label_updated_by_and_updated_date">Diubah oleh [%s], pada [%s]</string>
+    <string name="label_not_yet_updated">Belum ada perubahan data.</string>
+    <string name="label_null_created_and_updated">Tidak Ditemukan.</string>
+
+    <string name="label_add">Tambah %s</string>
+    <string name="label_add_on">Tambahkan %s</string>
+    <string name="label_enter_of">Masukkan %s %s</string>
 
     <string name="admin_menu">Admin</string>
     <string name="crime_location_menu">Lokasi Rawan Kriminal</string>
@@ -46,7 +63,8 @@
 
     <string name="message_logout_option">Apakah Anda ingin [keluar] dari aplikasi ?</string>
 
-    <string name="message_no_network">Tidak Ada Koneksi Internet</string>
+    <string name="message_no_title_network">Tidak Ada Koneksi Internet</string>
+    <string name="message_no_network">Sepertinya Perangkat Anda mengalami kendala dalam Jaringan Internet</string>
     <string name="message_error_title_general">Mohon Maaf, terjadi kesalahan</string>
     <string name="message_error_general">Tetap tenang, Kami melakukan yang terbaik untuk Anda, dan Kami akan segera kembali</string>
     <string name="message_error_network">[%s] %s, Hit Time in %s</string>

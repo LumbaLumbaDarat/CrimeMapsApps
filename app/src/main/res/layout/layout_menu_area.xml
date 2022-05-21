@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:padding="20dp"
     android:layout_margin="10dp"
-    android:background="@drawable/button_light_blue_ripple_primary">
+    android:background="@drawable/button_secondary_ripple_primary">
 
     <ImageView
         android:id="@+id/iv_icon_menu_area"

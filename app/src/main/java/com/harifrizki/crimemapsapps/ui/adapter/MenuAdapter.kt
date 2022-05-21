@@ -15,10 +15,7 @@ import com.harifrizki.crimemapsapps.utils.LOTTIE_DEBUG_MODE_JSON
 import com.harifrizki.crimemapsapps.utils.LOTTIE_INFORMATION_JSON
 import com.harifrizki.crimemapsapps.utils.checkBuildOS
 
-class MenuAdapter(
-    var context: Context? = null
-): RecyclerView.Adapter<MenuAdapter.HolderView>() {
-
+class MenuAdapter: RecyclerView.Adapter<MenuAdapter.HolderView>() {
     var menus: ArrayList<Menu>? = ArrayList()
     var onClickMenu: ((Menu) -> Unit)? = null
 
@@ -32,19 +29,18 @@ class MenuAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolderView {
-        context = parent.context
         return HolderView(
             ItemMenuBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent, false
-            )
+            ), parent.context
         )
     }
 
     override fun onBindViewHolder(holder: HolderView, position: Int) {
         val menu = menus!![position]
         holder.apply {
-            bind(context, menu)
+            bind(menu)
             itemView.setOnClickListener {
                 onClickMenu?.invoke(menu)
             }
@@ -55,43 +51,44 @@ class MenuAdapter(
         return menus!!.size
     }
 
-    class HolderView(private val binding: ItemMenuBinding):
+    inner class HolderView(
+        private val binding: ItemMenuBinding,
+        private val context: Context?):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(context: Context?, menu: Menu?) {
+        fun bind(menu: Menu?) = with(binding)
+        {
             if (menu?.visibility!!)
             {
-                binding.apply {
-                    tvNameMenu.apply {
-                        text = menu.name
-                        if (checkBuildOS(Build.VERSION_CODES.M))
-                            menu.nameColor?.let {
-                                setTextColor(ContextCompat.getColor(context!!, it)) }
-                        else menu.nameColor?.let { setTextColor(context!!.getColor(it)) }
-                    }
-                    if (menu.useAnimation != EMPTY_STRING)
-                    {
-                        ltMenu.apply {
-                            setAnimation(menu.useAnimation)
-                            visibility = View.VISIBLE
-                        }
-                        ivIconMenu.visibility = View.GONE
-                    } else {
-                        ivIconMenu.apply {
-                            menu.useIcon?.let { setImageResource(it) }
-                            menu.iconColor?.let {
-                                ContextCompat.getColor(
-                                    context!!,
-                                    it
-                                )
-                            }?.let {
-                                setColorFilter(
-                                    it, android.graphics.PorterDuff.Mode.MULTIPLY)
-                            }
-                        }
-                    }
-                    menu.background?.let { llBackgroundMenu.setBackgroundResource(it) }
+                tvNameMenu.apply {
+                    text = menu.name
+                    if (checkBuildOS(Build.VERSION_CODES.M))
+                        menu.nameColor?.let {
+                            setTextColor(ContextCompat.getColor(context!!, it)) }
+                    else menu.nameColor?.let { setTextColor(context!!.getColor(it)) }
                 }
+                if (menu.useAnimation != EMPTY_STRING)
+                {
+                    ltMenu.apply {
+                        setAnimation(menu.useAnimation)
+                        visibility = View.VISIBLE
+                    }
+                    ivIconMenu.visibility = View.GONE
+                } else {
+                    ivIconMenu.apply {
+                        menu.useIcon?.let { setImageResource(it) }
+                        menu.iconColor?.let {
+                            ContextCompat.getColor(
+                                context!!,
+                                it
+                            )
+                        }?.let {
+                            setColorFilter(
+                                it, android.graphics.PorterDuff.Mode.MULTIPLY)
+                        }
+                    }
+                }
+                menu.background?.let { llBackgroundMenu.setBackgroundResource(it) }
             }
         }
     }

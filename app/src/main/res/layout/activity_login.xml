@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".ui.login.LoginActivity">
+    tools:context=".ui.module.login.LoginActivity">
 
     <TextView
         android:id="@+id/tv_version_apps_login"
@@ -91,7 +91,7 @@
         android:id="@+id/ib_show_password_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_light_blue_ripple_primary"
+        android:background="@drawable/button_secondary_ripple_primary"
         android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="@+id/til_password_login"
         app:layout_constraintEnd_toEndOf="@+id/til_username_login"

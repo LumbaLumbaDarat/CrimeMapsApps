@@ -1,16 +1,15 @@
 package com.harifrizki.crimemapsapps.data
 
 import androidx.lifecycle.LiveData
-import com.harifrizki.crimemapsapps.data.remote.response.HandshakeResponse
-import com.harifrizki.crimemapsapps.data.remote.response.LoginResponse
-import com.harifrizki.crimemapsapps.data.remote.response.MessageResponse
-import com.harifrizki.crimemapsapps.data.remote.response.UtilizationResponse
+import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.utils.Resource
+import com.harifrizki.crimemapsapps.utils.DataResource
 
 interface CrimeMapsDataSource {
-    fun handshake(): LiveData<Resource<HandshakeResponse>>
-    fun login(admin: Admin?): LiveData<Resource<LoginResponse>>
-    fun logout(admin: Admin?): LiveData<Resource<MessageResponse>>
-    fun utilization(): LiveData<Resource<UtilizationResponse>>
+    fun handshake(): LiveData<DataResource<HandshakeResponse>>
+    fun login(admin: Admin?): LiveData<DataResource<LoginResponse>>
+    fun logout(admin: Admin?): LiveData<DataResource<MessageResponse>>
+    fun utilization(): LiveData<DataResource<UtilizationResponse>>
+
+    fun adminById(adminId: String?): LiveData<DataResource<AdminResponse>>
 }

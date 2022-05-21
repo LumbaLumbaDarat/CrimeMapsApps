@@ -1,20 +1,20 @@
-package com.harifrizki.crimemapsapps.ui.login
+package com.harifrizki.crimemapsapps.ui.module.login
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.harifrizki.crimemapsapps.R
+import com.harifrizki.crimemapsapps.data.remote.response.LoginResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityLoginBinding
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
-import com.harifrizki.crimemapsapps.ui.dashboard.DashboardActivity
+import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardActivity
 import com.harifrizki.crimemapsapps.utils.*
-import com.harifrizki.crimemapsapps.utils.Status.LOADING
-import com.harifrizki.crimemapsapps.utils.Status.SUCCESS
-import com.harifrizki.crimemapsapps.utils.Status.ERROR
+import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -66,42 +66,43 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-    private fun login(admin: Admin?) {
-        if (networkConnected())
+    private val login = Observer<DataResource<LoginResponse>> {
+        when (it.responseStatus)
         {
-            viewModel.login(admin).observe(this, {
-                when (it.status)
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message))
                 {
-                    LOADING -> {
-                        showLoading()
-                    }
-                    SUCCESS -> {
-                        dismissLoading()
-                        if (isResponseSuccess(it.data?.message))
-                        {
-                            PreferencesManager.getInstance(this).setPreferences(
-                                LOGIN_MODEL, it.data?.login)
-                            runBlocking {
-                                launch {
-                                    delay(WAIT_FOR_RUN_HANDLER_500_MS)
-                                    startActivity(
-                                        Intent(
-                                            this@LoginActivity,
-                                            DashboardActivity::class.java
-                                        )
-                                    )
-                                    finishAffinity()
-                                }
-                            }
+                    PreferencesManager.getInstance(this).setPreferences(
+                        LOGIN_MODEL, it.data?.login)
+                    runBlocking {
+                        launch {
+                            delay(WAIT_FOR_RUN_HANDLER_500_MS.toLong())
+                            startActivity(
+                                Intent(
+                                    this@LoginActivity,
+                                    DashboardActivity::class.java
+                                )
+                            )
+                            finishAffinity()
                         }
                     }
-                    ERROR -> {
-                        dismissLoading()
-                        goToErrorConnect(EMPTY_STRING, it.errorResponse)
-                    }
-                    else -> {}
                 }
-            })
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun login(admin: Admin?) {
+        if (networkConnected()) {
+            viewModel.login(admin).observe(this, login)
         }
     }
 

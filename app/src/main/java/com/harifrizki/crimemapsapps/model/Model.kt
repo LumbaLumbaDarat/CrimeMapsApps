@@ -4,6 +4,8 @@ import android.os.Parcelable
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import com.harifrizki.crimemapsapps.utils.EMPTY_STRING
+import com.harifrizki.crimemapsapps.utils.MenuSetting
+import com.harifrizki.crimemapsapps.utils.MenuSetting.MENU_NONE
 import com.harifrizki.crimemapsapps.utils.ZERO
 import kotlinx.parcelize.Parcelize
 
@@ -41,6 +43,19 @@ data class Admin(
         }
     }
 }
+
+@Parcelize
+data class Page(
+    @field:SerializedName("pageNo")             var pageNo: Int? = null,
+    @field:SerializedName("totalPage")          var totalPage: Int? = null,
+    @field:SerializedName("contentSizePerPage") var contentSizePerPage: Int? = null,
+    @field:SerializedName("firstPage")          var firstPage: String? = null,
+    @field:SerializedName("lastPage")           var lastPage: String? = null,
+    @field:SerializedName("currentPage")        var currentPage: String? = null,
+    @field:SerializedName("nextPage")           var nextPage: String? = null,
+    @field:SerializedName("prevPage")           var prevPage: String? = null,
+    @field:SerializedName("totalContentSize")   var totalContentSize: Int? = null,
+): Parcelable
 
 @Parcelize
 data class Handshake(
@@ -88,7 +103,7 @@ data class Message(
 
 @Parcelize
 data class Menu(
-    var idMenu: Int? = null,
+    var menuSetting: MenuSetting?,
     var name: String? = null,
     var useIcon: Int? = null,
     var useAnimation: String? = null,
@@ -98,6 +113,6 @@ data class Menu(
     var background: Int? = null
 ): Parcelable {
     constructor(): this(
-        ZERO, EMPTY_STRING, ZERO, EMPTY_STRING, false, ZERO, ZERO, ZERO
+        MENU_NONE, EMPTY_STRING, ZERO, EMPTY_STRING, false, ZERO, ZERO, ZERO
     )
 }

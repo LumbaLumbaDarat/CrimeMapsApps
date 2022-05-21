@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.dashboard
+package com.harifrizki.crimemapsapps.ui.module.dashboard
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -8,10 +8,13 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harifrizki.crimemapsapps.R
+import com.harifrizki.crimemapsapps.data.remote.response.MessageResponse
+import com.harifrizki.crimemapsapps.data.remote.response.UtilizationResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityDashboardBinding
 import com.harifrizki.crimemapsapps.databinding.LayoutListBinding
 import com.harifrizki.crimemapsapps.model.Admin
@@ -19,14 +22,19 @@ import com.harifrizki.crimemapsapps.model.Utilization
 import com.harifrizki.crimemapsapps.ui.adapter.MenuAdapter
 import com.harifrizki.crimemapsapps.ui.adapter.MenuAreaAdapter
 import com.harifrizki.crimemapsapps.ui.adapter.MenuAreaDetailAdapter
+import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminActivity
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
 import com.harifrizki.crimemapsapps.ui.component.MenuArea
 import com.harifrizki.crimemapsapps.ui.component.MenuAreaDetail
-import com.harifrizki.crimemapsapps.ui.login.LoginActivity
+import com.harifrizki.crimemapsapps.ui.module.login.LoginActivity
+import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
 import com.harifrizki.crimemapsapps.utils.*
-import com.harifrizki.crimemapsapps.utils.Status.LOADING
-import com.harifrizki.crimemapsapps.utils.Status.SUCCESS
-import com.harifrizki.crimemapsapps.utils.Status.ERROR
+import com.harifrizki.crimemapsapps.utils.ActivityName.*
+import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
+import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
+import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
+import com.harifrizki.crimemapsapps.utils.MenuSetting.*
+import com.harifrizki.crimemapsapps.utils.CRUD.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -90,100 +98,103 @@ class DashboardActivity : BaseActivity() {
         utilization()
     }
 
-    private fun utilization() {
-        if (networkConnected())
+    private val utilization = Observer<DataResource<UtilizationResponse>> {
+        when (it.responseStatus)
         {
-            viewModel.utilization().observe(this, {
-                when (it.status)
+            LOADING -> {
+                loadingMenuAreaCrimeLocation(true)
+                loadingMenuAreaDetailCrimeLocation(true)
+                loadingMenuArea(true)
+                loadingMenuAreaDetail(true)
+                loadingMenuAreaAdmin(true)
+                loadingMenuAreaDetailAdmin(true)
+            }
+            SUCCESS -> {
+                if (isResponseSuccess(it.data?.message))
                 {
-                    LOADING -> {
-                        loadingMenuAreaCrimeLocation(true)
-                        loadingMenuAreaDetailCrimeLocation(true)
-                        loadingMenuArea(true)
-                        loadingMenuAreaDetail(true)
-                        loadingMenuAreaAdmin(true)
-                        loadingMenuAreaDetailAdmin(true)
-                    }
-                    SUCCESS -> {
-                        if (isResponseSuccess(it.data?.message))
-                        {
-                            menuAreaCrimeLocation?.apply {
-                                countMenuArea = it.data?.utilization?.countCrimeLocation
-                                create()
-                                loadingMenuAreaCrimeLocation(false)
-                            }
-                            menuAreaDetailCrimeLocation?.apply {
-                                countAreaToday = it.data?.utilization?.countCrimeLocationToday
-                                countAreaMonth = it.data?.utilization?.countCrimeLocationMonth
-                                create()
-                                loadingMenuAreaDetailCrimeLocation(false)
-                            }
-                            menuAreaAdapter?.apply {
-                                addMenuAreas(menuAreas(it.data?.utilization))
-                                loadingMenuArea(false)
-                            }
-                            menuAreaDetailAdapter?.apply {
-                                addMenuAreaDetails(menuAreaDetails(it.data?.utilization))
-                                loadingMenuAreaDetail(false)
-                            }
-                            menuAreaAdmin?.apply {
-                                countMenuArea = it.data?.utilization?.countAdmin
-                                create()
-                                loadingMenuAreaAdmin(false)
-                            }
-                            menuAreaDetailAdmin?.apply {
-                                countAreaToday = it.data?.utilization?.countAdminToday
-                                countAreaMonth = it.data?.utilization?.countAdminMonth
-                                create()
-                                loadingMenuAreaDetailAdmin(false)
-                            }
-                        }
-                    }
-                    ERROR -> {
+                    menuAreaCrimeLocation?.apply {
+                        countMenuArea = it.data?.utilization?.countCrimeLocation
+                        create()
                         loadingMenuAreaCrimeLocation(false)
-                        loadingMenuAreaDetailCrimeLocation(false)
-                        loadingMenuArea(false)
-                        loadingMenuAreaDetail(false)
-                        loadingMenuAreaAdmin(false)
-                        loadingMenuAreaDetailAdmin(false)
-                        goToErrorConnect(EMPTY_STRING, it.errorResponse)
                     }
-                    else -> {}
+                    menuAreaDetailCrimeLocation?.apply {
+                        countAreaToday = it.data?.utilization?.countCrimeLocationToday
+                        countAreaMonth = it.data?.utilization?.countCrimeLocationMonth
+                        create()
+                        loadingMenuAreaDetailCrimeLocation(false)
+                    }
+                    menuAreaAdapter?.apply {
+                        addMenuAreas(menuAreas(it.data?.utilization))
+                        loadingMenuArea(false)
+                    }
+                    menuAreaDetailAdapter?.apply {
+                        addMenuAreaDetails(menuAreaDetails(it.data?.utilization))
+                        loadingMenuAreaDetail(false)
+                    }
+                    menuAreaAdmin?.apply {
+                        countMenuArea = it.data?.utilization?.countAdmin
+                        create()
+                        loadingMenuAreaAdmin(false)
+                    }
+                    menuAreaDetailAdmin?.apply {
+                        countAreaToday = it.data?.utilization?.countAdminToday
+                        countAreaMonth = it.data?.utilization?.countAdminMonth
+                        create()
+                        loadingMenuAreaDetailAdmin(false)
+                    }
+                    scrollToUp(binding.nsvDashboard)
                 }
-            })
+            }
+            ERROR -> {
+                loadingMenuAreaCrimeLocation(false)
+                loadingMenuAreaDetailCrimeLocation(false)
+                loadingMenuArea(false)
+                loadingMenuAreaDetail(false)
+                loadingMenuAreaAdmin(false)
+                loadingMenuAreaDetailAdmin(false)
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun utilization() {
+        if (networkConnected()) {
+            viewModel.utilization().observe(this, utilization)
+        }
+    }
+
+    private val logout = Observer<DataResource<MessageResponse>> {
+        when (it.responseStatus)
+        {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message))
+                {
+                    PreferencesManager.getInstance(this).removePreferences(LOGIN_MODEL)
+                    startActivity(
+                        Intent(
+                            this,
+                            LoginActivity::class.java
+                        )
+                    )
+                    finish()
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
         }
     }
 
     private fun logout(admin: Admin?) {
-        if (networkConnected())
-        {
-            viewModel.logout(admin).observe(this, {
-                when (it.status)
-                {
-                    LOADING -> {
-                        showLoading()
-                    }
-                    SUCCESS -> {
-                        dismissLoading()
-                        if (isResponseSuccess(it.data?.message))
-                        {
-                            PreferencesManager.getInstance(this).removePreferences(LOGIN_MODEL)
-                            startActivity(
-                                Intent(
-                                    this,
-                                    LoginActivity::class.java
-                                )
-                            )
-                            finish()
-                        }
-                    }
-                    ERROR -> {
-                        dismissLoading()
-                        goToErrorConnect(EMPTY_STRING, it.errorResponse)
-                    }
-                    else -> {}
-                }
-            })
+        if (networkConnected()) {
+            viewModel.logout(admin).observe(this, logout)
         }
     }
 
@@ -231,7 +242,7 @@ class DashboardActivity : BaseActivity() {
                 utilization?.countCrimeLocationMonth
             ).apply {
                 context = this@DashboardActivity
-                idMenuArea = it.idMenuArea
+                menuAreaType = it.menuAreaType
                 titleMenuArea = it.titleMenuArea
                 create()
             }
@@ -283,7 +294,12 @@ class DashboardActivity : BaseActivity() {
         ).apply {
             create()
             onClickMenuArea = {
-
+                goTo(
+                    ListOfAdminActivity(),
+                    hashMapOf(
+                        FROM_ACTIVITY to getNameOfActivity(DASHBOARD)
+                    )
+                )
             }
         }.also {
             menuAreaDetailAdmin = MenuAreaDetail(
@@ -294,7 +310,7 @@ class DashboardActivity : BaseActivity() {
                 utilization?.countAdminMonth
             ).apply {
                 context = this@DashboardActivity
-                idMenuArea = it.idMenuArea
+                menuAreaType = it.menuAreaType
                 titleMenuArea = it.titleMenuArea
                 create()
             }
@@ -331,8 +347,7 @@ class DashboardActivity : BaseActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initializeMenuArea() {
-        menuAreaAdapter = MenuAreaAdapter(
-            this, false)
+        menuAreaAdapter = MenuAreaAdapter(false)
         menuAreaAdapter?.apply {
             menuAreas = menuAreas()
             onClickMenuArea = {
@@ -348,16 +363,13 @@ class DashboardActivity : BaseActivity() {
         binding.rvMenuAreaShimmer.apply {
             layoutManager = GridLayoutManager(
                 this@DashboardActivity, ROW_MENU_AREA)
-            adapter = MenuAreaAdapter(
-                this@DashboardActivity, true
-            )
+            adapter = MenuAreaAdapter(true)
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initializeMenuAreaDetail() {
-        menuAreaDetailAdapter = MenuAreaDetailAdapter(
-            this, false)
+        menuAreaDetailAdapter = MenuAreaDetailAdapter(false)
         menuAreaDetailAdapter?.apply {
             menuAreaDetails = menuAreaDetails()
             notifyDataSetChanged()
@@ -368,9 +380,7 @@ class DashboardActivity : BaseActivity() {
         }
         binding.rvMenuAreaDetailShimmer.apply {
             layoutManager = LinearLayoutManager(this@DashboardActivity)
-            adapter = MenuAreaDetailAdapter(
-                this@DashboardActivity, true
-            )
+            adapter = MenuAreaDetailAdapter( true)
         }
     }
 
@@ -388,12 +398,11 @@ class DashboardActivity : BaseActivity() {
         bindingList.apply {
             rvList.apply {
                 layoutManager = LinearLayoutManager(this@DashboardActivity)
-                adapter = MenuAdapter(
-                    this@DashboardActivity
-                ).apply {
+                adapter = MenuAdapter().
+                apply {
                     menus = settingMenus()
                     onClickMenu = {
-                        when (it.idMenu)
+                        when (it.menuSetting)
                         {
                             MENU_SETTING_EXIT -> {
                                 popupWindow.dismiss()
@@ -411,6 +420,16 @@ class DashboardActivity : BaseActivity() {
                                         )
                                     },
                                     onNegative = { dismissOption() }
+                                )
+                            }
+                            MENU_SETTING_PROFILE -> {
+                                popupWindow.dismiss()
+                                goTo(
+                                    ProfileActivity(),
+                                    hashMapOf(
+                                        FROM_ACTIVITY to getNameOfActivity(DASHBOARD),
+                                        OPERATION_CRUD to READ
+                                    )
                                 )
                             }
                             else -> {}
@@ -558,7 +577,7 @@ class DashboardActivity : BaseActivity() {
                     R.color.primary,
                     R.color.primary,
                     R.color.primary,
-                    R.drawable.button_light_blue_ripple_primary
+                    R.drawable.button_secondary_ripple_primary
                 )
             )
             add(
@@ -574,7 +593,7 @@ class DashboardActivity : BaseActivity() {
                     R.color.primary,
                     R.color.primary,
                     R.color.primary,
-                    R.drawable.button_light_blue_ripple_primary
+                    R.drawable.button_secondary_ripple_primary
                 )
             )
             add(
@@ -590,7 +609,7 @@ class DashboardActivity : BaseActivity() {
                     R.color.primary,
                     R.color.primary,
                     R.color.primary,
-                    R.drawable.button_light_blue_ripple_primary
+                    R.drawable.button_secondary_ripple_primary
                 )
             )
         }
@@ -602,7 +621,7 @@ class DashboardActivity : BaseActivity() {
         menuAreaDetails.clear()
         for (menuArea: MenuArea in menuAreas())
         {
-            when (menuArea.idMenuArea)
+            when (menuArea.menuAreaType)
             {
                 MENU_AREA_PROVINCE_ID -> {
                     menuAreaDetails.add(
@@ -614,7 +633,7 @@ class DashboardActivity : BaseActivity() {
                             utilization?.countProvinceMonth
                         ).apply {
                             context = this@DashboardActivity
-                            idMenuArea = menuArea.idMenuArea
+                            menuAreaType = menuArea.menuAreaType
                             titleMenuArea = menuArea.titleMenuArea
                         }
                     )
@@ -629,7 +648,7 @@ class DashboardActivity : BaseActivity() {
                             utilization?.countCityMonth
                         ).apply {
                             context = this@DashboardActivity
-                            idMenuArea = menuArea.idMenuArea
+                            menuAreaType = menuArea.menuAreaType
                             titleMenuArea = menuArea.titleMenuArea
                         }
                     )
@@ -644,7 +663,7 @@ class DashboardActivity : BaseActivity() {
                             utilization?.countSubDistrictMonth
                         ).apply {
                             context = this@DashboardActivity
-                            idMenuArea = menuArea.idMenuArea
+                            menuAreaType = menuArea.menuAreaType
                             titleMenuArea = menuArea.titleMenuArea
                         }
                     )
@@ -659,7 +678,7 @@ class DashboardActivity : BaseActivity() {
                             utilization?.countUrbanVillageMonth
                         ).apply {
                             context = this@DashboardActivity
-                            idMenuArea = menuArea.idMenuArea
+                            menuAreaType = menuArea.menuAreaType
                             titleMenuArea = menuArea.titleMenuArea
                         }
                     )

@@ -12,8 +12,7 @@ import com.harifrizki.crimemapsapps.utils.layoutStartDrawableShimmer
 import com.harifrizki.crimemapsapps.utils.widgetStartDrawableShimmer
 
 class MenuAreaAdapter(
-    var context: Context?,
-    var isShimmer: Boolean?,
+    var isShimmer: Boolean?
 ): RecyclerView.Adapter<MenuAreaAdapter.HolderView>() {
     var menuAreas: ArrayList<MenuArea>? = ArrayList()
     var onClickMenuArea: ((MenuArea) -> Unit)? = null
@@ -28,11 +27,11 @@ class MenuAreaAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolderView {
-        context = parent.context
         return HolderView(
             LayoutMenuAreaBinding.inflate(
                 LayoutInflater.from(parent.context),
-                parent, false)
+                parent, false
+            ), parent.context
         )
     }
 
@@ -45,7 +44,7 @@ class MenuAreaAdapter(
                 onClickMenuArea?.invoke(menuArea)
             }
         } else menuArea = MenuArea()
-        holder.bind(context, menuArea, isShimmer)
+        holder.bind(menuArea, isShimmer)
     }
 
     override fun getItemCount(): Int {
@@ -53,13 +52,17 @@ class MenuAreaAdapter(
         else menuAreas!!.size
     }
 
-    class HolderView(private val binding: LayoutMenuAreaBinding):
+    class HolderView(
+        private val binding: LayoutMenuAreaBinding,
+        private val context: Context?):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(context: Context?, menuArea: MenuArea, isShimmer: Boolean?) {
+        fun bind(menuArea: MenuArea, isShimmer: Boolean?) =
+            with(binding)
+        {
             if (!isShimmer!!)
             {
-                menuArea.binding = binding
+                menuArea.binding = this
                 menuArea.context = context
                 menuArea.apply {
                     create()
@@ -67,18 +70,18 @@ class MenuAreaAdapter(
             } else {
                 layoutStartDrawableShimmer(
                     arrayOf(
-                        binding.clBackgroundMenuArea
+                        clBackgroundMenuArea
                     ), context!!
                 )
                 widgetStartDrawableShimmer(
                     arrayOf(
-                        binding.ivIconMenuArea
+                        ivIconMenuArea
                     ), context
                 )
                 widgetStartDrawableShimmer(
                     arrayOf(
-                        binding.tvTitleMenuArea,
-                        binding.tvCountMenuArea
+                        tvTitleMenuArea,
+                        tvCountMenuArea
                     ), context
                 )
             }

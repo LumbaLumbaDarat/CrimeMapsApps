@@ -5,14 +5,16 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.harifrizki.crimemapsapps.databinding.LayoutMenuAreaBinding
 import com.harifrizki.crimemapsapps.utils.EMPTY_STRING
+import com.harifrizki.crimemapsapps.utils.MenuAreaType
 import com.harifrizki.crimemapsapps.utils.ZERO
+import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
 import com.harifrizki.crimemapsapps.utils.checkBuildOS
 
 open class MenuArea(
     var context: Context?,
     var binding: LayoutMenuAreaBinding?,
 
-    var idMenuArea: Int?,
+    var menuAreaType: MenuAreaType?,
     var titleMenuArea: String?,
     var iconMenuArea: Int?,
     var countMenuArea: Int?,
@@ -28,7 +30,7 @@ open class MenuArea(
         null,
         null,
 
-        ZERO,
+        MENU_NONE,
         EMPTY_STRING,
         ZERO,
         ZERO,
@@ -79,7 +81,7 @@ open class MenuArea(
                     context,
                     binding,
 
-                    idMenuArea,
+                    menuAreaType,
                     titleMenuArea,
                     iconMenuArea,
                     countMenuArea,

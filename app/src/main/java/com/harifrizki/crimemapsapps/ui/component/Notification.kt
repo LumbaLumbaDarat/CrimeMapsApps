@@ -5,9 +5,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.databinding.NotificationBinding
 import com.harifrizki.crimemapsapps.utils.*
+import com.harifrizki.crimemapsapps.utils.NotificationType.*
 
 class Notification (
     var alertDialog: AlertDialog? = null
@@ -47,7 +47,7 @@ class Notification (
         binding?.btnNotification?.text = buttonTitle
     }
 
-    fun notificationType(notificationType: Int?) {
+    fun notificationType(notificationType: NotificationType) {
         binding?.ltNotification?.apply {
             when (notificationType)
             {

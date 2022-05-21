@@ -6,7 +6,7 @@
     android:id="@+id/srl_dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardActivity">
+    tools:context=".ui.module.dashboard.DashboardActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,6 +22,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nsv_dashboard"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:fillViewport="true"
@@ -33,7 +34,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="@dimen/padding_half_default"
                 android:orientation="vertical" >
 
                 <include
@@ -41,7 +42,7 @@
                     layout="@layout/layout_menu_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"/>
+                    android:layout_marginHorizontal="@dimen/margin_half_default"/>
 
                 <com.facebook.shimmer.ShimmerFrameLayout
                     android:id="@+id/sfl_menu_area_crime_location"
@@ -54,7 +55,7 @@
                         layout="@layout/layout_menu_area"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="10dp"/>
+                        android:layout_marginHorizontal="@dimen/margin_half_default"/>
                 </com.facebook.shimmer.ShimmerFrameLayout>
 
                 <include
@@ -62,8 +63,8 @@
                     layout="@layout/layout_menu_area_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginHorizontal="10dp" />
+                    android:layout_marginTop="@dimen/margin_default"
+                    android:layout_marginHorizontal="@dimen/margin_half_default" />
 
                 <com.facebook.shimmer.ShimmerFrameLayout
                     android:id="@+id/sfl_menu_area_detail_crime_location"
@@ -76,15 +77,15 @@
                         layout="@layout/layout_menu_area_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginHorizontal="10dp" />
+                        android:layout_marginTop="@dimen/margin_default"
+                        android:layout_marginHorizontal="@dimen/margin_half_default" />
                 </com.facebook.shimmer.ShimmerFrameLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_menu_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/margin_half_default"
                     android:overScrollMode="never"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -98,7 +99,7 @@
                         android:id="@+id/rv_menu_area_shimmer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="@dimen/margin_half_default"
                         android:overScrollMode="never"
                         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
                 </com.facebook.shimmer.ShimmerFrameLayout>
@@ -107,7 +108,7 @@
                     android:id="@+id/rv_menu_area_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="@dimen/margin_half_default"
                     android:overScrollMode="never"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -121,7 +122,7 @@
                         android:id="@+id/rv_menu_area_detail_shimmer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
+                        android:layout_marginBottom="@dimen/margin_half_default"
                         android:overScrollMode="never"
                         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
                 </com.facebook.shimmer.ShimmerFrameLayout>
@@ -131,7 +132,7 @@
                     layout="@layout/layout_menu_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"/>
+                    android:layout_marginHorizontal="@dimen/margin_half_default"/>
 
                 <com.facebook.shimmer.ShimmerFrameLayout
                     android:id="@+id/sfl_menu_area_admin"
@@ -144,7 +145,7 @@
                         layout="@layout/layout_menu_area"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="10dp"/>
+                        android:layout_marginHorizontal="@dimen/margin_half_default"/>
                 </com.facebook.shimmer.ShimmerFrameLayout>
 
                 <include
@@ -152,8 +153,8 @@
                     layout="@layout/layout_menu_area_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="20dp"
-                    android:layout_marginHorizontal="10dp"/>
+                    android:layout_marginVertical="@dimen/margin_default"
+                    android:layout_marginHorizontal="@dimen/margin_half_default"/>
 
                 <com.facebook.shimmer.ShimmerFrameLayout
                     android:id="@+id/sfl_menu_area_detail_admin"
@@ -166,8 +167,8 @@
                         layout="@layout/layout_menu_area_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="20dp"
-                        android:layout_marginHorizontal="10dp"/>
+                        android:layout_marginVertical="@dimen/margin_default"
+                        android:layout_marginHorizontal="@dimen/margin_half_default"/>
                 </com.facebook.shimmer.ShimmerFrameLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

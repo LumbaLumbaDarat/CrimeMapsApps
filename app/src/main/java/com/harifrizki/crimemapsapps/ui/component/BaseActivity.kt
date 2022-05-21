@@ -2,27 +2,30 @@ package com.harifrizki.crimemapsapps.ui.component
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
+import com.harifrizki.crimemapsapps.databinding.AppBarBinding
+import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Menu
 import com.harifrizki.crimemapsapps.model.Message
-import com.harifrizki.crimemapsapps.ui.ConnectionErrorActivity
+import com.harifrizki.crimemapsapps.ui.module.ConnectionErrorActivity
 import com.harifrizki.crimemapsapps.utils.*
+import com.harifrizki.crimemapsapps.utils.Error.*
+import com.harifrizki.crimemapsapps.utils.MenuSetting.*
+import com.harifrizki.crimemapsapps.utils.NotificationType.*
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 
@@ -82,13 +85,93 @@ open class BaseActivity() : AppCompatActivity(), SwipeRefreshLayout.OnRefreshLis
             .dontTransform()
 
     @Override
-    fun networkConnected(): Boolean {
+    fun appBar(binding: AppBarBinding?,
+               title: String?,
+               iconBar: Int?,
+               iconBarColor: Int?,
+               iconBarBackground: Int?) {
+        binding?.apply {
+            ivIconAppBar.apply {
+                iconBar?.let { setImageResource(it) }
+                iconBarColor?.let {
+                    ContextCompat.getColor(
+                        context!!,
+                        it
+                    )
+                }?.let {
+                    setColorFilter(
+                        it, android.graphics.PorterDuff.Mode.MULTIPLY)
+                }
+                iconBarBackground?.let { setBackgroundResource(it) }
+            }
+            tvTitleAppBar.text = title
+            ivBtnRightAppBar.visibility = View.INVISIBLE
+        }
+    }
+
+    @Override
+    fun appBar(binding: AppBarBinding?,
+               title: String?,
+               iconBar: Int?,
+               iconBarColor: Int?,
+               iconBarBackground: Int?,
+               iconBarRight: Int?,
+               iconBarRightColor: Int?,
+               iconBarRightBackground: Int?,
+               onClick: (() -> Unit)?) {
+        binding?.apply {
+            ivIconAppBar.apply {
+                iconBar?.let { setImageResource(it) }
+                iconBarColor?.let {
+                    ContextCompat.getColor(
+                        context!!,
+                        it
+                    )
+                }?.let {
+                    setColorFilter(
+                        it, android.graphics.PorterDuff.Mode.MULTIPLY)
+                }
+                iconBarBackground?.let { setBackgroundResource(it) }
+            }
+            tvTitleAppBar.text = title
+            ivBtnRightAppBar.apply {
+                iconBarRight?.let { setImageResource(it) }
+                iconBarRightColor?.let {
+                    ContextCompat.getColor(
+                        context!!,
+                        it
+                    )
+                }?.let {
+                    setColorFilter(
+                        it, android.graphics.PorterDuff.Mode.MULTIPLY)
+                }
+                iconBarRightBackground?.let { setBackgroundResource(it) }
+                setOnClickListener {
+                    onClick?.invoke()
+                }
+            }
+        }
+    }
+
+    @Override
+    fun scrollToUp(nestedScrollView: NestedScrollView?) {
+        nestedScrollView?.fullScroll(View.FOCUS_UP)
+    }
+
+    @Override
+    fun networkConnected(isGoToErrorActivity: Boolean = true): Boolean {
         return if (context?.let { isNetworkConnected(it) } == true)
             true
-        else {
-            goToErrorConnect(
-                getString(R.string.message_no_network),
-                ErrorResponse())
+        else
+        {
+            if (isGoToErrorActivity)
+            {
+                goTo(
+                    ConnectionErrorActivity(),
+                    hashMapOf(
+                        ERROR_STATE to IS_NO_NETWORK
+                    ))
+            }
             false
         }
     }
@@ -485,17 +568,6 @@ open class BaseActivity() : AppCompatActivity(), SwipeRefreshLayout.OnRefreshLis
     }
 
     @Override
-    fun goToErrorConnect(errorMessage: String?,
-                         errorResponse: ErrorResponse?,
-    ) {
-        Intent(context, ConnectionErrorActivity::class.java).apply {
-            putExtra(ERROR_MESSAGE, errorMessage)
-            putExtra(ERROR_RESPONSE, errorResponse)
-            resultLauncher?.launch(this)
-        }
-    }
-
-    @Override
     fun setThemeForSwipeRefreshLayoutLoadingAnimation(
         context: Context?,
         swipeRefreshLayout: SwipeRefreshLayout?
@@ -556,6 +628,51 @@ open class BaseActivity() : AppCompatActivity(), SwipeRefreshLayout.OnRefreshLis
         } else {
             shimmerFrameLayout?.stopShimmer()
             shimmerFrameLayout?.visibility = View.GONE
+        }
+    }
+
+    @Override
+    fun getCreated(admin: Admin?): String {
+        return if (admin?.createdBy == null)
+            getString(R.string.label_null_created_and_updated)
+        else getString(
+            R.string.label_create_by_and_created_date,
+            admin.createdBy?.adminName, admin.createdDate)
+    }
+
+    @Override
+    fun getUpdated(admin: Admin?): String {
+        return if (admin?.updatedBy == null)
+            getString(R.string.label_not_yet_updated)
+        else getString(
+            R.string.label_updated_by_and_updated_date,
+            admin.updatedBy?.adminName,
+            admin.updatedDate)
+    }
+
+    @Override
+    fun getMap(intent: Intent?): HashMap<String, Any> {
+        return intent?.getSerializableExtra(INTENT_DATA) as HashMap<String, Any>
+    }
+
+    @Override
+    fun goTo(errorResponse: ErrorResponse?) {
+        goTo(
+            ConnectionErrorActivity(),
+            hashMapOf(
+                ERROR_STATE to IS_API_RESPONSE,
+                ERROR_RESPONSE to errorResponse!!
+            ))
+    }
+
+    @Override
+    fun goTo(appCompatActivity: AppCompatActivity?, map: HashMap<String, Any>?) {
+        Intent(
+            this,
+            appCompatActivity!!::class.java
+        ).apply {
+            putExtra(INTENT_DATA, map)
+            resultLauncher?.launch(this)
         }
     }
 }

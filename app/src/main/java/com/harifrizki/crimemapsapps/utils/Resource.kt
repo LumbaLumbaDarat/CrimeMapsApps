@@ -1,14 +1,20 @@
 package com.harifrizki.crimemapsapps.utils
 
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
-import com.harifrizki.crimemapsapps.utils.Status.SUCCESS
-import com.harifrizki.crimemapsapps.utils.Status.ERROR
-import com.harifrizki.crimemapsapps.utils.Status.LOADING
+import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 
-class Resource<T>(val status: Status, val data: T?, val errorResponse: ErrorResponse?) {
+class DataResource<T>(val responseStatus: ResponseStatus, val data: T?, val errorResponse: ErrorResponse?) {
     companion object {
-        fun <T> success(data: T?): Resource<T> = Resource(SUCCESS, data, null)
-        fun <T> error(errorResponse: ErrorResponse?, data: T?): Resource<T> = Resource(ERROR, data, errorResponse)
-        fun <T> loading(data: T?): Resource<T> = Resource(LOADING, data, null)
+        fun <T> success(data: T?): DataResource<T>                              = DataResource(SUCCESS, data, null)
+        fun <T> error(errorResponse: ErrorResponse?, data: T?): DataResource<T> = DataResource(ERROR, data, errorResponse)
+        fun <T> loading(data: T?): DataResource<T>                              = DataResource(LOADING, data, null)
+    }
+}
+
+class ApiResource<T>(val responseStatus: ResponseStatus, val body: T, val errorResponse: ErrorResponse?) {
+    companion object {
+        fun <T> success(body: T): ApiResource<T>                              = ApiResource(SUCCESS, body, null)
+        fun <T> empty(body: T, errorResponse: ErrorResponse): ApiResource<T>  = ApiResource(EMPTY,   body, errorResponse)
+        fun <T> error(body: T, errorResponse: ErrorResponse):  ApiResource<T> = ApiResource(ERROR,   body, errorResponse)
     }
 }

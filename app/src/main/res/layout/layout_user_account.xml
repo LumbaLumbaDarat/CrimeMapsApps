@@ -2,19 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp">
+    android:paddingHorizontal="@dimen/padding_default"
+    android:paddingVertical="@dimen/margin_half_default">
 
     <ImageView
         android:id="@+id/iv_icon_account"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/button_light_blue_ripple_primary"
+        android:layout_width="@dimen/image_square_default"
+        android:layout_height="@dimen/image_square_default"
+        android:background="@drawable/button_secondary_ripple_primary"
         android:clickable="true"
         android:focusable="true"
-        android:padding="10dp"
+        android:padding="@dimen/padding_half_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -27,7 +27,7 @@
         android:id="@+id/tv_greeting"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
+        android:layout_marginHorizontal="@dimen/margin_half_default"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/title"
         app:layout_constraintBottom_toBottomOf="@+id/iv_icon_account"
@@ -41,7 +41,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/title"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_big"
         app:layout_constraintBottom_toBottomOf="@+id/iv_icon_account"
         app:layout_constraintEnd_toEndOf="@+id/tv_greeting"
         app:layout_constraintStart_toStartOf="@+id/tv_greeting"
@@ -49,24 +49,24 @@
 
     <com.github.florent37.shapeofview.shapes.RoundRectView
         android:id="@+id/rrv_account_photo_profile"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/image_square_add_default"
+        android:layout_height="@dimen/image_square_add_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_icon_account"
         app:layout_constraintVertical_bias="0.238"
-        app:shape_roundRect_bottomLeftRadius="10dp"
-        app:shape_roundRect_bottomRightRadius="10dp"
-        app:shape_roundRect_topLeftRadius="10dp"
-        app:shape_roundRect_topRightRadius="10dp">
+        app:shape_roundRect_bottomLeftRadius="@dimen/round_default"
+        app:shape_roundRect_bottomRightRadius="@dimen/round_default"
+        app:shape_roundRect_topLeftRadius="@dimen/round_default"
+        app:shape_roundRect_topRightRadius="@dimen/round_default">
 
         <ImageView
             android:id="@+id/iv_account_photo_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_round_account_circle_primary_24" />
+            android:src="@drawable/ic_round_account_box_primary_24" />
     </com.github.florent37.shapeofview.shapes.RoundRectView>
 </androidx.constraintlayout.widget.ConstraintLayout>
