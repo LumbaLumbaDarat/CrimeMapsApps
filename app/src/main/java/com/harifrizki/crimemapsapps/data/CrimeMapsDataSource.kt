@@ -12,4 +12,5 @@ interface CrimeMapsDataSource {
     fun utilization(): LiveData<DataResource<UtilizationResponse>>
 
     fun adminById(adminId: String?): LiveData<DataResource<AdminResponse>>
+    fun adminUpdate(admin: Admin?): LiveData<DataResource<AdminResponse>>
 }

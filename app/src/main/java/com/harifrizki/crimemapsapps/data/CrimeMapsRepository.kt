@@ -58,4 +58,11 @@ class CrimeMapsRepository(
                 remote.adminById(adminId)
         }.asLiveData()
     }
+
+    override fun adminUpdate(admin: Admin?): LiveData<DataResource<AdminResponse>> {
+        return object : NetworkResource<AdminResponse>() {
+            override fun createCall(): LiveData<ApiResource<AdminResponse>> =
+                remote.adminUpdate(admin)
+        }.asLiveData()
+    }
 }

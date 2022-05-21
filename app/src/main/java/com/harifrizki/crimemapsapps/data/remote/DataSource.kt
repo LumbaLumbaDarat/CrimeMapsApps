@@ -12,4 +12,5 @@ interface DataSource {
     fun utilization(): LiveData<ApiResource<UtilizationResponse>>
 
     fun adminById(adminId: String?): LiveData<ApiResource<AdminResponse>>
+    fun adminUpdate(admin: Admin?): LiveData<ApiResource<AdminResponse>>
 }

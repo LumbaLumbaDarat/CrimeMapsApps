@@ -23,25 +23,24 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.crimemapsapps.R
-import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
 import com.orhanobut.logger.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-fun getVersion(context: Context): String {
+fun getVersion(context: Context?): String {
     return try {
-        context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        context?.packageManager?.getPackageInfo(context.packageName, 0)!!.versionName
     } catch (e: PackageManager.NameNotFoundException) {
         Logger.e("getVersion: ".plus(e.message.toString()))
         EMPTY_STRING
     }
 }
 
-fun isNetworkConnected(context: Context): Boolean {
+fun isNetworkConnected(context: Context?): Boolean {
     val result: Boolean
     val connectivityManager: ConnectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val networkCapabilities =
         connectivityManager.activeNetwork ?: return false
     val activeNetwork =
@@ -59,31 +58,31 @@ fun checkBuildOS(buildOs: Int?): Boolean {
     return Build.VERSION.SDK_INT >= buildOs!!
 }
 
-fun textInputEditTextIsEmpty(textInputEditText: TextInputEditText): Boolean {
+fun textInputEditTextIsEmpty(textInputEditText: TextInputEditText?): Boolean {
     return TextUtils.isEmpty(
-        textInputEditText.text.toString().trim()
+        textInputEditText?.text.toString().trim()
     )
 }
 
-fun isValidEmail(target: CharSequence): Boolean {
-    return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches()
+fun isValidEmail(target: CharSequence?): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(target!!).matches()
 }
 
-fun isValidPasswordAndConfirmPassword(password: String,
-                                      confirmPassword: String
+fun isValidPasswordAndConfirmPassword(password: String?,
+                                      confirmPassword: String?
 ): Boolean {
     return password.equals(confirmPassword, false)
 }
 
-fun makeSpannable(isSpanBold: Boolean,
-                  text: String,
-                  regex: String,
-                  color: Int): SpannableStringBuilder {
+fun makeSpannable(isSpanBold: Boolean?,
+                  text: String?,
+                  regex: String?,
+                  color: Int?): SpannableStringBuilder {
     val stringBuffer = StringBuffer()
     val spannableStringBuilder = SpannableStringBuilder()
 
-    val pattern = Pattern.compile(regex)
-    val matcher = pattern.matcher(text)
+    val pattern = Pattern.compile(regex!!)
+    val matcher = pattern.matcher(text!!)
 
     while (matcher.find())
     {
@@ -96,7 +95,7 @@ fun makeSpannable(isSpanBold: Boolean,
         spannableStringBuilder.append(stringBuffer.toString())
         val start = spannableStringBuilder.length - spanText.length
 
-        if (isSpanBold)
+        if (isSpanBold!!)
             spannableStringBuilder.setSpan(
                 StyleSpan(Typeface.BOLD),
                 start,
@@ -105,7 +104,7 @@ fun makeSpannable(isSpanBold: Boolean,
             )
 
         spannableStringBuilder.setSpan(
-            ForegroundColorSpan(color),
+            color?.let { ForegroundColorSpan(it) },
             start,
             spannableStringBuilder.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -124,40 +123,32 @@ fun Date.localDateTimeToString(): String {
 }
 
 @SuppressLint("UseCompatLoadingForDrawables")
-private fun drawableBackgroundLightGrayForShimmer(context: Context): Drawable {
-    return context.resources.getDrawable(
+private fun drawableBackgroundLightGrayForShimmer(context: Context?): Drawable {
+    return context?.resources?.getDrawable(
         R.drawable.frame_background_light_gray_shimmer,
         null
-    )
-}
-
-private fun drawableBackgroundLightGrayForShimmer(): Int {
-    return R.drawable.frame_background_light_gray_shimmer
+    )!!
 }
 
 @SuppressLint("UseCompatLoadingForDrawables")
-private fun drawableBackgroundGrayForShimmer(context: Context): Drawable {
-    return context.resources.getDrawable(
+private fun drawableBackgroundGrayForShimmer(context: Context?): Drawable {
+    return context?.resources?.getDrawable(
         R.drawable.frame_background_gray_shimmer,
         null
-    )
+    )!!
 }
 
-private fun drawableBackgroundGrayForShimmer(): Int {
-    return R.drawable.frame_background_gray_shimmer
-}
-
-private fun colorTransparentForShimmer(context: Context): Int {
-    return context.resources.getColor(
+private fun colorTransparentForShimmer(context: Context?): Int {
+    return context?.resources?.getColor(
         R.color.transparent, null
-    )
+    )!!
 }
 
 fun layoutStartDrawableShimmer(
-    linearLayouts: Array<LinearLayout>,
-    context: Context
+    linearLayouts: Array<LinearLayout>?,
+    context: Context?
 ) {
-    linearLayouts.forEach {
+    linearLayouts?.forEach {
         it.apply {
             background =
                 drawableBackgroundLightGrayForShimmer(
@@ -168,10 +159,10 @@ fun layoutStartDrawableShimmer(
 }
 
 fun layoutStartDrawableShimmer(
-    constraintLayouts: Array<ConstraintLayout>,
-    context: Context
+    constraintLayouts: Array<ConstraintLayout>?,
+    context: Context?
 ) {
-    constraintLayouts.forEach {
+    constraintLayouts?.forEach {
         it.apply {
             background =
                 drawableBackgroundLightGrayForShimmer(
@@ -182,10 +173,10 @@ fun layoutStartDrawableShimmer(
 }
 
 fun widgetStartDrawableShimmer(
-    textViews: Array<TextView>,
-    context: Context
+    textViews: Array<TextView>?,
+    context: Context?
 ) {
-    textViews.forEach {
+    textViews?.forEach {
         it.apply {
             background =
                 drawableBackgroundGrayForShimmer(
@@ -203,17 +194,17 @@ fun widgetStartDrawableShimmer(
 }
 
 fun widgetStartDrawableShimmer(
-    imageViews: Array<ImageView>,
-    context: Context
+    imageViews: Array<ImageView>?,
+    context: Context?
 ) {
-    imageViews.forEach {
+    imageViews?.forEach {
         it.apply {
             background = drawableBackgroundGrayForShimmer(
                 context
             )
             setColorFilter(
                 ContextCompat.getColor(
-                    context,
+                    context!!,
                     R.color.transparent
                 ),
                 PorterDuff.Mode.MULTIPLY
@@ -223,17 +214,17 @@ fun widgetStartDrawableShimmer(
 }
 
 fun widgetStartDrawableShimmer(
-    imageButtons: Array<ImageButton>,
-    context: Context
+    imageButtons: Array<ImageButton>?,
+    context: Context?
 ) {
-    imageButtons.forEach {
+    imageButtons?.forEach {
         it.apply {
             background = drawableBackgroundGrayForShimmer(
                 context
             )
             setColorFilter(
                 ContextCompat.getColor(
-                    context,
+                    context!!,
                     R.color.transparent
                 ),
                 PorterDuff.Mode.MULTIPLY
@@ -243,13 +234,13 @@ fun widgetStartDrawableShimmer(
 }
 
 fun widgetStartDrawableShimmer(
-    buttons: Array<Button>,
-    context: Context
+    buttons: Array<Button>?,
+    context: Context?
 ) {
-    buttons.forEach {
+    buttons?.forEach {
         it.apply {
             backgroundTintList = ContextCompat.getColorStateList(
-                context, R.color.light_gray
+                context!!, R.color.light_gray
             )
             setTextColor(colorTransparentForShimmer(context))
         }
@@ -257,10 +248,9 @@ fun widgetStartDrawableShimmer(
 }
 
 fun widgetStartDrawableShimmer(
-    textInputEditTexts: Array<TextInputEditText>,
-    context: Context
+    textInputEditTexts: Array<TextInputEditText>?
 ) {
-    textInputEditTexts.forEach {
+    textInputEditTexts?.forEach {
         it.apply {
             visibility = View.GONE
         }
@@ -268,63 +258,38 @@ fun widgetStartDrawableShimmer(
 }
 
 fun widgetStartDrawableShimmer(
-    textInputLayouts: Array<TextInputLayout>,
-    context: Context
+    textInputLayouts: Array<TextInputLayout>?,
+    context: Context?
 ) {
-    textInputLayouts.forEach {
+    textInputLayouts?.forEach {
         it.apply {
             background = drawableBackgroundGrayForShimmer(context)
         }
     }
 }
 
-fun showAndHidePassword(textInputEditText: TextInputEditText,
-                        isHide: Boolean
+fun showAndHidePassword(textInputEditText: TextInputEditText?,
+                        isHide: Boolean?
 ) {
-    if ((!isHide))
-        textInputEditText.transformationMethod =
+    if (!isHide!!)
+        textInputEditText?.transformationMethod =
             HideReturnsTransformationMethod.getInstance()
-    else textInputEditText.transformationMethod =
+    else textInputEditText?.transformationMethod =
         PasswordTransformationMethod.getInstance()
 }
 
-fun showAndHidePassword(textInputEditTexts: Array<TextInputEditText>,
-                        isHide: Boolean
+fun showAndHidePassword(textInputEditTexts: Array<TextInputEditText>?,
+                        isHide: Boolean?
 ) {
-    if ((!isHide)) {
-        textInputEditTexts.forEach {
+    if (!isHide!!) {
+        textInputEditTexts?.forEach {
             it.transformationMethod =
                 HideReturnsTransformationMethod.getInstance()
         }
     } else {
-        textInputEditTexts.forEach {
+        textInputEditTexts?.forEach {
             it.transformationMethod =
                 PasswordTransformationMethod.getInstance()
         }
     }
-}
-
-fun errorMessage(errorMessage: String? = null,
-                 errorResponse: ErrorResponse? = null
-): String {
-    var message: String = EMPTY_STRING
-    if (!TextUtils.isEmpty(errorResponse?.errorCode))
-        message += errorResponse?.errorCode + SPACE_STRING
-
-    if (!TextUtils.isEmpty(errorResponse?.errorMessage))
-        message += errorResponse?.errorMessage + SPACE_STRING
-
-    if (!TextUtils.isEmpty(errorResponse?.errorTime))
-        message += errorResponse?.errorTime + SPACE_STRING
-
-    if (!TextUtils.isEmpty(errorResponse?.errorUrl))
-        message += errorResponse?.errorUrl + SPACE_STRING
-
-    if (!TextUtils.isEmpty(errorResponse?.errorThrow))
-        message += errorResponse?.errorThrow + SPACE_STRING
-
-    if (!TextUtils.isEmpty(errorMessage))
-        message += errorMessage
-
-    return message
 }

@@ -3,8 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="@dimen/padding_default">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_bottom_input"
@@ -29,6 +31,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_half_half_default"
+        android:gravity="end"
         android:orientation="horizontal">
 
         <Button
@@ -36,14 +40,16 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            app:cornerRadius="10dp" />
+            android:layout_marginEnd="@dimen/margin_half_half_default"
+            android:text="@string/title"
+            app:cornerRadius="@dimen/round_default" />
 
         <Button
             android:id="@+id/btn_positive_bottom_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_login"
-            app:cornerRadius="10dp" />
+            android:layout_marginStart="@dimen/margin_half_half_default"
+            android:text="@string/title"
+            app:cornerRadius="@dimen/round_default" />
     </LinearLayout>
 </LinearLayout>

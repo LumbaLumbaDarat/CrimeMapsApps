@@ -16,7 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RemoteDataSource(): DataSource {
+class RemoteDataSource: DataSource {
     companion object {
         private val TAG: String =
             RemoteDataSource::javaClass.name
@@ -142,6 +142,28 @@ class RemoteDataSource(): DataSource {
         return result
     }
 
+    override fun adminUpdate(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
+        val result = MutableLiveData<ApiResource<AdminResponse>>()
+        try
+        {
+            val client = NetworkApi.connectToApi().adminUpdate(jsonObject(admin))
+            client.enqueue(object : Callback<AdminResponse> {
+                override fun onResponse(
+                    call: Call<AdminResponse>,
+                    response: Response<AdminResponse>
+                ) {
+                    convertResponse(response, AdminResponse(), result)
+                }
+
+                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
+                    convertResponse(AdminResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(AdminResponse(), result, e, EMPTY)
+        }
+        return result
+    }
 
     private fun <T> convertResponse(
         response: Response<T>,

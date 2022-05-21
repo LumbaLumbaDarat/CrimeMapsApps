@@ -29,7 +29,7 @@ import com.harifrizki.crimemapsapps.utils.NotificationType.*
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 
-open class BaseActivity() : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
+open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     private val loading by lazy {
         Loading()
     }
@@ -38,6 +38,9 @@ open class BaseActivity() : AppCompatActivity(), SwipeRefreshLayout.OnRefreshLis
     }
     private val option by lazy {
         Option()
+    }
+    private val bottomInput by lazy {
+        BottomInput()
     }
 
     private var context: Context? = null
@@ -556,6 +559,35 @@ open class BaseActivity() : AppCompatActivity(), SwipeRefreshLayout.OnRefreshLis
     @Override
     fun dismissOption() {
         option.dismiss()
+    }
+
+    @Override
+    fun showBottomInput(activity: AppCompatActivity?,
+                        hint: String?,
+                        input: String?,
+                        titlePositive: String?,
+                        titleNegative: String?,
+                        onPositive: ((String?) -> Unit)?,
+                        onNegative: (() -> Unit?) = { dismissBottomInput() }) {
+        bottomInput.apply {
+            this.activity = activity
+            this.hint = hint
+            this.input = input
+            buttonPositive = titlePositive
+            buttonNegative = titleNegative
+            onClickPositive = {
+                onPositive?.invoke(it)
+            }
+            onClickNegative = {
+                onNegative.invoke()
+            }
+            show(supportFragmentManager, null)
+        }
+    }
+
+    @Override
+    fun dismissBottomInput() {
+        bottomInput.dismiss()
     }
 
     @Override

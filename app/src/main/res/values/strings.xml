@@ -11,6 +11,7 @@
     <string name="back">Kembali</string>
     <string name="cancel">Batalkan</string>
     <string name="ok">OK</string>
+    <string name="change">Ubah</string>
 
     <string name="label_login">Masuk</string>
     <string name="label_name">Nama</string>
@@ -41,6 +42,8 @@
     <string name="label_add_on">Tambahkan %s</string>
     <string name="label_enter_of">Masukkan %s %s</string>
 
+    <string name="label_plus_two_string">%s %s</string>
+
     <string name="admin_menu">Admin</string>
     <string name="crime_location_menu">Lokasi Rawan Kriminal</string>
     <string name="province_menu">Provinsi</string>
@@ -70,5 +73,6 @@
     <string name="message_error_network">[%s] %s, Hit Time in %s</string>
 
     <string name="message_error_empty">%s harus diisi, [Tidak Boleh kosong]</string>
+    <string name="message_error_empty_non_spannable">%s harus diisi, Tidak Boleh kosong</string>
     <string name="message_error_not_valid">%s yang Anda masukkan [Tidak Valid]</string>
 </resources>

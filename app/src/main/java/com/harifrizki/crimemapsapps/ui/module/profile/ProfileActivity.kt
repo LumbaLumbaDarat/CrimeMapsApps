@@ -35,6 +35,7 @@ class ProfileActivity : BaseActivity() {
             .getPreferences(LOGIN_MODEL, Admin::class.java)
     }
 
+    private var adminFromResponse: Admin? = null
     private var map: HashMap<String, Any>? = null
     private var fromActivity: String? = null
     private var appBarTitle: String? = null
@@ -138,9 +139,54 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
+    private val adminUpdate = Observer<DataResource<AdminResponse>> {
+        when (it.responseStatus)
+        {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                setAdmin(it.data?.admin)
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun adminUpdate(admin: Admin?) {
+        if (networkConnected()) {
+            viewModel.adminUpdate(admin).observe(this, adminUpdate)
+        }
+    }
+
     private fun initializeDetailProfile() {
         binding.apply {
-            iDetailProfile.root.visibility = View.VISIBLE
+            iDetailProfile.apply {
+                root.visibility = View.VISIBLE
+                ivBtnEditAdminName.setOnClickListener {
+                    showBottomInput(
+                        this@ProfileActivity,
+                        getString(R.string.label_plus_two_string,
+                            getString(R.string.label_name),
+                            getString(R.string.setting_profile_menu)),
+                        adminFromResponse?.adminName,
+                        getString(R.string.change),
+                        getString(R.string.cancel),
+                        onPositive = {
+                            adminUpdate(Admin().apply {
+                                adminId = adminFromResponse?.adminId
+                                adminName = it
+                                updatedByUUID = admin?.adminId
+                            })
+                            dismissBottomInput()
+                        }
+                    )
+                }
+            }
             iDetailProfileShimmer.root.visibility = View.VISIBLE
         }
         widgetStartDrawableShimmer(
@@ -254,6 +300,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun setAdmin(admin: Admin?) {
+        adminFromResponse = admin
         when (crud)
         {
             READ -> {
