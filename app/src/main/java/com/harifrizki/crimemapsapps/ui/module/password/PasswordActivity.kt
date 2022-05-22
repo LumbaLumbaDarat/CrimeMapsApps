@@ -93,8 +93,14 @@ class PasswordActivity : BaseActivity() {
 
     private val onClickListener = View.OnClickListener {
         when (it.id) {
-            R.id.iv_btn_show_hide_password -> { isHidePassword =
-                showAndHide(binding.ivBtnShowHidePassword, isHidePassword) }
+            R.id.iv_btn_show_hide_password -> {
+                binding.apply {
+                    isHidePassword = showAndHide(
+                        ivBtnShowHidePassword,
+                        isHidePassword,
+                        tvMessageShowHidePassword)
+                }
+            }
             R.id.btn_submit_password -> { validatePassword() }
             R.id.btn_cancel_password -> { onBackPressed() }
         }

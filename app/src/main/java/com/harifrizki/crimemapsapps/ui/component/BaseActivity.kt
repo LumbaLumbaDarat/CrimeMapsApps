@@ -7,6 +7,7 @@ import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
@@ -319,37 +320,45 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showAndHide(imageView: ImageView?, isHide: Boolean?): Boolean {
+    fun showAndHide(imageView: ImageView?,
+                    isHide: Boolean?,
+                    tvMessageShowHide: TextView? = null): Boolean {
         return if (!isHide!!)
         {
             imageView?.setImageResource(R.drawable.ic_round_visibility_24)
             passwordTies?.forEach {
-                it.transformationMethod = null
+                it.transformationMethod = PasswordTransformationMethod.getInstance()
             }
+            tvMessageShowHide?.text = getString(R.string.label_show_password)
             true
         } else {
             imageView?.setImageResource(R.drawable.ic_round_visibility_off_24)
             passwordTies?.forEach {
-                it.transformationMethod = PasswordTransformationMethod.getInstance()
+                it.transformationMethod = null
             }
+            tvMessageShowHide?.text = getString(R.string.label_hide_password)
             false
         }
     }
 
     @Override
-    fun showAndHide(imageButton: ImageButton?, isHide: Boolean?): Boolean {
+    fun showAndHide(imageButton: ImageButton?,
+                    isHide: Boolean?,
+                    tvMessageShowHide: TextView? = null): Boolean {
         return if (!isHide!!)
         {
             imageButton?.setImageResource(R.drawable.ic_round_visibility_24)
             passwordTies?.forEach {
-                it.transformationMethod = null
+                it.transformationMethod = PasswordTransformationMethod.getInstance()
             }
+            tvMessageShowHide?.text = getString(R.string.label_show_password)
             true
         } else {
             imageButton?.setImageResource(R.drawable.ic_round_visibility_off_24)
             passwordTies?.forEach {
-                it.transformationMethod = PasswordTransformationMethod.getInstance()
+                it.transformationMethod = null
             }
+            tvMessageShowHide?.text = getString(R.string.label_hide_password)
             false
         }
     }
