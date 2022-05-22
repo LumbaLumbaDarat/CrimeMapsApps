@@ -2,25 +2,31 @@ package com.harifrizki.crimemapsapps.ui.module.profile
 
 import android.app.Activity
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.AdminResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityProfileBinding
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
+import com.harifrizki.crimemapsapps.ui.module.cropphoto.CropPhotoActivity
 import com.harifrizki.crimemapsapps.ui.module.password.PasswordActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.CRUD.*
+import com.harifrizki.crimemapsapps.utils.ImageType.*
+import com.harifrizki.crimemapsapps.utils.MenuSetting.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
-import com.lumbalumbadrt.colortoast.ColorToast
+import com.orhanobut.logger.Logger
+import java.io.File
+import java.io.IOException
 
 class ProfileActivity : BaseActivity() {
 
@@ -40,12 +46,16 @@ class ProfileActivity : BaseActivity() {
             .getPreferences(LOGIN_MODEL, Admin::class.java)
     }
 
-    private var adminFromResponse: Admin? = null
-    private var map: HashMap<String, Any>? = null
     private var appBarTitle: String? = null
+    private var map: HashMap<String, Any>? = null
+
+    private var adminFromResponse: Admin? = null
     private var fromActivity: ActivityName? = null
     private var crud: CRUD? = null
     private var isAfterCRUD: CRUD? = NONE
+    private var getImageFrom: MenuSetting? = MENU_NONE
+
+    private var latestTempUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,7 +130,95 @@ class ProfileActivity : BaseActivity() {
                     else -> {}
                 }
             }
-            else showMessage(getMap(it.data))
+            else
+            {
+                map = getMap(it.data)
+                when (getEnumActivityName(map!![FROM_ACTIVITY].toString()))
+                {
+                    CROP_PHOTO -> {
+                        try
+                        {
+                            adminUpdatePhotoProfile(
+                                Admin().apply {
+                                    adminId = adminFromResponse?.adminId
+                                    updatedByUUID = admin?.adminId },
+                                File(Uri.parse(map!![URI_IMAGE].toString()).path))
+                        } catch (e: IOException) {
+                            Logger.e(e.message.toString())
+                            showError(
+                                message = e.message.toString(),
+                                onClick = { onBackPressed() })
+                        }
+                    }
+                    else -> { showMessage(getMap(it.data)) }
+                }
+            }
+        }
+    }
+
+    private val openCamera =
+        registerForActivityResult(ActivityResultContracts.TakePicture())
+    {
+        if (it)
+        {
+            goTo(
+                CropPhotoActivity(),
+                hashMapOf(
+                    FROM_ACTIVITY to getNameOfActivity(PROFILE),
+                    URI_IMAGE to latestTempUri!!
+                ))
+        }
+    }
+
+    private val openGallery =
+        registerForActivityResult(ActivityResultContracts.GetContent())
+    { uri: Uri? ->
+        goTo(
+            CropPhotoActivity(),
+            hashMapOf(
+                FROM_ACTIVITY to getNameOfActivity(PROFILE),
+                URI_IMAGE to uri!!
+            )
+        )
+    }
+
+    private val resultLauncherPermission =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        )
+    { permissions ->
+        var invalidCountPermission = ZERO
+        permissions.entries.forEach {
+            val isGranted = it.value
+            if (!isGranted)
+                invalidCountPermission++
+        }
+
+        if (invalidCountPermission >= ONE)
+            showWarning(
+                message = getString(R.string.message_error_permission_change_image_profile),
+                onClick = { onBackPressed() })
+        else {
+            when (getImageFrom)
+            {
+                 MENU_CAMERA -> {
+                     try {
+                         lifecycleScope.launchWhenStarted {
+                             getTempFileUri(IMAGE_PROFILE).let { uri ->
+                                 latestTempUri = uri
+                                 openCamera.launch(uri)
+                             }
+                         }
+                     } catch (e: IOException) {
+                         Logger.e(e.message.toString())
+                         showError(
+                             message = e.message.toString(),
+                             onClick = { onBackPressed() })
+                     }
+                 }
+                MENU_GALLERY -> { openGallery.launch(IMAGE_FORMAT_GALLERI)}
+                else -> {}
+            }
         }
     }
 
@@ -210,13 +308,47 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
+    private val adminUpdatePhotoProfile = Observer<DataResource<AdminResponse>> {
+        when (it.responseStatus)
+        {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message))
+                {
+                    setAdmin(it.data?.admin)
+                    if (it.data?.admin?.adminId.equals(admin?.adminId))
+                        PreferencesManager.getInstance(this).
+                        setPreferences(LOGIN_MODEL, it.data?.admin)
+                    isAfterCRUD = UPDATE
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun adminUpdatePhotoProfile(admin: Admin?, file: File?) {
+        if (networkConnected()) {
+            viewModel.adminUpdatePhotoProfile(admin, file).
+            observe(this, adminUpdatePhotoProfile)
+        }
+    }
+
     private fun initializePhotoProfile() {
         binding.iPhotoProfile.ivChangePhotoProfile.setOnClickListener {
             showBottomOption(
                 getString(R.string.label_get_image_from),
                 imageMenus(),
                 onClickMenu = {
-
+                    getImageFrom = it.menuSetting
+                    resultLauncherPermission.launch(APP_PERMISSION_GET_IMAGE)
+                    dismissBottomOption()
                 })
         }
         widgetStartDrawableShimmer(

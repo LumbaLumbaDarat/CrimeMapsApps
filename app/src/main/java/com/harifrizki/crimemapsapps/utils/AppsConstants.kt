@@ -1,5 +1,7 @@
 package com.harifrizki.crimemapsapps.utils
 
+import android.Manifest
+
 const val PREF_NAME = "com.harifrizki.crimemapsapps.Preferences"
 
 const val EMPTY_STRING      = ""
@@ -8,9 +10,21 @@ const val UNDER_LINE_STRING = "_"
 const val HYPHEN_STRING     = "-"
 const val SPAN_REGEX        = "\\[.*?\\]"
 
+const val IMAGE_FORMAT_PNG     = ".png"
+const val IMAGE_FORMAT_GALLERI = "image/*"
+
+val APP_PERMISSION_GET_IMAGE: Array<String> = arrayOf(
+    Manifest.permission.CAMERA,
+    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    Manifest.permission.READ_EXTERNAL_STORAGE
+)
+
 const val ZERO   = 0
 const val ONE    = 1
 const val TWENTY = 20
+
+const val ROTATE_DEGREE = 90
+const val MAX_SIZE      = 600
 
 const val MAX_ITEM_LIST_SHIMMER = 4
 const val ROW_MENU_AREA         = 2
@@ -46,4 +60,6 @@ const val LOTTIE_DEBUG_MODE_JSON   = "debug_mode.json"
 const val INTENT_DATA           = "INTENT_DATA"
 const val FROM_ACTIVITY         = "FROM_ACTIVITY"
 const val OPERATION_CRUD        = "OPERATION_CRUD"
-const val IS_PROCEDURE_EXECUTED = "IS_PROCEDURE_EXECUTED"
+
+const val URI_IMAGE  = "URI_IMAGE"
+const val NAME_IMAGE = "NAME_IMAGE"

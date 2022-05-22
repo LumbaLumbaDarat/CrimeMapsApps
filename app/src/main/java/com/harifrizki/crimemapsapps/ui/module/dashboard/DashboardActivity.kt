@@ -125,6 +125,10 @@ class DashboardActivity : BaseActivity() {
             SUCCESS -> {
                 if (isResponseSuccess(it.data?.message))
                 {
+                    initializeAccount(PreferencesManager.
+                    getInstance(this).
+                    getPreferences(LOGIN_MODEL, Admin::class.java),
+                        false)
                     menuAreaCrimeLocation?.apply {
                         countMenuArea = it.data?.utilization?.countCrimeLocation
                         create()

@@ -24,6 +24,13 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.crimemapsapps.R
 import com.orhanobut.logger.Logger
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -36,6 +43,16 @@ fun getVersion(context: Context?): String {
         Logger.e("getVersion: ".plus(e.message.toString()))
         EMPTY_STRING
     }
+}
+
+fun getNameForImageTemp(context: Context?, imageType: ImageType?): String {
+    return context?.getString(R.string.app_name)!!.
+    replace(SPACE_STRING, UNDER_LINE_STRING).
+    plus(UNDER_LINE_STRING).
+    plus(imageType?.name).
+    plus(UNDER_LINE_STRING).
+    plus(context.getString(R.string.temp)).
+    uppercase()
 }
 
 fun isNetworkConnected(context: Context?): Boolean {
@@ -73,6 +90,21 @@ fun isValidPasswordAndConfirmPassword(password: String?,
                                       confirmPassword: String?
 ): Boolean {
     return password.equals(confirmPassword, false)
+}
+
+fun toRequestBody(value: String?, mediaType: String?): RequestBody {
+    return value?.toRequestBody(mediaType?.toMediaType())!!
+}
+
+fun toRequestBody(file: File?, mediaType: String?): RequestBody {
+    return file?.asRequestBody(mediaType?.toMediaType())!!
+}
+
+fun toMultipartBody(file: File?, name: String?, mediaType: String?): MultipartBody.Part {
+    return MultipartBody.Part.createFormData(
+        name!!,
+        file?.name,
+        toRequestBody(file, mediaType))
 }
 
 fun makeSpannable(isSpanBold: Boolean?,

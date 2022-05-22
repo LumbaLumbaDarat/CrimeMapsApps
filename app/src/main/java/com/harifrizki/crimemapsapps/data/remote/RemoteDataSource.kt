@@ -9,12 +9,15 @@ import com.harifrizki.crimemapsapps.model.Admin.Companion.jsonObject
 import com.harifrizki.crimemapsapps.utils.ApiResource
 import com.harifrizki.crimemapsapps.utils.ResponseStatus
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
+import com.harifrizki.crimemapsapps.utils.toMultipartBody
+import com.harifrizki.crimemapsapps.utils.toRequestBody
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class RemoteDataSource: DataSource {
     companion object {
@@ -147,6 +150,37 @@ class RemoteDataSource: DataSource {
         try
         {
             val client = NetworkApi.connectToApi().adminUpdate(jsonObject(admin))
+            client.enqueue(object : Callback<AdminResponse> {
+                override fun onResponse(
+                    call: Call<AdminResponse>,
+                    response: Response<AdminResponse>
+                ) {
+                    convertResponse(response, AdminResponse(), result)
+                }
+
+                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
+                    convertResponse(AdminResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(AdminResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+    override fun adminUpdatePhotoProfile(
+        admin: Admin?,
+        photoProfile: File?
+    ): LiveData<ApiResource<AdminResponse>> {
+        val result = MutableLiveData<ApiResource<AdminResponse>>()
+        try
+        {
+            val client = NetworkApi.connectToApi().adminUpdatePhotoProfile(
+                toRequestBody(jsonObject(admin).toString(), "multipart/form-data"),
+                toMultipartBody(
+                    photoProfile,
+                    "adminPhotoProfile",
+                    "multipart/form-data"))
             client.enqueue(object : Callback<AdminResponse> {
                 override fun onResponse(
                     call: Call<AdminResponse>,

@@ -7,6 +7,7 @@ import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.utils.ApiResource
 import com.harifrizki.crimemapsapps.utils.AppExecutor
 import com.harifrizki.crimemapsapps.utils.DataResource
+import java.io.File
 
 class CrimeMapsRepository(
     private val remote: RemoteDataSource,
@@ -63,6 +64,16 @@ class CrimeMapsRepository(
         return object : NetworkResource<AdminResponse>() {
             override fun createCall(): LiveData<ApiResource<AdminResponse>> =
                 remote.adminUpdate(admin)
+        }.asLiveData()
+    }
+
+    override fun adminUpdatePhotoProfile(
+        admin: Admin?,
+        photoProfile: File?
+    ): LiveData<DataResource<AdminResponse>> {
+        return object : NetworkResource<AdminResponse>() {
+            override fun createCall(): LiveData<ApiResource<AdminResponse>> =
+                remote.adminUpdatePhotoProfile(admin, photoProfile)
         }.asLiveData()
     }
 

@@ -46,8 +46,7 @@ interface EndPoint {
 
     @Multipart
     @POST(ADMIN_ADD)
-    fun adminAdd(@PartMap() partMap: Map<String, RequestBody>,
-                 @Part files: List<MultipartBody.Part>):
+    fun adminAdd(@PartMap partMap: Map<String, RequestBody>):
             Call<AdminResponse>
 
     @POST(ADMIN_UPDATE)
@@ -56,8 +55,8 @@ interface EndPoint {
 
     @Multipart
     @POST(ADMIN_UPDATE_PHOTO_PROFILE)
-    fun adminUpdatePhotoProfile(@PartMap() partMap: Map<String, RequestBody>,
-                                @Part files: List<MultipartBody.Part>):
+    fun adminUpdatePhotoProfile(@Part("adminEntity") adminEntity: RequestBody,
+                                @Part adminPhotoProfile: MultipartBody.Part):
             Call<AdminResponse>
 
     @FormUrlEncoded

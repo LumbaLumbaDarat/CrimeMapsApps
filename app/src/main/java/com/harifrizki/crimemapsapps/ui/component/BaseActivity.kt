@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.widget.NestedScrollView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
@@ -20,6 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.textfield.TextInputEditText
+import com.harifrizki.crimemapsapps.BuildConfig
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
 import com.harifrizki.crimemapsapps.databinding.AppBarBinding
@@ -38,6 +40,7 @@ import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.lumbalumbadrt.colortoast.ColorToast
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
+import java.io.File
 
 open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     private val loading by lazy {
@@ -85,11 +88,13 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     override fun onRefresh() {}
 
     @Override
-    fun onBackPressed(map: HashMap<String, Any>?) {
+    fun onBackPressed(map: HashMap<String, Any>?,
+                      directOnBackPressed: Boolean? = false) {
         Intent().apply {
             putExtra(INTENT_DATA, map)
             setResult(RESULT_OK, this)
         }
+        if (directOnBackPressed!!) onBackPressed()
     }
 
     @Override
@@ -128,7 +133,10 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
 
     private val requestOptions =
         RequestOptions().centerCrop().placeholder(R.drawable.animation_loading_image)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE).priority(Priority.HIGH).dontAnimate()
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+            .priority(Priority.HIGH)
+            .dontAnimate()
             .dontTransform()
 
     @Override
@@ -374,253 +382,61 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showError(message: String?) {
-        notification.apply {
-            message?.let { notification(it) }
-            titleNotification(
-                context?.getString(R.string.notification_error_title))
-            context?.getString(R.string.ok)?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_ERROR)
-            onClickButton = {
-                notification.dismiss()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showError(titleNotification: String?,
-                  message: String?) {
-        notification.apply {
-            titleNotification(titleNotification)
-            message?.let { notification(it) }
-            context?.getString(R.string.ok)?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_ERROR)
-            onClickButton = {
-                notification.dismiss()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showError(titleNotification: String?,
+    fun showError(titleNotification: String? = context?.getString(R.string.notification_error_title),
                   message: String?,
-                  buttonTitle: String?) {
+                  buttonTitle: String? = context?.getString(R.string.ok),
+                  onClick: (() -> Unit)? = { dismissNotification() }) {
         notification.apply {
-            titleNotification(titleNotification)
             message?.let { notification(it) }
-            buttonTitle?.let { buttonTitle(it) }
+            titleNotification(titleNotification)
+            buttonTitle(buttonTitle)
             notificationType(NOTIFICATION_ERROR)
-            onClickButton = {
-                notification.dismiss()
-            }
+            onClickButton = { onClick?.invoke() }
             show()
         }
     }
 
     @Override
-    fun showError(titleNotification: String?,
-                  message: String?,
-                  buttonTitle: String?,
-                  onClick: (() -> Unit)?) {
-        notification.apply {
-            titleNotification(titleNotification)
-            message?.let { notification(it) }
-            buttonTitle?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_ERROR)
-            onClickButton = {
-                onClick?.invoke()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showWarning(message: String?) {
-        notification.apply {
-            message?.let { notification(it) }
-            titleNotification(
-                context?.getString(R.string.notification_warning_title))
-            context?.getString(R.string.ok)?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_WARNING)
-            onClickButton = {
-                notification.dismiss()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showWarning(titleNotification: String?,
-                    message: String?) {
-        notification.apply {
-            titleNotification(titleNotification)
-            message?.let { notification(it) }
-            context?.getString(R.string.ok)?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_WARNING)
-            onClickButton = {
-                notification.dismiss()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showWarning(titleNotification: String?,
+    fun showWarning(titleNotification: String? = context?.getString(R.string.notification_warning_title),
                     message: String?,
-                    buttonTitle: String?) {
+                    buttonTitle: String? = context?.getString(R.string.ok),
+                    onClick: (() -> Unit)? = { dismissNotification() }) {
         notification.apply {
-            titleNotification(titleNotification)
             message?.let { notification(it) }
-            buttonTitle?.let { buttonTitle(it) }
+            titleNotification(titleNotification)
+            buttonTitle(buttonTitle)
             notificationType(NOTIFICATION_WARNING)
-            onClickButton = {
-                notification.dismiss()
-            }
+            onClickButton = { onClick?.invoke() }
             show()
         }
     }
 
     @Override
-    fun showWarning(titleNotification: String?,
-                    message: String?,
-                    buttonTitle: String?,
-                    onClick: (() -> Unit)?) {
-        notification.apply {
-            titleNotification(titleNotification)
-            message?.let { notification(it) }
-            buttonTitle?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_WARNING)
-            onClickButton = {
-                onClick?.invoke()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showInformation(message: String?) {
-        notification.apply {
-            message?.let { notification(it) }
-            titleNotification(
-                context?.getString(R.string.notification_information_title))
-            context?.getString(R.string.ok)?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_INFORMATION)
-            onClickButton = {
-                notification.dismiss()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showInformation(titleNotification: String?,
-                        message: String?) {
-        notification.apply {
-            titleNotification(titleNotification)
-            message?.let { notification(it) }
-            context?.getString(R.string.ok)?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_INFORMATION)
-            onClickButton = {
-                notification.dismiss()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showInformation(titleNotification: String?,
+    fun showInformation(titleNotification: String? = context?.getString(R.string.notification_information_title),
                         message: String?,
-                        buttonTitle: String?) {
+                        buttonTitle: String? = context?.getString(R.string.ok),
+                        onClick: (() -> Unit)? = { dismissNotification() }) {
         notification.apply {
-            titleNotification(titleNotification)
             message?.let { notification(it) }
-            buttonTitle?.let { buttonTitle(it) }
+            titleNotification(titleNotification)
+            buttonTitle(buttonTitle)
             notificationType(NOTIFICATION_INFORMATION)
-            onClickButton = {
-                notification.dismiss()
-            }
+            onClickButton = { onClick?.invoke() }
             show()
         }
     }
 
     @Override
-    fun showInformation(titleNotification: String?,
-                        message: String?,
-                        buttonTitle: String?,
-                        onClick: (() -> Unit)?) {
-        notification.apply {
-            titleNotification(titleNotification)
-            message?.let { notification(it) }
-            buttonTitle?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_INFORMATION)
-            onClickButton = {
-                onClick?.invoke()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showSuccess(message: String?) {
-        notification.apply {
-            message?.let { notification(it) }
-            titleNotification(
-                context?.getString(R.string.notification_success_title))
-            context?.getString(R.string.ok)?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_SUCCESS)
-            onClickButton = {
-                notification.dismiss()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showSuccess(titleNotification: String?,
-                    message: String?) {
-        notification.apply {
-            titleNotification(titleNotification)
-            message?.let { notification(it) }
-            context?.getString(R.string.ok)?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_SUCCESS)
-            onClickButton = {
-                notification.dismiss()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showSuccess(titleNotification: String?,
+    fun showSuccess(titleNotification: String? = context?.getString(R.string.notification_success_title),
                     message: String?,
-                    buttonTitle: String?) {
+                    buttonTitle: String? = context?.getString(R.string.ok),
+                    onClick: (() -> Unit)? = { dismissNotification() }) {
         notification.apply {
-            titleNotification(titleNotification)
             message?.let { notification(it) }
-            buttonTitle?.let { buttonTitle(it) }
-            notificationType(NOTIFICATION_SUCCESS)
-            onClickButton = {
-                notification.dismiss()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showSuccess(titleNotification: String?,
-                    message: String?,
-                    buttonTitle: String?,
-                    onClick: (() -> Unit)?) {
-        notification.apply {
             titleNotification(titleNotification)
-            message?.let { notification(it) }
-            buttonTitle?.let { buttonTitle(it) }
+            buttonTitle(buttonTitle)
             notificationType(NOTIFICATION_SUCCESS)
-            onClickButton = {
-                onClick?.invoke()
-            }
+            onClickButton = { onClick?.invoke() }
             show()
         }
     }
@@ -633,66 +449,22 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     @Override
     fun showOption(titleOption: String?,
                    message: String?,
+                   optionAnimation: String? = LOTTIE_QUESTION_JSON,
+                   titlePositive: String? = context?.getString(R.string.ok),
+                   titleNegative: String? = context?.getString(R.string.cancel),
                    onPositive: (() -> Unit)?,
-                   onNegative: (() -> Unit)?) {
+                   onNegative: (() -> Unit)? = { dismissOption() }) {
         option.apply {
             titleOption(titleOption)
             message?.let { option(it) }
-            context?.getString(R.string.ok)?.let { buttonPositive(it) }
-            context?.getString(R.string.cancel)?.let { buttonNegative(it) }
-            optionAnimation(LOTTIE_QUESTION_JSON)
-            onClickNegative = {
-                onNegative?.invoke()
-            }
-            onClickPositive = {
-                onPositive?.invoke()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showOption(titleOption: String?,
-                   message: String?,
-                   titlePositive: String?,
-                   titleNegative: String?,
-                   onPositive: (() -> Unit)?,
-                   onNegative: (() -> Unit)?) {
-        option.apply {
-            titleOption(titleOption)
-            message?.let { option(it) }
-            buttonPositive(titlePositive)
-            buttonNegative(titleNegative)
-            optionAnimation(LOTTIE_QUESTION_JSON)
-            onClickNegative = {
-                onNegative?.invoke()
-            }
-            onClickPositive = {
-                onPositive?.invoke()
-            }
-            show()
-        }
-    }
-
-    @Override
-    fun showOption(titleOption: String?,
-                   message: String?,
-                   optionAnimation: String?,
-                   titlePositive: String?,
-                   titleNegative: String?,
-                   onPositive: (() -> Unit)?,
-                   onNegative: (() -> Unit)?) {
-        option.apply {
-            titleOption(titleOption)
-            message?.let { option(it) }
-            buttonPositive(titlePositive)
-            buttonNegative(titleNegative)
             optionAnimation(optionAnimation)
-            onClickNegative = {
-                onNegative?.invoke()
-            }
+            buttonPositive(titlePositive)
+            buttonNegative(titleNegative)
             onClickPositive = {
                 onPositive?.invoke()
+            }
+            onClickNegative = {
+                onNegative?.invoke()
             }
             show()
         }
@@ -769,6 +541,11 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
+    fun dismissBottomOption() {
+        bottomOption.dismiss()
+    }
+
+    @Override
     fun showMessage(map: HashMap<String, Any>?): Boolean
     {
         val fromActivity = getEnumActivityName(map!![FROM_ACTIVITY].toString())
@@ -815,7 +592,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     fun isResponseSuccess(message: Message?): Boolean {
         return if (message?.success == true) true
         else {
-            showError(message?.message)
+            showError(message = message?.message)
             false
         }
     }
@@ -908,6 +685,28 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     @Override
     fun getMap(intent: Intent?): HashMap<String, Any> {
         return intent?.getSerializableExtra(INTENT_DATA) as HashMap<String, Any>
+    }
+
+    @Override
+    fun getTempFileUri(imageType: ImageType?): Uri {
+        val tempFile = File.createTempFile(
+            getNameForImageTemp(context, imageType), IMAGE_FORMAT_PNG, cacheDir).apply {
+            createNewFile()
+            deleteOnExit()
+        }
+
+        return FileProvider.getUriForFile(
+            applicationContext,
+            BuildConfig.APPLICATION_ID.plus(context?.getString(R.string.file_provider_name)), tempFile)
+    }
+
+    @Override
+    fun getTempFile(imageType: ImageType?): File {
+        return File.createTempFile(
+            getNameForImageTemp(context, imageType), IMAGE_FORMAT_PNG, cacheDir).apply {
+            createNewFile()
+            deleteOnExit()
+        }
     }
 
     @Override

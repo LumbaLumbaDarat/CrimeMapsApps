@@ -158,20 +158,20 @@ class PasswordActivity : BaseActivity() {
                             binding.tieNewPassword.text.toString().trim()
                         )
                     } else showWarning(
-                        getString(
+                        message = getString(
                             R.string.message_error_validate_not_valid,
                             getString(R.string.label_new_password),
                             getString(R.string.label_confirm_new_password)))
                 } else showWarning(
-                    getString(
+                    message = getString(
                         R.string.message_error_empty,
                         getString(R.string.label_confirm_new_password)))
             } else showWarning(
-                getString(
+                message = getString(
                     R.string.message_error_empty,
                     getString(R.string.label_new_password)))
         } else showWarning(
-            getString(
+            message = getString(
                 R.string.message_error_empty,
                 getString(R.string.label_existing_password)))
     }

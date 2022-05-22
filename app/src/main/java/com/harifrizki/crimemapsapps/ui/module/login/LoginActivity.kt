@@ -146,15 +146,15 @@ class LoginActivity : BaseActivity() {
                             adminPassword = binding.tiePasswordLogin.text.toString().trim()
                         })
                 else showWarning(
-                    getString(
+                    message = getString(
                         R.string.message_error_empty,
                         getString(R.string.label_password)))
             } else showWarning(
-                getString(
+                message = getString(
                     R.string.message_error_not_valid,
                     getString(R.string.label_username)))
         } else showWarning(
-            getString(
+            message = getString(
                 R.string.message_error_empty,
                 getString(R.string.label_username)))
     }
