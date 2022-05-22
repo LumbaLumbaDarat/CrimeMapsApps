@@ -3,8 +3,11 @@ package com.harifrizki.crimemapsapps.ui.component
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -15,6 +18,7 @@ import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.textfield.TextInputEditText
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
 import com.harifrizki.crimemapsapps.databinding.AppBarBinding
@@ -26,6 +30,11 @@ import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.Error.*
 import com.harifrizki.crimemapsapps.utils.MenuSetting.*
 import com.harifrizki.crimemapsapps.utils.NotificationType.*
+import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
+import com.harifrizki.crimemapsapps.utils.ActivityName.*
+import com.harifrizki.crimemapsapps.utils.CRUD.Companion.getEnumCRUD
+import com.harifrizki.crimemapsapps.utils.CRUD.*
+import com.lumbalumbadrt.colortoast.ColorToast
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 
@@ -39,12 +48,21 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     private val option by lazy {
         Option()
     }
+    private val optionList by lazy {
+        OptionList()
+    }
     private val bottomInput by lazy {
         BottomInput()
+    }
+    private val bottomOption by lazy {
+        BottomOption()
     }
 
     private var context: Context? = null
     private var resultLauncher: ActivityResultLauncher<Intent>? = null
+
+    private var ties: Array<TextInputEditText>? = null
+    private var passwordTies: Array<TextInputEditText>? = null
 
     @Override
     fun create(buildContext: Context,
@@ -59,6 +77,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         createLoading()
         createNotification()
         createOption()
+        createOptionList()
     }
 
     @Override
@@ -72,21 +91,37 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         }
     }
 
+    @Override
+    fun onBackPressed(fromActivity: String?, operationCRUD: String?) {
+        onBackPressed(
+            hashMapOf(
+                FROM_ACTIVITY to fromActivity!!,
+                OPERATION_CRUD to operationCRUD!!
+            )
+        )
+    }
+
     private fun createLoading() {
         loading.apply {
-            context?.let { create(it) }
+            create(context)
         }
     }
 
     private fun createNotification() {
         notification.apply {
-            context?.let { create(it) }
+            create(context)
         }
     }
 
     private fun createOption() {
         option.apply {
-            context?.let { create(it) }
+            create(context)
+        }
+    }
+
+    private fun createOptionList() {
+        optionList.apply {
+            create(context)
         }
     }
 
@@ -227,6 +262,96 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
             )
         )
         return menus
+    }
+
+    @Override
+    fun imageMenus(): ArrayList<Menu> {
+        val menus: ArrayList<Menu> = ArrayList()
+        menus.add(
+            Menu(
+                MENU_CAMERA,
+                context?.getString(R.string.setting_camera_menu),
+                R.drawable.ic_round_photo_camera_24,
+                EMPTY_STRING,
+                true,
+                R.color.primary,
+                R.color.primary,
+                R.drawable.button_transparent_ripple_primary
+            )
+        )
+        menus.add(
+            Menu(
+                MENU_GALLERY,
+                context?.getString(R.string.setting_gallery_menu),
+                R.drawable.ic_round_folder_24,
+                EMPTY_STRING,
+                true,
+                R.color.primary,
+                R.color.primary,
+                R.drawable.button_transparent_ripple_primary
+            )
+        )
+        return menus
+    }
+
+    @Override
+    fun prepareResetTextInputEditText(ties: Array<TextInputEditText>?) {
+        this.ties = ties
+    }
+
+    @Override
+    fun resetTextInputEditText() {
+        ties?.forEach {
+            it.text?.clear()
+        }
+    }
+
+    @Override
+    fun resetTextInputEditText(ties: Array<TextInputEditText>?) {
+        ties?.forEach {
+            it.text?.clear()
+        }
+    }
+
+    @Override
+    fun prepareShowAndHidePassword(passwordTies: Array<TextInputEditText>?) {
+        this.passwordTies = passwordTies
+    }
+
+    @Override
+    fun showAndHide(imageView: ImageView?, isHide: Boolean?): Boolean {
+        return if (!isHide!!)
+        {
+            imageView?.setImageResource(R.drawable.ic_round_visibility_24)
+            passwordTies?.forEach {
+                it.transformationMethod = null
+            }
+            true
+        } else {
+            imageView?.setImageResource(R.drawable.ic_round_visibility_off_24)
+            passwordTies?.forEach {
+                it.transformationMethod = PasswordTransformationMethod.getInstance()
+            }
+            false
+        }
+    }
+
+    @Override
+    fun showAndHide(imageButton: ImageButton?, isHide: Boolean?): Boolean {
+        return if (!isHide!!)
+        {
+            imageButton?.setImageResource(R.drawable.ic_round_visibility_24)
+            passwordTies?.forEach {
+                it.transformationMethod = null
+            }
+            true
+        } else {
+            imageButton?.setImageResource(R.drawable.ic_round_visibility_off_24)
+            passwordTies?.forEach {
+                it.transformationMethod = PasswordTransformationMethod.getInstance()
+            }
+            false
+        }
     }
 
     @Override
@@ -599,6 +724,85 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
+    fun showOptionList(view: View?,
+                       menus: ArrayList<Menu>?,
+                       background: Int?,
+                       xPosition: Int?,
+                       yPosition: Int?,
+                       onClickMenu: ((Menu) -> Unit)?) {
+        optionList.apply {
+            setBackground(background?.let { context?.getDrawable(it) })
+            setMenus(menus)
+            show(view, xPosition, yPosition)
+            onClick = {
+                it?.let { menu -> onClickMenu?.invoke(menu) }
+            }
+        }
+    }
+
+    @Override
+    fun dismissOptionList() {
+        optionList.dismiss()
+    }
+
+    @Override
+    fun showBottomOption(title: String?,
+                         menus: ArrayList<Menu>?,
+                         onClickMenu: ((Menu) -> Unit)?) {
+        bottomOption.apply {
+            this.title = title
+            options = menus
+            onClick = {
+                it?.let { menu -> onClickMenu?.invoke(menu) }
+            }
+            show(supportFragmentManager, null)
+        }
+    }
+
+    @Override
+    fun showMessage(map: HashMap<String, Any>?): Boolean
+    {
+        val fromActivity = getEnumActivityName(map!![FROM_ACTIVITY].toString())
+        return when (getEnumCRUD(map[OPERATION_CRUD] as String))
+        {
+            CREATE -> {
+                true
+            }
+            READ -> {
+                true
+            }
+            UPDATE -> {
+                when (fromActivity)
+                {
+                    PROFILE -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(R.string.message_success_update,
+                                getString(R.string.setting_profile_menu)),
+                            Toast.LENGTH_LONG)
+                        true
+                    }
+                    PASSWORD -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(R.string.message_success_update,
+                                getString(R.string.label_password)),
+                            Toast.LENGTH_LONG)
+                        true
+                    }
+                    else -> { false }
+                }
+            }
+            DELETE -> {
+                true
+            }
+            else -> { false }
+        }
+    }
+
+    @Override
     fun isResponseSuccess(message: Message?): Boolean {
         return if (message?.success == true) true
         else {
@@ -714,6 +918,16 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
             appCompatActivity!!::class.java
         ).apply {
             putExtra(INTENT_DATA, map)
+            resultLauncher?.launch(this)
+        }
+    }
+
+    @Override
+    fun goTo(appCompatActivity: AppCompatActivity?) {
+        Intent(
+            this,
+            appCompatActivity!!::class.java
+        ).apply {
             resultLauncher?.launch(this)
         }
     }

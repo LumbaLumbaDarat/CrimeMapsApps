@@ -165,6 +165,38 @@ class RemoteDataSource: DataSource {
         return result
     }
 
+    override fun adminUpdatePassword(
+        adminId: String?,
+        oldPassword: String?,
+        newPassword: String?
+    ): LiveData<ApiResource<AdminResponse>> {
+        val result = MutableLiveData<ApiResource<AdminResponse>>()
+        try
+        {
+            val client = adminId?.let { oldPassword?.let { oldPassword ->
+                newPassword?.let { newPassword ->
+                    NetworkApi.connectToApi().adminUpdatePassword(
+                        it, oldPassword, newPassword)
+                }
+            } }
+            client?.enqueue(object : Callback<AdminResponse> {
+                override fun onResponse(
+                    call: Call<AdminResponse>,
+                    response: Response<AdminResponse>
+                ) {
+                    convertResponse(response, AdminResponse(), result)
+                }
+
+                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
+                    convertResponse(AdminResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(AdminResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
     private fun <T> convertResponse(
         response: Response<T>,
         modelResponse: T,

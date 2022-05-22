@@ -65,4 +65,15 @@ class CrimeMapsRepository(
                 remote.adminUpdate(admin)
         }.asLiveData()
     }
+
+    override fun adminUpdatePassword(
+        adminId: String?,
+        oldPassword: String?,
+        newPassword: String?
+    ): LiveData<DataResource<AdminResponse>> {
+        return object : NetworkResource<AdminResponse>() {
+            override fun createCall(): LiveData<ApiResource<AdminResponse>> =
+                remote.adminUpdatePassword(adminId, oldPassword, newPassword)
+        }.asLiveData()
+    }
 }

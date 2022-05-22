@@ -40,6 +40,17 @@ class LoginActivity : BaseActivity() {
         setContentView(binding.root)
         create(this, resultLauncher)
         binding.apply {
+            prepareResetTextInputEditText(arrayOf(
+                tieUsernameLogin, tiePasswordLogin
+            ))
+            prepareShowAndHidePassword(arrayOf(
+                tiePasswordLogin
+            ))
+            srlLogin.apply {
+                setThemeForSwipeRefreshLayoutLoadingAnimation(
+                    this@LoginActivity, this)
+                setOnRefreshListener(this@LoginActivity)
+            }
             tvVersionAppsLogin.text = getString(
                 R.string.version_apps,
                 getVersion(this@LoginActivity)
@@ -55,14 +66,23 @@ class LoginActivity : BaseActivity() {
     )
     {
         if (it.resultCode == Activity.RESULT_OK)
-            resetFormLogin(false)
+        {
+            if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
+                resetTextInputEditText()
+        }
+    }
+
+    override fun onRefresh() {
+        super.onRefresh()
+        binding.srlLogin.isRefreshing = false
     }
 
     private fun onClickListener() = View.OnClickListener {
         when (it.id) {
-            binding.ibShowPasswordLogin.id -> isHidePassword()
+            binding.ibShowPasswordLogin.id -> isHidePassword =
+                showAndHide(binding.ibShowPasswordLogin, isHidePassword)
             binding.btnLogin.id -> validateLogin()
-            binding.btnCancelLogin.id -> resetFormLogin(true)
+            binding.btnCancelLogin.id -> resetTextInputEditText()
         }
     }
 
@@ -90,7 +110,7 @@ class LoginActivity : BaseActivity() {
                             finishAffinity()
                         }
                     }
-                }
+                } else resetTextInputEditText()
             }
             ERROR -> {
                 dismissLoading()
@@ -137,32 +157,5 @@ class LoginActivity : BaseActivity() {
             getString(
                 R.string.message_error_empty,
                 getString(R.string.label_username)))
-    }
-
-    private fun isHidePassword() {
-        binding.ibShowPasswordLogin.apply {
-            if (!isHidePassword) {
-                isHidePassword = true
-                setImageResource(
-                    R.drawable.ic_round_visibility_24
-                )
-                showAndHidePassword(binding.tiePasswordLogin, true)
-            } else {
-                isHidePassword = false
-                setImageResource(
-                    R.drawable.ic_round_visibility_off_24
-                )
-                showAndHidePassword(binding.tiePasswordLogin, false)
-            }
-        }
-    }
-
-    private fun resetFormLogin(clearAll: Boolean?) {
-        binding.apply {
-            if (clearAll!!) {
-                tieUsernameLogin.text?.clear()
-                tiePasswordLogin.text?.clear()
-            } else tiePasswordLogin.text?.clear()
-        }
     }
 }

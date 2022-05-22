@@ -2,6 +2,7 @@ package com.harifrizki.crimemapsapps.utils
 
 import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminActivity
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardActivity
+import com.harifrizki.crimemapsapps.ui.module.password.PasswordActivity
 import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
 
 enum class ResponseStatus {
@@ -32,7 +33,9 @@ enum class MenuSetting {
     MENU_NONE,
     MENU_SETTING_DEBUG_MODE,
     MENU_SETTING_PROFILE,
-    MENU_SETTING_EXIT
+    MENU_SETTING_EXIT,
+    MENU_CAMERA,
+    MENU_GALLERY
 }
 
 enum class Error {
@@ -55,6 +58,7 @@ enum class CRUD {
 enum class ActivityName(val nameOfActivity: String) {
     DASHBOARD(DashboardActivity::class.java.name),
     PROFILE(ProfileActivity::class.java.name),
+    PASSWORD(PasswordActivity::class.java.name),
     LIST_OF_ADMIN(ListOfAdminActivity::class.java.name);
 
     companion object {

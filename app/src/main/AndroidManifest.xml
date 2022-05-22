@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CrimeMapsApps">
         <activity
+            android:name=".ui.module.password.PasswordActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.module.admin.ListOfAdminActivity"
             android:exported="true" />
         <activity

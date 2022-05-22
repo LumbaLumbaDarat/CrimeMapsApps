@@ -1,9 +1,10 @@
 package com.harifrizki.crimemapsapps.ui.module.profile
 
-import android.content.Intent
+import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,12 +13,14 @@ import com.harifrizki.crimemapsapps.data.remote.response.AdminResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityProfileBinding
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
+import com.harifrizki.crimemapsapps.ui.module.password.PasswordActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
+import com.lumbalumbadrt.colortoast.ColorToast
 
 class ProfileActivity : BaseActivity() {
 
@@ -89,6 +92,7 @@ class ProfileActivity : BaseActivity() {
                     this@ProfileActivity, this)
                 setOnRefreshListener(this@ProfileActivity)
             }
+            initializePhotoProfile()
             btnSubmitProfile.setOnClickListener(onClickListener)
             btnBackProfile.setOnClickListener(onClickListener)
         }
@@ -97,7 +101,28 @@ class ProfileActivity : BaseActivity() {
     private val resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     )
-    { }
+    {
+        if (it.resultCode == Activity.RESULT_OK)
+        {
+            if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
+            {
+                when (crud)
+                {
+                    READ -> {
+                        when (fromActivity)
+                        {
+                            DASHBOARD -> {
+                                adminById(admin)
+                            }
+                            else -> {}
+                        }
+                    }
+                    else -> {}
+                }
+            }
+            else showMessage(getMap(it.data))
+        }
+    }
 
     override fun onRefresh() {
         super.onRefresh()
@@ -107,10 +132,8 @@ class ProfileActivity : BaseActivity() {
 
     override fun onBackPressed() {
         onBackPressed(
-            hashMapOf(
-                FROM_ACTIVITY to getNameOfActivity(PROFILE),
-                OPERATION_CRUD to isAfterCRUD!!.name)
-        )
+            getNameOfActivity(PROFILE),
+            isAfterCRUD!!.name)
         super.onBackPressed()
     }
 
@@ -132,10 +155,13 @@ class ProfileActivity : BaseActivity() {
                 loadingButtonBack(true)
             }
             SUCCESS -> {
-                setAdmin(it.data?.admin)
-                loadingProfile(false)
-                loadingCreatedAndUpdate(false)
-                loadingButtonBack(false)
+                if (isResponseSuccess(it.data?.message))
+                {
+                    setAdmin(it.data?.admin)
+                    loadingProfile(false)
+                    loadingCreatedAndUpdate(false)
+                    loadingButtonBack(false)
+                }
             }
             ERROR -> {
                 loadingProfile(false)
@@ -161,11 +187,14 @@ class ProfileActivity : BaseActivity() {
             }
             SUCCESS -> {
                 dismissLoading()
-                setAdmin(it.data?.admin)
-                if (it.data?.admin?.adminId.equals(admin?.adminId))
-                    PreferencesManager.getInstance(this).
-                    setPreferences(LOGIN_MODEL, it.data?.admin)
-                isAfterCRUD = UPDATE
+                if (isResponseSuccess(it.data?.message))
+                {
+                    setAdmin(it.data?.admin)
+                    if (it.data?.admin?.adminId.equals(admin?.adminId))
+                        PreferencesManager.getInstance(this).
+                        setPreferences(LOGIN_MODEL, it.data?.admin)
+                    isAfterCRUD = UPDATE
+                }
             }
             ERROR -> {
                 dismissLoading()
@@ -179,6 +208,23 @@ class ProfileActivity : BaseActivity() {
         if (networkConnected()) {
             viewModel.adminUpdate(admin).observe(this, adminUpdate)
         }
+    }
+
+    private fun initializePhotoProfile() {
+        binding.iPhotoProfile.ivChangePhotoProfile.setOnClickListener {
+            showBottomOption(
+                getString(R.string.label_get_image_from),
+                imageMenus(),
+                onClickMenu = {
+
+                })
+        }
+        widgetStartDrawableShimmer(
+            arrayOf(
+                binding.iPhotoProfileShimmer.ivAdminPhotoProfile,
+                binding.iPhotoProfileShimmer.ivChangePhotoProfile
+            ), this
+        )
     }
 
     private fun initializeDetailProfile() {
@@ -204,13 +250,14 @@ class ProfileActivity : BaseActivity() {
                         }
                     )
                 }
+                btnChangePassword.setOnClickListener {
+                    goTo(PasswordActivity())
+                }
             }
             iDetailProfileShimmer.root.visibility = View.VISIBLE
         }
         widgetStartDrawableShimmer(
             arrayOf(
-                binding.ivAdminPhotoProfileShimmer,
-
                 binding.iDetailProfileShimmer.ivBtnEditAdminName
             ), this
         )
@@ -327,7 +374,7 @@ class ProfileActivity : BaseActivity() {
                         binding.apply {
                             doGlide(
                                 this@ProfileActivity,
-                                ivAdminPhotoProfile,
+                                iPhotoProfile.ivAdminPhotoProfile,
                                 admin?.adminImage,
                                 R.drawable.ic_round_account_box_primary_24
                             )

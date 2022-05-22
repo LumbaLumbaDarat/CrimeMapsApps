@@ -13,4 +13,5 @@ interface DataSource {
 
     fun adminById(adminId: String?): LiveData<ApiResource<AdminResponse>>
     fun adminUpdate(admin: Admin?): LiveData<ApiResource<AdminResponse>>
+    fun adminUpdatePassword(adminId: String?, oldPassword: String?, newPassword: String?): LiveData<ApiResource<AdminResponse>>
 }

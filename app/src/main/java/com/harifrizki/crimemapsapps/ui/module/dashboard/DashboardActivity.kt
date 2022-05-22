@@ -56,8 +56,6 @@ class DashboardActivity : BaseActivity() {
         )[DashboardViewModel::class.java]
     }
 
-    private var popupWindow = PopupWindow()
-
     private var menuAreaCrimeLocation: MenuArea? = null
     private var menuAreaDetailCrimeLocation: MenuAreaDetail? = null
     private var menuAreaAdmin: MenuArea? = null
@@ -85,7 +83,6 @@ class DashboardActivity : BaseActivity() {
         initializeMenuAreaAdmin()
         initializeMenuArea()
         initializeMenuAreaDetail()
-        initializeMenuSetting()
 
         utilization()
     }
@@ -98,34 +95,12 @@ class DashboardActivity : BaseActivity() {
         {
             if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
                 utilization()
-            else {
-                val map = getMap(it.data)
-                val fromActivity = getEnumActivityName(map[FROM_ACTIVITY].toString())
-                when (getEnumCRUD(map[OPERATION_CRUD] as String))
-                {
-                    CREATE -> {
-
-                    }
-                    UPDATE -> {
-                        when (fromActivity)
-                        {
-                            PROFILE -> {
-                                ColorToast.roundLineSuccess(
-                                    this,
-                                    getString(R.string.app_name),
-                                    getString(R.string.message_success_update,
-                                        getString(R.string.setting_profile_menu)),
-                                    Toast.LENGTH_LONG)
-                                initializeAccount(PreferencesManager.
-                                getInstance(this).
-                                getPreferences(LOGIN_MODEL, Admin::class.java),
-                                    false)
-                            }
-                            else -> {}
-                        }
-                    }
-                    else -> {}
-                }
+            else if (showMessage(getMap(it.data)))
+            {
+                initializeAccount(PreferencesManager.
+                getInstance(this).
+                getPreferences(LOGIN_MODEL, Admin::class.java),
+                    false)
             }
         }
     }
@@ -247,9 +222,49 @@ class DashboardActivity : BaseActivity() {
                     it,
                     R.drawable.ic_round_account_box_primary_24) }
             if (isInitialize!!)
-                ivIconAccount.setOnClickListener {
-                    popupWindow.showAsDropDown(it, ZERO, TWENTY)
+            {
+                ivIconAccount.setOnClickListener { it ->
+                    showOptionList(it,
+                        settingMenus(),
+                        R.drawable.frame_background_primary,
+                        ZERO,
+                        TWENTY,
+                        onClickMenu = {
+                            when (it.menuSetting)
+                            {
+                                MENU_SETTING_EXIT -> {
+                                    dismissOptionList()
+                                    showOption(
+                                        it.name,
+                                        getString(R.string.message_logout_option),
+                                        onPositive = {
+                                            dismissOption()
+                                            logout(
+                                                Admin(
+                                                    adminId = PreferencesManager.
+                                                    getInstance(this@DashboardActivity).
+                                                    getPreferences(LOGIN_MODEL, Admin::class.java).adminId
+                                                )
+                                            )
+                                        },
+                                        onNegative = { dismissOption() }
+                                    )
+                                }
+                                MENU_SETTING_PROFILE -> {
+                                    dismissOptionList()
+                                    goTo(
+                                        ProfileActivity(),
+                                        hashMapOf(
+                                            FROM_ACTIVITY to getNameOfActivity(DASHBOARD),
+                                            OPERATION_CRUD to READ
+                                        )
+                                    )
+                                }
+                                else -> {}
+                            }
+                        })
                 }
+            }
         }
     }
 
@@ -420,64 +435,6 @@ class DashboardActivity : BaseActivity() {
         binding.rvMenuAreaDetailShimmer.apply {
             layoutManager = LinearLayoutManager(this@DashboardActivity)
             adapter = MenuAreaDetailAdapter( true)
-        }
-    }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private fun initializeMenuSetting() {
-        val bindingList: LayoutListBinding = LayoutListBinding.inflate(layoutInflater)
-        popupWindow = PopupWindow(
-            bindingList.root,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            true
-        ).apply {
-            animationStyle = android.R.style.Animation_Dialog
-        }
-        bindingList.apply {
-            rvList.apply {
-                layoutManager = LinearLayoutManager(this@DashboardActivity)
-                adapter = MenuAdapter().
-                apply {
-                    menus = settingMenus()
-                    onClickMenu = {
-                        when (it.menuSetting)
-                        {
-                            MENU_SETTING_EXIT -> {
-                                popupWindow.dismiss()
-                                showOption(
-                                    it.name,
-                                    getString(R.string.message_logout_option),
-                                    onPositive = {
-                                        dismissOption()
-                                        logout(
-                                            Admin(
-                                                adminId = PreferencesManager.
-                                                getInstance(this@DashboardActivity).
-                                                getPreferences(LOGIN_MODEL, Admin::class.java).adminId
-                                            )
-                                        )
-                                    },
-                                    onNegative = { dismissOption() }
-                                )
-                            }
-                            MENU_SETTING_PROFILE -> {
-                                popupWindow.dismiss()
-                                goTo(
-                                    ProfileActivity(),
-                                    hashMapOf(
-                                        FROM_ACTIVITY to getNameOfActivity(DASHBOARD),
-                                        OPERATION_CRUD to READ
-                                    )
-                                )
-                            }
-                            else -> {}
-                        }
-                    }
-                }
-            }
-            clBackgroundLayoutList.background =
-                getDrawable(R.drawable.frame_background_primary)
         }
     }
 

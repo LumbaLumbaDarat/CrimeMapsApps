@@ -16,14 +16,14 @@ class Loading (
     var message: String? = null
 )
 {
-    fun create(context: Context) {
-        val builder: AlertDialog.Builder? =
-            context.let { AlertDialog.Builder(it) }
+    fun create(context: Context?) {
+        val builder: AlertDialog.Builder =
+            context.let { AlertDialog.Builder(it!!) }
         val binding: LoadingBinding =
             LoadingBinding.inflate(
                 LayoutInflater.from(context)
             )
-        builder?.setView(binding.root)
+        builder.setView(binding.root)
         binding.tvMessageLoading.apply {
             text = if (!TextUtils.isEmpty(message))
                 makeSpannable(
@@ -33,12 +33,12 @@ class Loading (
                     Color.BLACK)
             else makeSpannable(
                 true,
-                context.getString(R.string.message_loading),
+                context?.getString(R.string.message_loading),
                 SPAN_REGEX,
                 Color.BLACK)
         }
 
-        alertDialog = builder?.create()
+        alertDialog = builder.create()
         alertDialog!!.setCancelable(false)
         alertDialog!!.window?.setBackgroundDrawable(
             ColorDrawable(Color.TRANSPARENT)

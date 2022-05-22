@@ -44,28 +44,11 @@
                     android:padding="@dimen/padding_default"
                     android:orientation="horizontal">
 
-                    <com.github.florent37.shapeofview.shapes.RoundRectView
-                        android:id="@+id/rrv_admin_photo_profile"
-                        android:layout_width="@dimen/image_square_multiple_add_default"
-                        android:layout_height="@dimen/image_square_multiple_add_default"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0"
-                        app:shape_roundRect_bottomLeftRadius="@dimen/round_default"
-                        app:shape_roundRect_bottomRightRadius="@dimen/round_default"
-                        app:shape_roundRect_topLeftRadius="@dimen/round_default"
-                        app:shape_roundRect_topRightRadius="@dimen/round_default">
-
-                        <ImageView
-                            android:id="@+id/iv_admin_photo_profile"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/ic_round_account_box_primary_24" />
-                    </com.github.florent37.shapeofview.shapes.RoundRectView>
+                    <include
+                        android:id="@+id/i_photo_profile"
+                        layout="@layout/photo_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
                     <include
                         android:id="@+id/i_add_profile"
@@ -105,31 +88,11 @@
                         android:padding="@dimen/padding_default"
                         android:orientation="horizontal">
 
-                        <com.github.florent37.shapeofview.shapes.RoundRectView
-                            android:id="@+id/rrv_admin_photo_profile_shimmer"
-                            android:layout_width="@dimen/image_square_multiple_add_default"
-                            android:layout_height="@dimen/image_square_multiple_add_default"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:background="@drawable/button_transparent_ripple_primary"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0"
-                            app:shape_roundRect_bottomLeftRadius="@dimen/round_default"
-                            app:shape_roundRect_bottomRightRadius="@dimen/round_default"
-                            app:shape_roundRect_topLeftRadius="@dimen/round_default"
-                            app:shape_roundRect_topRightRadius="@dimen/round_default">
-
-                            <ImageView
-                                android:id="@+id/iv_admin_photo_profile_shimmer"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/ic_round_account_box_primary_24" />
-                        </com.github.florent37.shapeofview.shapes.RoundRectView>
+                        <include
+                            android:id="@+id/i_photo_profile_shimmer"
+                            layout="@layout/photo_profile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
                         <include
                             android:id="@+id/i_add_profile_shimmer"

@@ -27,6 +27,7 @@ import com.orhanobut.logger.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 fun getVersion(context: Context?): String {
     return try {
@@ -264,32 +265,6 @@ fun widgetStartDrawableShimmer(
     textInputLayouts?.forEach {
         it.apply {
             background = drawableBackgroundGrayForShimmer(context)
-        }
-    }
-}
-
-fun showAndHidePassword(textInputEditText: TextInputEditText?,
-                        isHide: Boolean?
-) {
-    if (!isHide!!)
-        textInputEditText?.transformationMethod =
-            HideReturnsTransformationMethod.getInstance()
-    else textInputEditText?.transformationMethod =
-        PasswordTransformationMethod.getInstance()
-}
-
-fun showAndHidePassword(textInputEditTexts: Array<TextInputEditText>?,
-                        isHide: Boolean?
-) {
-    if (!isHide!!) {
-        textInputEditTexts?.forEach {
-            it.transformationMethod =
-                HideReturnsTransformationMethod.getInstance()
-        }
-    } else {
-        textInputEditTexts?.forEach {
-            it.transformationMethod =
-                PasswordTransformationMethod.getInstance()
         }
     }
 }

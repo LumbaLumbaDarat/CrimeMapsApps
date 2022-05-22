@@ -15,9 +15,9 @@ class Notification (
     var binding: NotificationBinding? = null
     var onClickButton: (() -> Unit)? = null
 
-    fun create(context: Context) {
+    fun create(context: Context?) {
         val builder: AlertDialog.Builder =
-            context.let { AlertDialog.Builder(it) }
+            context.let { AlertDialog.Builder(it!!) }
         binding = NotificationBinding.inflate(LayoutInflater.from(context))
         builder.setView(binding!!.root)
 

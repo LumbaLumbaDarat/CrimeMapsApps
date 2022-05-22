@@ -3,6 +3,7 @@ package com.harifrizki.crimemapsapps.data
 import androidx.lifecycle.LiveData
 import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.model.Admin
+import com.harifrizki.crimemapsapps.utils.ApiResource
 import com.harifrizki.crimemapsapps.utils.DataResource
 
 interface CrimeMapsDataSource {
@@ -13,4 +14,5 @@ interface CrimeMapsDataSource {
 
     fun adminById(adminId: String?): LiveData<DataResource<AdminResponse>>
     fun adminUpdate(admin: Admin?): LiveData<DataResource<AdminResponse>>
+    fun adminUpdatePassword(adminId: String?, oldPassword: String?, newPassword: String?): LiveData<DataResource<AdminResponse>>
 }
