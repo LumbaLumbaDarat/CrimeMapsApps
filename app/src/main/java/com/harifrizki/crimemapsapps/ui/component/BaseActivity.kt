@@ -15,28 +15,29 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.NestedScrollView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Priority
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.harifrizki.crimemapsapps.BuildConfig
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
 import com.harifrizki.crimemapsapps.databinding.AppBarBinding
+import com.harifrizki.crimemapsapps.databinding.EmptyBinding
+import com.harifrizki.crimemapsapps.databinding.NotificationAndOptionMessageBinding
+import com.harifrizki.crimemapsapps.databinding.SearchBinding
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Menu
 import com.harifrizki.crimemapsapps.model.Message
 import com.harifrizki.crimemapsapps.ui.module.ConnectionErrorActivity
 import com.harifrizki.crimemapsapps.utils.*
-import com.harifrizki.crimemapsapps.utils.Error.*
+import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
+import com.harifrizki.crimemapsapps.utils.ActivityName.PASSWORD
+import com.harifrizki.crimemapsapps.utils.ActivityName.PROFILE
+import com.harifrizki.crimemapsapps.utils.CRUD.*
+import com.harifrizki.crimemapsapps.utils.CRUD.Companion.getEnumCRUD
+import com.harifrizki.crimemapsapps.utils.Error.IS_API_RESPONSE
+import com.harifrizki.crimemapsapps.utils.Error.IS_NO_NETWORK
 import com.harifrizki.crimemapsapps.utils.MenuSetting.*
 import com.harifrizki.crimemapsapps.utils.NotificationType.*
-import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
-import com.harifrizki.crimemapsapps.utils.ActivityName.*
-import com.harifrizki.crimemapsapps.utils.CRUD.Companion.getEnumCRUD
-import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.lumbalumbadrt.colortoast.ColorToast
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -61,6 +62,15 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     private val bottomOption by lazy {
         BottomOption()
     }
+    private val search by lazy {
+        Search()
+    }
+    private val empty by lazy {
+        Empty()
+    }
+    private val notificationAndOptionMessage by lazy {
+        NotificationAndOptionMessage()
+    }
 
     private var context: Context? = null
     private var resultLauncher: ActivityResultLauncher<Intent>? = null
@@ -68,9 +78,14 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     private var ties: Array<TextInputEditText>? = null
     private var passwordTies: Array<TextInputEditText>? = null
 
+    private var rootView: View? = null
+    private var sfl: ShimmerFrameLayout? = null
+
     @Override
-    fun create(buildContext: Context,
-               activityResultLauncher: ActivityResultLauncher<Intent>) {
+    fun create(
+        buildContext: Context,
+        activityResultLauncher: ActivityResultLauncher<Intent>
+    ) {
         this.apply {
             context = buildContext
             resultLauncher = activityResultLauncher
@@ -85,11 +100,14 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    override fun onRefresh() {}
+    override fun onRefresh() {
+    }
 
     @Override
-    fun onBackPressed(map: HashMap<String, Any>?,
-                      directOnBackPressed: Boolean? = false) {
+    fun onBackPressed(
+        map: HashMap<String, Any>?,
+        directOnBackPressed: Boolean? = false
+    ) {
         Intent().apply {
             putExtra(INTENT_DATA, map)
             setResult(RESULT_OK, this)
@@ -131,20 +149,40 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         }
     }
 
-    private val requestOptions =
-        RequestOptions().centerCrop().placeholder(R.drawable.animation_loading_image)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-            .priority(Priority.HIGH)
-            .dontAnimate()
-            .dontTransform()
+    @Override
+    fun createEmpty(binding: EmptyBinding?) {
+        empty.create(binding)
+    }
 
     @Override
-    fun appBar(binding: AppBarBinding?,
-               title: String?,
-               iconBar: Int?,
-               iconBarColor: Int?,
-               iconBarBackground: Int?) {
+    fun createNotificationAndOptionMessage(binding: NotificationAndOptionMessageBinding?) {
+        notificationAndOptionMessage.create(context, binding)
+    }
+
+    @Override
+    fun createSearch(binding: SearchBinding?) {
+        search.create(binding)
+    }
+
+    @Override
+    fun createRootView(view: View?) {
+        this.rootView = view
+    }
+
+    @Override
+    fun createRootView(view: View?, sfl: ShimmerFrameLayout?) {
+        this.rootView = view
+        this.sfl = sfl
+    }
+
+    @Override
+    fun appBar(
+        binding: AppBarBinding?,
+        title: String?,
+        iconBar: Int?,
+        iconBarColor: Int?,
+        iconBarBackground: Int?
+    ) {
         binding?.apply {
             ivIconAppBar.apply {
                 iconBar?.let { setImageResource(it) }
@@ -155,7 +193,8 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                     )
                 }?.let {
                     setColorFilter(
-                        it, android.graphics.PorterDuff.Mode.MULTIPLY)
+                        it, android.graphics.PorterDuff.Mode.MULTIPLY
+                    )
                 }
                 iconBarBackground?.let { setBackgroundResource(it) }
             }
@@ -165,15 +204,17 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun appBar(binding: AppBarBinding?,
-               title: String?,
-               iconBar: Int?,
-               iconBarColor: Int?,
-               iconBarBackground: Int?,
-               iconBarRight: Int?,
-               iconBarRightColor: Int?,
-               iconBarRightBackground: Int?,
-               onClick: (() -> Unit)?) {
+    fun appBar(
+        binding: AppBarBinding?,
+        title: String?,
+        iconBar: Int?,
+        iconBarColor: Int?,
+        iconBarBackground: Int?,
+        iconBarRight: Int?,
+        iconBarRightColor: Int?,
+        iconBarRightBackground: Int?,
+        onClick: (() -> Unit)?
+    ) {
         binding?.apply {
             ivIconAppBar.apply {
                 iconBar?.let { setImageResource(it) }
@@ -184,7 +225,8 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                     )
                 }?.let {
                     setColorFilter(
-                        it, android.graphics.PorterDuff.Mode.MULTIPLY)
+                        it, android.graphics.PorterDuff.Mode.MULTIPLY
+                    )
                 }
                 iconBarBackground?.let { setBackgroundResource(it) }
             }
@@ -198,7 +240,8 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                     )
                 }?.let {
                     setColorFilter(
-                        it, android.graphics.PorterDuff.Mode.MULTIPLY)
+                        it, android.graphics.PorterDuff.Mode.MULTIPLY
+                    )
                 }
                 iconBarRightBackground?.let { setBackgroundResource(it) }
                 setOnClickListener {
@@ -214,18 +257,41 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
+    fun showRootView() {
+        rootView?.visibility = View.VISIBLE
+    }
+
+    @Override
+    fun showView(views: Array<View>?) {
+        views?.forEach {
+            it.visibility = View.VISIBLE
+        }
+    }
+
+    @Override
+    fun dismissRootView() {
+        rootView?.visibility = View.GONE
+    }
+
+    @Override
+    fun dismissView(views: Array<View>?) {
+        views?.forEach {
+            it.visibility = View.GONE
+        }
+    }
+
+    @Override
     fun networkConnected(isGoToErrorActivity: Boolean = true): Boolean {
         return if (context?.let { isNetworkConnected(it) } == true)
             true
-        else
-        {
-            if (isGoToErrorActivity)
-            {
+        else {
+            if (isGoToErrorActivity) {
                 goTo(
                     ConnectionErrorActivity(),
                     hashMapOf(
                         ERROR_STATE to IS_NO_NETWORK
-                    ))
+                    )
+                )
             }
             false
         }
@@ -328,11 +394,12 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showAndHide(imageView: ImageView?,
-                    isHide: Boolean?,
-                    tvMessageShowHide: TextView? = null): Boolean {
-        return if (!isHide!!)
-        {
+    fun showAndHide(
+        imageView: ImageView?,
+        isHide: Boolean?,
+        tvMessageShowHide: TextView? = null
+    ): Boolean {
+        return if (!isHide!!) {
             imageView?.setImageResource(R.drawable.ic_round_visibility_24)
             passwordTies?.forEach {
                 it.transformationMethod = PasswordTransformationMethod.getInstance()
@@ -350,11 +417,12 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showAndHide(imageButton: ImageButton?,
-                    isHide: Boolean?,
-                    tvMessageShowHide: TextView? = null): Boolean {
-        return if (!isHide!!)
-        {
+    fun showAndHide(
+        imageButton: ImageButton?,
+        isHide: Boolean?,
+        tvMessageShowHide: TextView? = null
+    ): Boolean {
+        return if (!isHide!!) {
             imageButton?.setImageResource(R.drawable.ic_round_visibility_24)
             passwordTies?.forEach {
                 it.transformationMethod = PasswordTransformationMethod.getInstance()
@@ -382,10 +450,12 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showError(titleNotification: String? = context?.getString(R.string.notification_error_title),
-                  message: String?,
-                  buttonTitle: String? = context?.getString(R.string.ok),
-                  onClick: (() -> Unit)? = { dismissNotification() }) {
+    fun showError(
+        titleNotification: String? = context?.getString(R.string.notification_error_title),
+        message: String?,
+        buttonTitle: String? = context?.getString(R.string.ok),
+        onClick: (() -> Unit)? = { dismissNotification() }
+    ) {
         notification.apply {
             message?.let { notification(it) }
             titleNotification(titleNotification)
@@ -397,10 +467,12 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showWarning(titleNotification: String? = context?.getString(R.string.notification_warning_title),
-                    message: String?,
-                    buttonTitle: String? = context?.getString(R.string.ok),
-                    onClick: (() -> Unit)? = { dismissNotification() }) {
+    fun showWarning(
+        titleNotification: String? = context?.getString(R.string.notification_warning_title),
+        message: String?,
+        buttonTitle: String? = context?.getString(R.string.ok),
+        onClick: (() -> Unit)? = { dismissNotification() }
+    ) {
         notification.apply {
             message?.let { notification(it) }
             titleNotification(titleNotification)
@@ -412,10 +484,12 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showInformation(titleNotification: String? = context?.getString(R.string.notification_information_title),
-                        message: String?,
-                        buttonTitle: String? = context?.getString(R.string.ok),
-                        onClick: (() -> Unit)? = { dismissNotification() }) {
+    fun showInformation(
+        titleNotification: String? = context?.getString(R.string.notification_information_title),
+        message: String?,
+        buttonTitle: String? = context?.getString(R.string.ok),
+        onClick: (() -> Unit)? = { dismissNotification() }
+    ) {
         notification.apply {
             message?.let { notification(it) }
             titleNotification(titleNotification)
@@ -427,10 +501,12 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showSuccess(titleNotification: String? = context?.getString(R.string.notification_success_title),
-                    message: String?,
-                    buttonTitle: String? = context?.getString(R.string.ok),
-                    onClick: (() -> Unit)? = { dismissNotification() }) {
+    fun showSuccess(
+        titleNotification: String? = context?.getString(R.string.notification_success_title),
+        message: String?,
+        buttonTitle: String? = context?.getString(R.string.ok),
+        onClick: (() -> Unit)? = { dismissNotification() }
+    ) {
         notification.apply {
             message?.let { notification(it) }
             titleNotification(titleNotification)
@@ -447,13 +523,15 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showOption(titleOption: String?,
-                   message: String?,
-                   optionAnimation: String? = LOTTIE_QUESTION_JSON,
-                   titlePositive: String? = context?.getString(R.string.ok),
-                   titleNegative: String? = context?.getString(R.string.cancel),
-                   onPositive: (() -> Unit)?,
-                   onNegative: (() -> Unit)? = { dismissOption() }) {
+    fun showOption(
+        titleOption: String?,
+        message: String?,
+        optionAnimation: String? = LOTTIE_QUESTION_JSON,
+        titlePositive: String? = context?.getString(R.string.ok),
+        titleNegative: String? = context?.getString(R.string.cancel),
+        onPositive: (() -> Unit)?,
+        onNegative: (() -> Unit)? = { dismissOption() }
+    ) {
         option.apply {
             titleOption(titleOption)
             message?.let { option(it) }
@@ -476,13 +554,15 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showBottomInput(activity: AppCompatActivity?,
-                        hint: String?,
-                        input: String?,
-                        titlePositive: String?,
-                        titleNegative: String?,
-                        onPositive: ((String?) -> Unit)?,
-                        onNegative: (() -> Unit?) = { dismissBottomInput() }) {
+    fun showBottomInput(
+        activity: AppCompatActivity?,
+        hint: String?,
+        input: String?,
+        titlePositive: String?,
+        titleNegative: String?,
+        onPositive: ((String?) -> Unit)?,
+        onNegative: (() -> Unit?) = { dismissBottomInput() }
+    ) {
         bottomInput.apply {
             this.activity = activity
             this.hint = hint
@@ -505,12 +585,14 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showOptionList(view: View?,
-                       menus: ArrayList<Menu>?,
-                       background: Int?,
-                       xPosition: Int?,
-                       yPosition: Int?,
-                       onClickMenu: ((Menu) -> Unit)?) {
+    fun showOptionList(
+        view: View?,
+        menus: ArrayList<Menu>?,
+        background: Int?,
+        xPosition: Int?,
+        yPosition: Int?,
+        onClickMenu: ((Menu) -> Unit)?
+    ) {
         optionList.apply {
             setBackground(background?.let { context?.getDrawable(it) })
             setMenus(menus)
@@ -527,9 +609,11 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showBottomOption(title: String?,
-                         menus: ArrayList<Menu>?,
-                         onClickMenu: ((Menu) -> Unit)?) {
+    fun showBottomOption(
+        title: String?,
+        menus: ArrayList<Menu>?,
+        onClickMenu: ((Menu) -> Unit)?
+    ) {
         bottomOption.apply {
             this.title = title
             options = menus
@@ -546,11 +630,9 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showMessage(map: HashMap<String, Any>?): Boolean
-    {
+    fun showMessage(map: HashMap<String, Any>?): Boolean {
         val fromActivity = getEnumActivityName(map!![FROM_ACTIVITY].toString())
-        return when (getEnumCRUD(map[OPERATION_CRUD] as String))
-        {
+        return when (getEnumCRUD(map[OPERATION_CRUD] as String)) {
             CREATE -> {
                 true
             }
@@ -558,33 +640,257 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                 true
             }
             UPDATE -> {
-                when (fromActivity)
-                {
+                when (fromActivity) {
                     PROFILE -> {
                         ColorToast.roundLineSuccess(
                             this,
                             getString(R.string.app_name),
-                            getString(R.string.message_success_update,
-                                getString(R.string.setting_profile_menu)),
-                            Toast.LENGTH_LONG)
+                            getString(
+                                R.string.message_success_update,
+                                getString(R.string.setting_profile_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
                         true
                     }
                     PASSWORD -> {
                         ColorToast.roundLineSuccess(
                             this,
                             getString(R.string.app_name),
-                            getString(R.string.message_success_update,
-                                getString(R.string.label_password)),
-                            Toast.LENGTH_LONG)
+                            getString(
+                                R.string.message_success_update,
+                                getString(R.string.label_password)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
                         true
                     }
-                    else -> { false }
+                    else -> {
+                        false
+                    }
                 }
             }
             DELETE -> {
                 true
             }
-            else -> { false }
+            else -> {
+                false
+            }
+        }
+    }
+
+    @Override
+    fun showEmpty(
+        title: String?,
+        message: String?,
+        animation: String? = LOTTIE_QUESTION_JSON,
+        useAnimation: Boolean? = true,
+        directShow: Boolean? = false
+    ) {
+        empty.apply {
+            title(title)
+            message(message)
+            animation(animation, useAnimation)
+            if (directShow!!) show()
+        }
+    }
+
+    @Override
+    fun showEmptyError(
+        title: String?,
+        message: String?,
+        animation: String? = LOTTIE_ERROR_JSON,
+        useAnimation: Boolean? = true,
+        directShow: Boolean? = false
+    ) {
+        empty.apply {
+            title(
+                if (context?.resources?.getBoolean(R.bool.app_debug_mode)!!) title
+                else getString(R.string.message_error_title_general)
+            )
+            message(
+                if (context?.resources?.getBoolean(R.bool.app_debug_mode)!!) message
+                else getString(R.string.message_error_general)
+            )
+            animation(animation, useAnimation)
+            if (directShow!!) show()
+        }
+    }
+
+    @Override
+    fun showEmpty() {
+        empty.show()
+    }
+
+    @Override
+    fun dismissEmpty() {
+        empty.dismiss()
+    }
+
+    @Override
+    fun showNotificationAndOptionMessage(
+        title: String?,
+        message: String?,
+        animation: String? = LOTTIE_QUESTION_JSON,
+        useAnimation: Boolean? = true,
+        background: Int?,
+        useOption: Boolean? = false,
+        buttonNegative: String? = context?.getString(R.string.cancel),
+        buttonNegativeColor: Int? = null,
+        buttonPositive: String? = context?.getString(R.string.ok),
+        buttonPositiveColor: Int? = null,
+        onNegative: (() -> Unit)? = { dismissNotificationAndOptionMessage() },
+        onPositive: (() -> Unit)? = { },
+        directShow: Boolean? = false
+    ) {
+        notificationAndOptionMessage.apply {
+            title(title)
+            message(message)
+            animation(animation, useAnimation)
+            background(context, background)
+            useButton(useOption)
+            buttonNegative(buttonNegative)
+            if (buttonNegativeColor != null) buttonNegative(buttonNegativeColor)
+            buttonPositive(buttonPositive)
+            if (buttonPositiveColor != null) buttonPositive(buttonPositiveColor)
+            onClickNegative = { onNegative?.invoke() }
+            onClickPositive = { onPositive?.invoke() }
+            if (directShow!!) show()
+        }
+    }
+
+    @Override
+    fun showNotificationAndOptionMessageInformation(
+        title: String? = context?.getString(R.string.notification_information_title),
+        message: String?,
+        animation: String? = LOTTIE_INFORMATION_JSON,
+        useAnimation: Boolean? = true,
+        useOption: Boolean? = false,
+        buttonNegative: String? = context?.getString(R.string.cancel),
+        buttonPositive: String? = context?.getString(R.string.ok),
+        onNegative: (() -> Unit)? = { dismissNotificationAndOptionMessage() },
+        onPositive: (() -> Unit)? = { },
+        directShow: Boolean? = false
+    ) {
+        notificationAndOptionMessage.apply {
+            title(title)
+            message(message)
+            animation(animation, useAnimation)
+            background(context, R.drawable.frame_background_secondary)
+            useButton(useOption)
+            buttonNegative(buttonNegative)
+            buttonPositive(buttonPositive)
+            onClickNegative = { onNegative?.invoke() }
+            onClickPositive = { onPositive?.invoke() }
+            if (directShow!!) show()
+        }
+    }
+
+    @Override
+    fun showNotificationAndOptionMessageError(
+        title: String? = context?.getString(R.string.notification_error_title),
+        message: String?,
+        animation: String? = LOTTIE_ERROR_JSON,
+        useAnimation: Boolean? = true,
+        useOption: Boolean? = false,
+        buttonNegative: String? = context?.getString(R.string.cancel),
+        buttonPositive: String? = context?.getString(R.string.ok),
+        onNegative: (() -> Unit)? = { dismissNotificationAndOptionMessage() },
+        onPositive: (() -> Unit)? = { },
+        directShow: Boolean? = false
+    ) {
+        notificationAndOptionMessage.apply {
+            title(title)
+            message(message)
+            animation(animation, useAnimation)
+            background(context, R.drawable.frame_background_light_red)
+            useButton(useOption)
+            buttonNegative(buttonNegative)
+            buttonNegative(R.color.red)
+            buttonPositive(buttonPositive)
+            buttonPositive(R.color.red)
+            onClickNegative = { onNegative?.invoke() }
+            onClickPositive = { onPositive?.invoke() }
+            if (directShow!!) show()
+        }
+    }
+
+    @Override
+    fun showNotificationAndOptionMessageSuccess(
+        title: String? = context?.getString(R.string.notification_success_title),
+        message: String?,
+        animation: String? = LOTTIE_SUCCESS_JSON,
+        useAnimation: Boolean? = true,
+        useOption: Boolean? = false,
+        buttonNegative: String? = context?.getString(R.string.cancel),
+        buttonPositive: String? = context?.getString(R.string.ok),
+        onNegative: (() -> Unit)? = { dismissNotificationAndOptionMessage() },
+        onPositive: (() -> Unit)? = { },
+        directShow: Boolean? = false
+    ) {
+        notificationAndOptionMessage.apply {
+            title(title)
+            message(message)
+            animation(animation, useAnimation)
+            background(context, R.drawable.frame_background_light_green)
+            useButton(useOption)
+            buttonNegative(buttonNegative)
+            buttonNegative(R.color.dark_green)
+            buttonPositive(buttonPositive)
+            buttonPositive(R.color.dark_green)
+            onClickNegative = { onNegative?.invoke() }
+            onClickPositive = { onPositive?.invoke() }
+            if (directShow!!) show()
+        }
+    }
+
+    @Override
+    fun showNotificationAndOptionMessage() {
+        notificationAndOptionMessage.show()
+    }
+
+    @Override
+    fun dismissNotificationAndOptionMessage() {
+        notificationAndOptionMessage.dismiss()
+    }
+
+    fun search(
+        hint: String?,
+        onSearch: ((String?) -> Unit)?
+    ) {
+        search.apply {
+            hint(hint)
+            onClickSearch = {
+                onSearch?.invoke(it)
+            }
+        }
+    }
+
+    fun loadingList(
+        isOn: Boolean?,
+        isGetData: Boolean? = false,
+        isOverloadData: Boolean? = false
+    ) {
+        if (isOn!!) {
+            dismissNotificationAndOptionMessage()
+            dismissRootView()
+            dismissEmpty()
+            shimmerOn(sfl, true)
+        } else {
+            shimmerOn(sfl, false)
+            if (isGetData!!) {
+                if (isOverloadData!!) {
+                    showNotificationAndOptionMessage()
+                    dismissRootView()
+                } else {
+                    dismissNotificationAndOptionMessage()
+                    showRootView()
+                }
+                dismissEmpty()
+            } else {
+                dismissRootView()
+                showEmpty()
+            }
         }
     }
 
@@ -617,39 +923,6 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun doGlide(
-        context: Context?,
-        imageView: ImageView?,
-        imageName: String?,
-        imageError: Int? = R.drawable.ic_round_broken_image_primary_24
-    ) {
-        val url = PreferencesManager.getInstance(context!!).getPreferences(URL_CONNECTION_API_IMAGE_ADMIN)
-        if (url?.isNotEmpty()!!)
-            imageView?.let {
-                Glide.with(context).applyDefaultRequestOptions(requestOptions)
-                    .load(url.plus(imageName)).error(imageError)
-                    .into(it)
-            }
-        else
-            imageView?.let {
-                Glide.with(context).load(imageError)
-                    .into(it)
-            }
-    }
-
-    @Override
-    fun doGlide(
-        context: Context?,
-        imageView: ImageView?,
-        uri: Uri?,
-        imageError: Int? = R.drawable.ic_round_broken_image_primary_24
-    ) {
-        Glide.with(context!!).applyDefaultRequestOptions(requestOptions)
-            .load(uri).error(imageError)
-            .into(imageView!!)
-    }
-
-    @Override
     fun shimmerOn(
         shimmerFrameLayout: ShimmerFrameLayout?,
         isOn: Boolean?
@@ -663,13 +936,72 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         }
     }
 
+    fun titleOverloadData(title: String?): String? {
+        return getString(R.string.message_title_overload_data, title)
+    }
+
+    fun messageOverloadData(
+        totalOverloadData: Int?,
+        menuOverloadData: String?,
+        searchBy: String?
+    ): String {
+        return getString(
+            R.string.label_plus_two_string_enter,
+            getString(
+                R.string.message_overload_data,
+                totalOverloadData.toString(),
+                menuOverloadData,
+                menuOverloadData,
+                getString(
+                    R.string.label_plus_two_string,
+                    searchBy,
+                    menuOverloadData
+                )
+            ), getString(
+                R.string.message_question_overload_data,
+                menuOverloadData
+            )
+        )
+    }
+
+    fun messageOverloadData(
+        totalOverloadData: Int?,
+        menuOverloadData: String?,
+        searchBy: String?,
+        startBy: String?
+    ): String {
+        return getString(
+            R.string.label_plus_two_string_enter, getString(
+                R.string.label_plus_two_string, getString(
+                    R.string.message_overload_data,
+                    totalOverloadData.toString(),
+                    menuOverloadData,
+                    menuOverloadData,
+                    getString(
+                        R.string.label_plus_two_string,
+                        searchBy,
+                        menuOverloadData
+                    )
+                ), getString(
+                    R.string.message_overload_data_area,
+                    menuOverloadData,
+                    startBy
+                )
+            ), getString(
+                R.string.message_question_overload_data,
+                menuOverloadData
+            )
+        )
+    }
+
     @Override
     fun getCreated(admin: Admin?): String {
         return if (admin?.createdBy == null)
             getString(R.string.label_null_created_and_updated)
         else getString(
             R.string.label_create_by_and_created_date,
-            admin.createdBy?.adminName, admin.createdDate)
+            admin.createdBy?.adminName, admin.createdDate
+        )
     }
 
     @Override
@@ -679,7 +1011,8 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         else getString(
             R.string.label_updated_by_and_updated_date,
             admin.updatedBy?.adminName,
-            admin.updatedDate)
+            admin.updatedDate
+        )
     }
 
     @Override
@@ -690,20 +1023,24 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     @Override
     fun getTempFileUri(imageType: ImageType?): Uri {
         val tempFile = File.createTempFile(
-            getNameForImageTemp(context, imageType), IMAGE_FORMAT_PNG, cacheDir).apply {
+            getNameForImageTemp(context, imageType), IMAGE_FORMAT_PNG, cacheDir
+        ).apply {
             createNewFile()
             deleteOnExit()
         }
 
         return FileProvider.getUriForFile(
             applicationContext,
-            BuildConfig.APPLICATION_ID.plus(context?.getString(R.string.file_provider_name)), tempFile)
+            BuildConfig.APPLICATION_ID.plus(context?.getString(R.string.file_provider_name)),
+            tempFile
+        )
     }
 
     @Override
     fun getTempFile(imageType: ImageType?): File {
         return File.createTempFile(
-            getNameForImageTemp(context, imageType), IMAGE_FORMAT_PNG, cacheDir).apply {
+            getNameForImageTemp(context, imageType), IMAGE_FORMAT_PNG, cacheDir
+        ).apply {
             createNewFile()
             deleteOnExit()
         }
@@ -716,7 +1053,8 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
             hashMapOf(
                 ERROR_STATE to IS_API_RESPONSE,
                 ERROR_RESPONSE to errorResponse!!
-            ))
+            )
+        )
     }
 
     @Override

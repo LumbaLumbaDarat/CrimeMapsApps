@@ -52,7 +52,7 @@ class MenuAreaAdapter(
         else menuAreas!!.size
     }
 
-    class HolderView(
+    inner class HolderView(
         private val binding: LayoutMenuAreaBinding,
         private val context: Context?):
         RecyclerView.ViewHolder(binding.root) {

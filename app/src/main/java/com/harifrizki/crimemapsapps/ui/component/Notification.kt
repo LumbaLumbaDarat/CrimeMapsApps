@@ -12,7 +12,7 @@ import com.harifrizki.crimemapsapps.utils.NotificationType.*
 class Notification (
     var alertDialog: AlertDialog? = null
 ) {
-    var binding: NotificationBinding? = null
+    private var binding: NotificationBinding? = null
     var onClickButton: (() -> Unit)? = null
 
     fun create(context: Context?) {
@@ -40,7 +40,7 @@ class Notification (
 
     fun notification(notification: String?, color: Int = Color.BLACK) {
         binding?.tvNotification?.text =
-            notification?.let { makeSpannable(true, it, SPAN_REGEX, color) }
+            notification?.let { makeSpannable(isSpanBold = true, it, color = color) }
     }
 
     fun buttonTitle(buttonTitle: String?) {
@@ -52,10 +52,10 @@ class Notification (
             when (notificationType)
             {
                 NOTIFICATION_ERROR -> {
-                    setAnimation(LOTTIE_ERROR_FILE_JSON)
+                    setAnimation(LOTTIE_ERROR_JSON)
                 }
                 NOTIFICATION_WARNING -> {
-                    setAnimation(LOTTIE_WARNING_FILE_JSON)
+                    setAnimation(LOTTIE_WARNING_JSON)
                 }
                 NOTIFICATION_INFORMATION -> {
                     setAnimation(LOTTIE_INFORMATION_JSON)
@@ -63,7 +63,6 @@ class Notification (
                 NOTIFICATION_SUCCESS -> {
                     setAnimation(LOTTIE_SUCCESS_JSON)
                 }
-                else -> {}
             }
         }
     }

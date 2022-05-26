@@ -49,7 +49,7 @@ class MenuAreaDetailAdapter(
         else menuAreaDetails.size
     }
 
-    class HolderView(
+    inner class HolderView(
         private val binding: LayoutMenuAreaDetailBinding,
         private val context: Context?) :
         RecyclerView.ViewHolder(binding.root) {

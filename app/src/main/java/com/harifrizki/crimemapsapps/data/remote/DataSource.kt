@@ -12,6 +12,7 @@ interface DataSource {
     fun logout(admin: Admin?): LiveData<ApiResource<MessageResponse>>
     fun utilization(): LiveData<ApiResource<UtilizationResponse>>
 
+    fun adminByName(pageNo: String?, name: String?): LiveData<ApiResource<AdminResponse>>
     fun adminById(adminId: String?): LiveData<ApiResource<AdminResponse>>
     fun adminUpdate(admin: Admin?): LiveData<ApiResource<AdminResponse>>
     fun adminUpdatePhotoProfile(admin: Admin?, photoProfile: File?): LiveData<ApiResource<AdminResponse>>

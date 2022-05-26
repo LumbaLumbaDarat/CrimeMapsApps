@@ -28,13 +28,15 @@ interface EndPoint {
     fun logout(@Body jsonObject: JsonObject):
             Call<MessageResponse>
 
+    /*
     @Headers("Content-Type: application/json")
     @GET(ADMIN_BY_NAME)
     fun admin(@Query("pageNo") pageNo: String):
             Call<AdminResponse>
+     */
 
-    @Headers("Content-Type: application/json")
-    @GET(ADMIN_BY_NAME)
+    @FormUrlEncoded
+    @POST(ADMIN_BY_NAME)
     fun adminByName(@Query("pageNo") pageNo: String,
                     @Field("adminName") adminName: String):
             Call<AdminResponse>

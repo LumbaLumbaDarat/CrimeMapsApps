@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.harifrizki.crimemapsapps.data.CrimeMapsRepository
+import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminViewModel
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardViewModel
 import com.harifrizki.crimemapsapps.ui.module.login.LoginViewModel
 import com.harifrizki.crimemapsapps.ui.module.password.PasswordViewModel
@@ -44,6 +45,9 @@ class ViewModelFactory private constructor (private val crimeMapsRepository: Cri
             }
             modelClass.isAssignableFrom(PasswordViewModel::class.java) -> {
                 PasswordViewModel(crimeMapsRepository) as T
+            }
+            modelClass.isAssignableFrom(ListOfAdminViewModel::class.java) -> {
+                ListOfAdminViewModel(crimeMapsRepository) as T
             }
             else -> {
                 Logger.e("Unknown ViewModel class: " + modelClass.name)

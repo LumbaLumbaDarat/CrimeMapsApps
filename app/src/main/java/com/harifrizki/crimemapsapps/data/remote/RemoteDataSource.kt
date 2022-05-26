@@ -122,6 +122,31 @@ class RemoteDataSource: DataSource {
         return result
     }
 
+    override fun adminByName(pageNo: String?, name: String?): LiveData<ApiResource<AdminResponse>> {
+        val result = MutableLiveData<ApiResource<AdminResponse>>()
+        try
+        {
+            val client = pageNo?.let { name?.let { name ->
+                NetworkApi.connectToApi().adminByName(it, name)
+            } }
+            client?.enqueue(object : Callback<AdminResponse> {
+                override fun onResponse(
+                    call: Call<AdminResponse>,
+                    response: Response<AdminResponse>
+                ) {
+                    convertResponse(response, AdminResponse(), result)
+                }
+
+                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
+                    convertResponse(AdminResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(AdminResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
     override fun adminById(adminId: String?): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
         try

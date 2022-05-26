@@ -13,6 +13,7 @@ interface CrimeMapsDataSource {
     fun logout(admin: Admin?): LiveData<DataResource<MessageResponse>>
     fun utilization(): LiveData<DataResource<UtilizationResponse>>
 
+    fun adminByName(pageNo: String?, name: String?): LiveData<DataResource<AdminResponse>>
     fun adminById(adminId: String?): LiveData<DataResource<AdminResponse>>
     fun adminUpdate(admin: Admin?): LiveData<DataResource<AdminResponse>>
     fun adminUpdatePhotoProfile(admin: Admin?, photoProfile: File?): LiveData<DataResource<AdminResponse>>

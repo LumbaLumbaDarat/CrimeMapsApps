@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_half_half_default"
+    android:padding="@dimen/padding_half_default"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingVertical="@dimen/padding_half_default"
+        android:layout_marginTop="@dimen/margin_multiple_add_default"
+        android:background="@drawable/frame_background_secondary"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_multiple_add_default"
+            android:layout_marginHorizontal="@dimen/margin_half_default"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/title"
+            android:textSize="@dimen/text_big" />
+
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_half_half_default"
+            android:layout_marginHorizontal="@dimen/margin_half_default"
+            android:justificationMode="inter_word"
+            android:text="@string/title"
+            tools:targetApi="o" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_default"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_negative"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/margin_half_default"
+                android:layout_marginEnd="@dimen/margin_half_half_default"
+                android:text="@string/title"
+                app:cornerRadius="@dimen/round_default" />
+
+            <Button
+                android:id="@+id/btn_positive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/margin_half_half_default"
+                android:layout_marginEnd="@dimen/margin_half_default"
+                android:text="@string/title"
+                app:cornerRadius="@dimen/round_default" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lt_empty"
+        android:layout_width="@dimen/image_square_multiple_default"
+        android:layout_height="@dimen/image_square_multiple_default"
+        android:layout_marginEnd="@dimen/margin_half_default"
+        android:layout_gravity="top|end"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName="warning.json"
+        app:lottie_loop="true"
+        app:lottie_speed="1.5" />
+</FrameLayout>

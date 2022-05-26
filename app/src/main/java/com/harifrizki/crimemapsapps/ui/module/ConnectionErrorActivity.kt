@@ -44,15 +44,16 @@ class ConnectionErrorActivity : BaseActivity() {
                     {
                         if (errorResponse?.errorThrow == null)
                         {
-                            tvTitleMessage.text = errorResponse?.errorCode?.plus(SPACE_STRING)?.plus(errorResponse?.errorMessage)
+                            tvTitleMessage.text = getString(R.string.label_plus_two_string,
+                                errorResponse?.errorCode,
+                                errorResponse?.errorMessage)
                             tvMessage.text = makeSpannable(
-                                true,
+                                isSpanBold = true,
                                 getString(R.string.message_error_network,
                                     errorResponse?.errorUrl,
                                     errorResponse?.errorMessage,
                                     errorResponse?.errorTime),
-                                SPAN_REGEX,
-                                Color.BLACK)
+                                color = Color.BLACK)
                         } else
                         {
                             tvTitleMessage.text = errorResponse?.errorMessage

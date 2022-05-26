@@ -16,8 +16,7 @@ import com.harifrizki.crimemapsapps.utils.ZERO
 class OptionList(
     var popupWindow: PopupWindow? = null
 ) {
-    var binding: LayoutListBinding? = null
-
+    private var binding: LayoutListBinding? = null
     var onClick: ((Menu?) -> Unit)? = null
 
     fun create(context: Context?) {

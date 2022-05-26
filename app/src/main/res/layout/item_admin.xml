@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_admin_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_half_default"
+    android:background="@drawable/frame_stroke_primary"
+    android:padding="@dimen/padding_half_default"
+    android:orientation="horizontal">
+
+    <com.github.florent37.shapeofview.shapes.RoundRectView
+        android:id="@+id/rrv_admin_photo_profile"
+        android:layout_width="@dimen/image_square_add_default"
+        android:layout_height="@dimen/image_square_add_default"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.337"
+        app:shape_roundRect_bottomLeftRadius="@dimen/round_default"
+        app:shape_roundRect_bottomRightRadius="@dimen/round_default"
+        app:shape_roundRect_topLeftRadius="@dimen/round_default"
+        app:shape_roundRect_topRightRadius="@dimen/round_default">
+
+        <ImageView
+            android:id="@+id/iv_admin_photo_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_round_account_box_primary_24" />
+
+        <ImageView
+            android:id="@+id/iv_admin_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/margin_half_half_default"
+            android:background="@drawable/button_white_ripple_primary"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="@dimen/padding_half_default" />
+    </com.github.florent37.shapeofview.shapes.RoundRectView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_half_default"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_admin_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title"
+            android:fontFamily="@font/open_sans_bold"/>
+
+        <TextView
+            android:id="@+id/tv_admin_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_half_half_default"
+            android:text="@string/title" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginTop="@dimen/margin_half_default"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_btn_admin_reset_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_half_half_default"
+                android:background="@drawable/button_primary_ripple_white"
+                app:srcCompat="@drawable/ic_round_vpn_key_24" />
+
+            <ImageView
+                android:id="@+id/iv_btn_admin_lock_and_unlock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/margin_half_half_default"
+                android:padding="@dimen/padding_half_half_default"
+                android:background="@drawable/button_dark_green_ripple_white"
+                app:srcCompat="@drawable/ic_round_lock_24"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/iv_btn_admin_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_half_half_default"
+                android:background="@drawable/button_red_ripple_white"
+                app:srcCompat="@drawable/ic_round_delete_forever_24" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

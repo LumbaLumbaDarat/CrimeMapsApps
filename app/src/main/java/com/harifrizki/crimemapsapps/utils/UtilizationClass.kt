@@ -8,23 +8,25 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Build
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.crimemapsapps.R
 import com.orhanobut.logger.Logger
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -34,7 +36,36 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
+
+@SuppressLint("UseCompatLoadingForDrawables")
+private fun drawableBackgroundLightGrayForShimmer(context: Context?): Drawable {
+    return context?.resources?.getDrawable(
+        R.drawable.frame_background_light_gray_shimmer,
+        null
+    )!!
+}
+
+@SuppressLint("UseCompatLoadingForDrawables")
+private fun drawableBackgroundGrayForShimmer(context: Context?): Drawable {
+    return context?.resources?.getDrawable(
+        R.drawable.frame_background_gray_shimmer,
+        null
+    )!!
+}
+
+private fun colorTransparentForShimmer(context: Context?): Int {
+    return context?.resources?.getColor(
+        R.color.transparent, null
+    )!!
+}
+
+private val requestOptions =
+    RequestOptions().centerCrop().placeholder(R.drawable.animation_loading_image)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .skipMemoryCache(true)
+        .priority(Priority.HIGH)
+        .dontAnimate()
+        .dontTransform()
 
 fun getVersion(context: Context?): String {
     return try {
@@ -46,13 +77,9 @@ fun getVersion(context: Context?): String {
 }
 
 fun getNameForImageTemp(context: Context?, imageType: ImageType?): String {
-    return context?.getString(R.string.app_name)!!.
-    replace(SPACE_STRING, UNDER_LINE_STRING).
-    plus(UNDER_LINE_STRING).
-    plus(imageType?.name).
-    plus(UNDER_LINE_STRING).
-    plus(context.getString(R.string.temp)).
-    uppercase()
+    return context?.getString(R.string.app_name)!!.replace(SPACE_STRING, UNDER_LINE_STRING)
+        .plus(UNDER_LINE_STRING).plus(imageType?.name).plus(UNDER_LINE_STRING)
+        .plus(context.getString(R.string.temp)).uppercase()
 }
 
 fun isNetworkConnected(context: Context?): Boolean {
@@ -86,8 +113,9 @@ fun isValidEmail(target: CharSequence?): Boolean {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(target!!).matches()
 }
 
-fun isValidPasswordAndConfirmPassword(password: String?,
-                                      confirmPassword: String?
+fun isValidPasswordAndConfirmPassword(
+    password: String?,
+    confirmPassword: String?
 ): Boolean {
     return password.equals(confirmPassword, false)
 }
@@ -104,21 +132,23 @@ fun toMultipartBody(file: File?, name: String?, mediaType: String?): MultipartBo
     return MultipartBody.Part.createFormData(
         name!!,
         file?.name,
-        toRequestBody(file, mediaType))
+        toRequestBody(file, mediaType)
+    )
 }
 
-fun makeSpannable(isSpanBold: Boolean?,
-                  text: String?,
-                  regex: String?,
-                  color: Int?): SpannableStringBuilder {
+fun makeSpannable(
+    isSpanBold: Boolean?,
+    text: String?,
+    regex: String? = SPAN_REGEX,
+    color: Int? = ZERO
+): SpannableStringBuilder {
     val stringBuffer = StringBuffer()
     val spannableStringBuilder = SpannableStringBuilder()
 
     val pattern = Pattern.compile(regex!!)
     val matcher = pattern.matcher(text!!)
 
-    while (matcher.find())
-    {
+    while (matcher.find()) {
         stringBuffer.setLength(0)
         val group = matcher.group()
 
@@ -136,12 +166,13 @@ fun makeSpannable(isSpanBold: Boolean?,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
-        spannableStringBuilder.setSpan(
-            color?.let { ForegroundColorSpan(it) },
-            start,
-            spannableStringBuilder.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        if (color != ZERO)
+            spannableStringBuilder.setSpan(
+                color?.let { ForegroundColorSpan(it) },
+                start,
+                spannableStringBuilder.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
     }
 
     stringBuffer.setLength(0)
@@ -153,28 +184,6 @@ fun makeSpannable(isSpanBold: Boolean?,
 @SuppressLint("SimpleDateFormat")
 fun Date.localDateTimeToString(): String {
     return SimpleDateFormat("dd MMMM yyyy").format(this)
-}
-
-@SuppressLint("UseCompatLoadingForDrawables")
-private fun drawableBackgroundLightGrayForShimmer(context: Context?): Drawable {
-    return context?.resources?.getDrawable(
-        R.drawable.frame_background_light_gray_shimmer,
-        null
-    )!!
-}
-
-@SuppressLint("UseCompatLoadingForDrawables")
-private fun drawableBackgroundGrayForShimmer(context: Context?): Drawable {
-    return context?.resources?.getDrawable(
-        R.drawable.frame_background_gray_shimmer,
-        null
-    )!!
-}
-
-private fun colorTransparentForShimmer(context: Context?): Int {
-    return context?.resources?.getColor(
-        R.color.transparent, null
-    )!!
 }
 
 fun layoutStartDrawableShimmer(
@@ -299,4 +308,36 @@ fun widgetStartDrawableShimmer(
             background = drawableBackgroundGrayForShimmer(context)
         }
     }
+}
+
+fun doGlide(
+    context: Context?,
+    imageView: ImageView?,
+    imageName: String?,
+    imageError: Int? = R.drawable.ic_round_broken_image_primary_24
+) {
+    val url =
+        PreferencesManager.getInstance(context!!).getPreferences(URL_CONNECTION_API_IMAGE_ADMIN)
+    if (url?.isNotEmpty()!!)
+        imageView?.let {
+            Glide.with(context).applyDefaultRequestOptions(requestOptions)
+                .load(url.plus(imageName)).error(imageError)
+                .into(it)
+        }
+    else
+        imageView?.let {
+            Glide.with(context).load(imageError)
+                .into(it)
+        }
+}
+
+fun doGlide(
+    context: Context?,
+    imageView: ImageView?,
+    uri: Uri?,
+    imageError: Int? = R.drawable.ic_round_broken_image_primary_24
+) {
+    Glide.with(context!!).applyDefaultRequestOptions(requestOptions)
+        .load(uri).error(imageError)
+        .into(imageView!!)
 }

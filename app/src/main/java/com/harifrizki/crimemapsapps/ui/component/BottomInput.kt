@@ -21,7 +21,6 @@ class BottomInput(
     var buttonPositive: String? = null
 ): BottomSheetDialogFragment() {
     private var binding: BottomInputBinding? = null
-
     var onClickPositive: ((String?) -> Unit?)? = null
     var onClickNegative: (() -> Unit)? = null
 

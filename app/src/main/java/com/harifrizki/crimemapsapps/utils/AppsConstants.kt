@@ -11,7 +11,7 @@ const val HYPHEN_STRING     = "-"
 const val SPAN_REGEX        = "\\[.*?\\]"
 
 const val IMAGE_FORMAT_PNG     = ".png"
-const val IMAGE_FORMAT_GALLERI = "image/*"
+const val IMAGE_FORMAT_GALLERY = "image/*"
 
 val APP_PERMISSION_GET_IMAGE: Array<String> = arrayOf(
     Manifest.permission.CAMERA,
@@ -23,11 +23,12 @@ const val ZERO   = 0
 const val ONE    = 1
 const val TWENTY = 20
 
-const val ROTATE_DEGREE = 90
-const val MAX_SIZE      = 600
-
-const val MAX_ITEM_LIST_SHIMMER = 4
-const val ROW_MENU_AREA         = 2
+const val ROTATE_DEGREE             = 90
+const val MAX_SIZE                  = 600
+const val MAX_LIST_IN_RECYCLER_VIEW = 100
+const val MAX_ITEM_LIST_SHIMMER     = 4
+const val ROW_MENU_AREA             = 2
+const val INITIALIZE_PAGE_NO        = 1
 
 const val WAIT_FOR_RUN_HANDLER_100_MS  = 100
 const val WAIT_FOR_RUN_HANDLER_500_MS  = 500
@@ -50,8 +51,8 @@ const val ERROR_RESPONSE = "ERROR_RESPONSE"
 const val IS_AFTER_ERROR = "IS_AFTER_ERROR"
 const val ERROR_STATE    = "IS_NO_NETWORK"
 
-const val LOTTIE_ERROR_FILE_JSON   = "error.json"
-const val LOTTIE_WARNING_FILE_JSON = "warning.json"
+const val LOTTIE_ERROR_JSON        = "error.json"
+const val LOTTIE_WARNING_JSON      = "warning.json"
 const val LOTTIE_INFORMATION_JSON  = "information.json"
 const val LOTTIE_SUCCESS_JSON      = "success.json"
 const val LOTTIE_QUESTION_JSON     = "question.json"

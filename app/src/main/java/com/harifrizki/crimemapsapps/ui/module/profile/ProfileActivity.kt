@@ -216,7 +216,7 @@ class ProfileActivity : BaseActivity() {
                              onClick = { onBackPressed() })
                      }
                  }
-                MENU_GALLERY -> { openGallery.launch(IMAGE_FORMAT_GALLERI)}
+                MENU_GALLERY -> { openGallery.launch(IMAGE_FORMAT_GALLERY)}
                 else -> {}
             }
         }
@@ -516,16 +516,14 @@ class ProfileActivity : BaseActivity() {
                             }
                             iCreatedAndUpdatedProfile.apply {
                                 tvCreated.text = makeSpannable(
-                                    true,
+                                    isSpanBold = true,
                                     getCreated(admin),
-                                    SPAN_REGEX,
-                                    Color.BLACK
+                                    color = Color.BLACK
                                 )
                                 tvUpdated.text = makeSpannable(
-                                    true,
+                                    isSpanBold = true,
                                     getUpdated(admin),
-                                    SPAN_REGEX,
-                                    Color.BLACK
+                                    color = Color.BLACK
                                 )
                             }
                         }

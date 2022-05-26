@@ -22,6 +22,7 @@
     <string name="label_existing_password">Kata Sandi saat ini</string>
     <string name="label_new_password">Kata Sandi Baru</string>
     <string name="label_confirm_new_password">Konfirmasi Kata Sandi Baru</string>
+    <string name="label_not_found">Tidak ditemukan</string>
 
     <string name="label_welcome_greeting_main">Selamat Datang</string>
     <string name="label_get_image_from">Ambil Gambar melalui</string>
@@ -52,6 +53,9 @@
     <string name="label_enter_of">Masukkan %s %s</string>
 
     <string name="label_plus_two_string">%s %s</string>
+    <string name="label_plus_two_string_enter">%s\n%s</string>
+    <string name="label_title_search_by">Cari [%s] Berdasarkan [%s]</string>
+    <string name="label_show_overload">Tampilkan Seluruh Data %s</string>
 
     <string name="admin_menu">Admin</string>
     <string name="crime_location_menu">Lokasi Rawan Kriminal</string>
@@ -76,7 +80,6 @@
     <string name="message_loading_login">Mencari data Credential, Mohon menunggu…</string>
 
     <string name="message_logout_option">Apakah Anda ingin [keluar] dari aplikasi ?</string>
-
     <string name="message_success_update">Berhasil merubah %s</string>
 
     <string name="message_no_title_network">Tidak Ada Koneksi Internet</string>
@@ -84,10 +87,19 @@
     <string name="message_error_title_general">Mohon Maaf, terjadi kesalahan</string>
     <string name="message_error_general">Tetap tenang, Kami melakukan yang terbaik untuk Anda, dan Kami akan segera kembali</string>
     <string name="message_error_network">[%s] %s, Hit Time in %s</string>
+    <string name="message_error_something_wrong">Terjadi Kesalahan</string>
+
+    <string name="message_title_overload_data">Informasi Hasil Pencarian Data %s</string>
+    <string name="message_overload_data">Kami menemukan [%s] Data [%s], Data ini terlalu banyak untuk ditampilkan, Anda bisa melakukan Pencarian Data [%s] berdasarkan [%s] untuk mendapatkan Data yang lebih Spesifik.</string>
+    <string name="message_overload_data_area">Atau Anda dapat mencari Data [%s] dimulai dari [%s] terlebih dahulu.</string>
+    <string name="message_question_overload_data">Apakah Anda tetap ingin menampilkan [seluruh Data %s] ?</string>
 
     <string name="message_error_empty">%s harus diisi, [Tidak Boleh kosong]</string>
     <string name="message_error_empty_non_spannable">%s harus diisi, Tidak Boleh kosong</string>
     <string name="message_error_not_valid">%s yang Anda masukkan [Tidak Valid]</string>
     <string name="message_error_validate_not_valid">%s dan %s yang Anda masukkan [Tidak Valid]</string>
     <string name="message_error_permission_change_image_profile">Anda harus mengizinkan Aplikasi untuk mengakses Kamera dan Galeri Anda untuk bisa mengubah Foto Profil</string>
+    <string name="message_empty_list">Mohon Maaf, %s [tidak ditemukan]</string>
+    <string name="message_empty_list_by_search">Mohon Maaf, [%s] yang Anda cari [tidak ditemukan]</string>
+    <string name="message_all_data_was_load">Seluruh Data %s telah berhasil ditampilkan semua</string>
 </resources>

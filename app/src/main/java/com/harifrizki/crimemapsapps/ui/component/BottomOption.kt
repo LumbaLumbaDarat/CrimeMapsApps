@@ -12,8 +12,7 @@ class BottomOption(
     var title: String? = null,
     var options: ArrayList<Menu>? = null
 ) : BottomSheetDialogFragment() {
-    var binding: BottomOptionBinding? = null
-
+    private var binding: BottomOptionBinding? = null
     var onClick: ((Menu?) -> Unit)? = null
 
     override fun setupDialog(dialog: Dialog, style: Int) {

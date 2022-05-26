@@ -8,14 +8,13 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.databinding.LoadingBinding
-import com.harifrizki.crimemapsapps.utils.SPAN_REGEX
 import com.harifrizki.crimemapsapps.utils.makeSpannable
 
 class Loading (
     var alertDialog: AlertDialog? = null,
     var message: String? = null
-)
-{
+) {
+
     fun create(context: Context?) {
         val builder: AlertDialog.Builder =
             context.let { AlertDialog.Builder(it!!) }
@@ -27,15 +26,13 @@ class Loading (
         binding.tvMessageLoading.apply {
             text = if (!TextUtils.isEmpty(message))
                 makeSpannable(
-                    true,
+                    isSpanBold = true,
                     message!!,
-                    SPAN_REGEX,
-                    Color.BLACK)
+                    color = Color.BLACK)
             else makeSpannable(
-                true,
+                isSpanBold = true,
                 context?.getString(R.string.message_loading),
-                SPAN_REGEX,
-                Color.BLACK)
+                color = Color.BLACK)
         }
 
         alertDialog = builder.create()

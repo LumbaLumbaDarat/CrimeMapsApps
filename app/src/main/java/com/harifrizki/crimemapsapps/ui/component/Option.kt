@@ -11,7 +11,7 @@ import com.harifrizki.crimemapsapps.utils.*
 class Option(
     var alertDialog: AlertDialog? = null
 ) {
-    var binding: OptionBinding? = null
+    private var binding: OptionBinding? = null
     var onClickPositive: (() -> Unit)? = null
     var onClickNegative: (() -> Unit)? = null
 
@@ -43,7 +43,7 @@ class Option(
 
     fun option(option: String?, color: Int = Color.BLACK) {
         binding?.tvMessageOption?.text =
-            option?.let { makeSpannable(true, it, SPAN_REGEX, color) }
+            option?.let { makeSpannable(isSpanBold = true, it, color = color) }
     }
 
     fun buttonPositive(buttonPositive: String?) {
