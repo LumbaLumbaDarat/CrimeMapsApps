@@ -19,6 +19,7 @@
     <string name="label_name">Nama</string>
     <string name="label_username">Email</string>
     <string name="label_password">Kata Sandi</string>
+    <string name="label_photo_profile">Foto Profile</string>
     <string name="label_existing_password">Kata Sandi saat ini</string>
     <string name="label_new_password">Kata Sandi Baru</string>
     <string name="label_confirm_new_password">Konfirmasi Kata Sandi Baru</string>
@@ -80,6 +81,7 @@
     <string name="message_loading_login">Mencari data Credential, Mohon menunggu…</string>
 
     <string name="message_logout_option">Apakah Anda ingin [keluar] dari aplikasi ?</string>
+    <string name="message_success_add">Berhasil menambah %s</string>
     <string name="message_success_update">Berhasil merubah %s</string>
 
     <string name="message_no_title_network">Tidak Ada Koneksi Internet</string>

@@ -45,7 +45,6 @@
             android:fontFamily="@font/open_sans_bold"
             android:textColor="@color/primary"
             android:text="@string/label_role_admin" />
-
     </LinearLayout>
 
     <TextView

@@ -28,13 +28,6 @@ interface EndPoint {
     fun logout(@Body jsonObject: JsonObject):
             Call<MessageResponse>
 
-    /*
-    @Headers("Content-Type: application/json")
-    @GET(ADMIN_BY_NAME)
-    fun admin(@Query("pageNo") pageNo: String):
-            Call<AdminResponse>
-     */
-
     @FormUrlEncoded
     @POST(ADMIN_BY_NAME)
     fun adminByName(@Query("pageNo") pageNo: String,
@@ -48,7 +41,8 @@ interface EndPoint {
 
     @Multipart
     @POST(ADMIN_ADD)
-    fun adminAdd(@PartMap partMap: Map<String, RequestBody>):
+    fun adminAdd(@Part("adminEntity") adminEntity: RequestBody,
+                 @Part adminPhotoProfile: MultipartBody.Part):
             Call<AdminResponse>
 
     @POST(ADMIN_UPDATE)

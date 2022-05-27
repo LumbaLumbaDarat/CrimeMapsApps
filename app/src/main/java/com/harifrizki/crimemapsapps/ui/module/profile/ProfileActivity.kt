@@ -1,11 +1,14 @@
 package com.harifrizki.crimemapsapps.ui.module.profile
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.setPadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -47,6 +50,9 @@ class ProfileActivity : BaseActivity() {
     }
 
     private var appBarTitle: String? = null
+    private var appBarIcon: Int? = null
+    private var role: String? = null
+    private var isActive: Boolean? = false
     private var map: HashMap<String, Any>? = null
 
     private var adminFromResponse: Admin? = null
@@ -56,6 +62,7 @@ class ProfileActivity : BaseActivity() {
     private var getImageFrom: MenuSetting? = MENU_NONE
 
     private var latestTempUri: Uri? = null
+    private var file: File? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,13 +72,12 @@ class ProfileActivity : BaseActivity() {
         map = getMap(intent)
         crud = map!![OPERATION_CRUD] as CRUD
         fromActivity = getEnumActivityName(map!![FROM_ACTIVITY].toString())
-        when (crud)
-        {
+        when (crud) {
             READ -> {
-                when (fromActivity)
-                {
+                when (fromActivity) {
                     DASHBOARD -> {
                         appBarTitle = getString(R.string.setting_profile_menu)
+                        appBarIcon = R.drawable.ic_round_admin_panel_settings_24
                         initializeDetailProfile()
                         initializeCreatedAndUpdated()
                         adminById(admin)
@@ -82,24 +88,30 @@ class ProfileActivity : BaseActivity() {
             CREATE -> {
                 appBarTitle = getString(
                     R.string.label_add,
-                    getString(R.string.admin_menu))
+                    getString(R.string.admin_menu)
+                )
+                appBarIcon = R.drawable.ic_round_account_circle_24
                 initializeAddProfile()
                 binding.btnSubmitProfile.text = getString(
                     R.string.label_add_on,
-                    getString(R.string.admin_menu))
+                    getString(R.string.admin_menu)
+                )
             }
             else -> {}
         }
 
         binding.apply {
-            appBar(iAppBarProfile,
+            appBar(
+                iAppBarProfile,
                 appBarTitle,
-                R.drawable.ic_round_admin_panel_settings_24,
+                appBarIcon,
                 R.color.primary,
-                R.drawable.frame_background_secondary)
+                R.drawable.frame_background_secondary
+            )
             srlProfile.apply {
                 setThemeForSwipeRefreshLayoutLoadingAnimation(
-                    this@ProfileActivity, this)
+                    this@ProfileActivity, this
+                )
                 setOnRefreshListener(this@ProfileActivity)
             }
             initializePhotoProfile()
@@ -112,15 +124,11 @@ class ProfileActivity : BaseActivity() {
         ActivityResultContracts.StartActivityForResult()
     )
     {
-        if (it.resultCode == Activity.RESULT_OK)
-        {
-            if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
-            {
-                when (crud)
-                {
+        if (it.resultCode == Activity.RESULT_OK) {
+            if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!) {
+                when (crud) {
                     READ -> {
-                        when (fromActivity)
-                        {
+                        when (fromActivity) {
                             DASHBOARD -> {
                                 adminById(admin)
                             }
@@ -129,20 +137,33 @@ class ProfileActivity : BaseActivity() {
                     }
                     else -> {}
                 }
-            }
-            else
-            {
+            } else {
                 map = getMap(it.data)
-                when (getEnumActivityName(map!![FROM_ACTIVITY].toString()))
-                {
+                when (getEnumActivityName(map!![FROM_ACTIVITY].toString())) {
                     CROP_PHOTO -> {
-                        try
-                        {
-                            adminUpdatePhotoProfile(
-                                Admin().apply {
-                                    adminId = adminFromResponse?.adminId
-                                    updatedByUUID = admin?.adminId },
-                                File(Uri.parse(map!![URI_IMAGE].toString()).path))
+                        try {
+                            when (crud)
+                            {
+                                READ -> {
+                                    adminUpdatePhotoProfile(
+                                        Admin().apply {
+                                            adminId = adminFromResponse?.adminId
+                                            updatedByUUID = admin?.adminId
+                                        },
+                                        File(Uri.parse(map!![URI_IMAGE].toString()).path)
+                                    )
+                                }
+                                CREATE -> {
+                                    val uri = Uri.parse(map!![URI_IMAGE].toString())
+                                    doGlide(
+                                        this,
+                                        binding.iPhotoProfile.ivAdminPhotoProfile,
+                                        uri,
+                                        R.drawable.ic_round_account_box_primary_24)
+                                    file = File(uri.path)
+                                }
+                                else -> {}
+                            }
                         } catch (e: IOException) {
                             Logger.e(e.message.toString())
                             showError(
@@ -150,7 +171,9 @@ class ProfileActivity : BaseActivity() {
                                 onClick = { onBackPressed() })
                         }
                     }
-                    else -> { showMessage(getMap(it.data)) }
+                    else -> {
+                        showMessage(getMap(it.data))
+                    }
                 }
             }
         }
@@ -158,69 +181,70 @@ class ProfileActivity : BaseActivity() {
 
     private val openCamera =
         registerForActivityResult(ActivityResultContracts.TakePicture())
-    {
-        if (it)
         {
+            if (it) {
+                goTo(
+                    CropPhotoActivity(),
+                    hashMapOf(
+                        FROM_ACTIVITY to getNameOfActivity(PROFILE),
+                        URI_IMAGE to latestTempUri!!
+                    )
+                )
+            }
+        }
+
+    private val openGallery =
+        registerForActivityResult(ActivityResultContracts.GetContent())
+        { uri: Uri? ->
             goTo(
                 CropPhotoActivity(),
                 hashMapOf(
                     FROM_ACTIVITY to getNameOfActivity(PROFILE),
-                    URI_IMAGE to latestTempUri!!
-                ))
-        }
-    }
-
-    private val openGallery =
-        registerForActivityResult(ActivityResultContracts.GetContent())
-    { uri: Uri? ->
-        goTo(
-            CropPhotoActivity(),
-            hashMapOf(
-                FROM_ACTIVITY to getNameOfActivity(PROFILE),
-                URI_IMAGE to uri!!
+                    URI_IMAGE to uri!!
+                )
             )
-        )
-    }
+        }
 
     private val resultLauncherPermission =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         )
-    { permissions ->
-        var invalidCountPermission = ZERO
-        permissions.entries.forEach {
-            val isGranted = it.value
-            if (!isGranted)
-                invalidCountPermission++
-        }
+        { permissions ->
+            var invalidCountPermission = ZERO
+            permissions.entries.forEach {
+                val isGranted = it.value
+                if (!isGranted)
+                    invalidCountPermission++
+            }
 
-        if (invalidCountPermission >= ONE)
-            showWarning(
-                message = getString(R.string.message_error_permission_change_image_profile),
-                onClick = { onBackPressed() })
-        else {
-            when (getImageFrom)
-            {
-                 MENU_CAMERA -> {
-                     try {
-                         lifecycleScope.launchWhenStarted {
-                             getTempFileUri(IMAGE_PROFILE).let { uri ->
-                                 latestTempUri = uri
-                                 openCamera.launch(uri)
-                             }
-                         }
-                     } catch (e: IOException) {
-                         Logger.e(e.message.toString())
-                         showError(
-                             message = e.message.toString(),
-                             onClick = { onBackPressed() })
-                     }
-                 }
-                MENU_GALLERY -> { openGallery.launch(IMAGE_FORMAT_GALLERY)}
-                else -> {}
+            if (invalidCountPermission >= ONE)
+                showWarning(
+                    message = getString(R.string.message_error_permission_change_image_profile),
+                    onClick = { onBackPressed() })
+            else {
+                when (getImageFrom) {
+                    MENU_CAMERA -> {
+                        try {
+                            lifecycleScope.launchWhenStarted {
+                                getTempFileUri(IMAGE_PROFILE).let { uri ->
+                                    latestTempUri = uri
+                                    openCamera.launch(uri)
+                                }
+                            }
+                        } catch (e: IOException) {
+                            Logger.e(e.message.toString())
+                            showError(
+                                message = e.message.toString(),
+                                onClick = { onBackPressed() })
+                        }
+                    }
+                    MENU_GALLERY -> {
+                        openGallery.launch(IMAGE_FORMAT_GALLERY)
+                    }
+                    else -> {}
+                }
             }
         }
-    }
 
     override fun onRefresh() {
         super.onRefresh()
@@ -231,13 +255,82 @@ class ProfileActivity : BaseActivity() {
     override fun onBackPressed() {
         onBackPressed(
             getNameOfActivity(PROFILE),
-            isAfterCRUD!!.name)
+            isAfterCRUD!!.name
+        )
         super.onBackPressed()
     }
 
     private val onClickListener = View.OnClickListener {
         when (it.id) {
-            R.id.btn_submit_profile -> {}
+            R.id.btn_submit_profile -> {
+                if (!textInputEditTextIsEmpty(
+                        binding.tieNameProfile
+                    )
+                ) {
+                    if (!textInputEditTextIsEmpty(
+                            binding.tieEmailProfile
+                        )
+                    ) {
+                        if (isValidEmail(
+                                binding.tieEmailProfile.text.toString().trim()
+                            )
+                        ) {
+                            if (file != null) {
+                                adminAdd(
+                                    Admin().apply {
+                                        adminName = binding.tieNameProfile.text.toString().trim()
+                                        adminUsername =
+                                            binding.tieEmailProfile.text.toString().trim()
+                                        adminRole = role
+                                        adminImage = PreferencesManager
+                                            .getInstance(this@ProfileActivity)
+                                            .getPreferences(DEFAULT_IMAGE_ADMIN)
+                                        this.isActive = this@ProfileActivity.isActive
+                                        createdByUUID = admin?.adminId
+                                    },
+                                    file
+                                )
+                            } else showWarning(
+                                message = getString(
+                                    R.string.message_error_empty,
+                                    getString(
+                                        R.string.label_plus_two_string,
+                                        getString(R.string.label_photo_profile),
+                                        getString(R.string.admin_menu)
+                                    )
+                                )
+                            )
+                        } else showWarning(
+                            message = getString(
+                                R.string.message_error_not_valid,
+                                getString(
+                                    R.string.label_plus_two_string,
+                                    getString(R.string.label_username),
+                                    getString(R.string.admin_menu)
+                                )
+                            )
+                        )
+                    } else showWarning(
+                        message = getString(
+                            R.string.message_error_empty,
+                            getString(
+                                R.string.label_plus_two_string,
+                                getString(R.string.label_username),
+                                getString(R.string.admin_menu)
+                            )
+                        )
+                    )
+                } else showWarning(
+                    message = getString(
+                        R.string.message_error_empty,
+                        getString(
+                            R.string.label_plus_two_string,
+                            getString(R.string.label_name),
+                            getString(R.string.admin_menu)
+                        )
+                    )
+                )
+            }
             R.id.btn_back_profile -> {
                 onBackPressed()
             }
@@ -245,16 +338,14 @@ class ProfileActivity : BaseActivity() {
     }
 
     private val adminById = Observer<DataResource<AdminResponse>> {
-        when (it.responseStatus)
-        {
+        when (it.responseStatus) {
             LOADING -> {
                 loadingProfile(true)
                 loadingCreatedAndUpdate(true)
                 loadingButtonBack(true)
             }
             SUCCESS -> {
-                if (isResponseSuccess(it.data?.message))
-                {
+                if (isResponseSuccess(it.data?.message)) {
                     setAdmin(it.data?.admin)
                     loadingProfile(false)
                     loadingCreatedAndUpdate(false)
@@ -277,20 +368,44 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
-    private val adminUpdate = Observer<DataResource<AdminResponse>> {
-        when (it.responseStatus)
-        {
+    private val adminAdd = Observer<DataResource<AdminResponse>> {
+        when (it.responseStatus) {
             LOADING -> {
                 showLoading()
             }
             SUCCESS -> {
                 dismissLoading()
-                if (isResponseSuccess(it.data?.message))
-                {
+                if (isResponseSuccess(it.data?.message)) {
+                    isAfterCRUD = CREATE
+                    onBackPressed()
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun adminAdd(admin: Admin?, file: File?) {
+        if (networkConnected()) {
+            viewModel.adminAdd(admin, file).observe(this, adminAdd)
+        }
+    }
+
+    private val adminUpdate = Observer<DataResource<AdminResponse>> {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
                     setAdmin(it.data?.admin)
                     if (it.data?.admin?.adminId.equals(admin?.adminId))
-                        PreferencesManager.getInstance(this).
-                        setPreferences(LOGIN_MODEL, it.data?.admin)
+                        PreferencesManager.getInstance(this)
+                            .setPreferences(LOGIN_MODEL, it.data?.admin)
                     isAfterCRUD = UPDATE
                 }
             }
@@ -309,19 +424,17 @@ class ProfileActivity : BaseActivity() {
     }
 
     private val adminUpdatePhotoProfile = Observer<DataResource<AdminResponse>> {
-        when (it.responseStatus)
-        {
+        when (it.responseStatus) {
             LOADING -> {
                 showLoading()
             }
             SUCCESS -> {
                 dismissLoading()
-                if (isResponseSuccess(it.data?.message))
-                {
+                if (isResponseSuccess(it.data?.message)) {
                     setAdmin(it.data?.admin)
                     if (it.data?.admin?.adminId.equals(admin?.adminId))
-                        PreferencesManager.getInstance(this).
-                        setPreferences(LOGIN_MODEL, it.data?.admin)
+                        PreferencesManager.getInstance(this)
+                            .setPreferences(LOGIN_MODEL, it.data?.admin)
                     isAfterCRUD = UPDATE
                 }
             }
@@ -335,8 +448,7 @@ class ProfileActivity : BaseActivity() {
 
     private fun adminUpdatePhotoProfile(admin: Admin?, file: File?) {
         if (networkConnected()) {
-            viewModel.adminUpdatePhotoProfile(admin, file).
-            observe(this, adminUpdatePhotoProfile)
+            viewModel.adminUpdatePhotoProfile(admin, file).observe(this, adminUpdatePhotoProfile)
         }
     }
 
@@ -366,9 +478,11 @@ class ProfileActivity : BaseActivity() {
                 ivBtnEditAdminName.setOnClickListener {
                     showBottomInput(
                         this@ProfileActivity,
-                        getString(R.string.label_plus_two_string,
+                        getString(
+                            R.string.label_plus_two_string,
                             getString(R.string.label_name),
-                            getString(R.string.setting_profile_menu)),
+                            getString(R.string.setting_profile_menu)
+                        ),
                         adminFromResponse?.adminName,
                         getString(R.string.change),
                         getString(R.string.cancel),
@@ -405,20 +519,63 @@ class ProfileActivity : BaseActivity() {
 
     private fun initializeAddProfile() {
         binding.apply {
-            iAddProfile.root.visibility = View.VISIBLE
-            iAddProfileShimmer.root.visibility = View.VISIBLE
-            tilEmailProfile.apply {
-                hint = getString(
-                    R.string.label_enter_of,
-                    getString(R.string.label_name),
-                    getString(R.string.admin_menu))
-                visibility = View.VISIBLE
+            iAddProfile.apply {
+                root.visibility = View.VISIBLE
+                setRole(
+                    PreferencesManager
+                        .getInstance(this@ProfileActivity)
+                        .getPreferences(ROLE_ADMIN),
+                    tvOptionAdmin,
+                    R.drawable.button_primary_ripple_white,
+                    R.color.white,
+                    tvOptionRoot,
+                    R.drawable.button_transparent_ripple_primary,
+                    R.color.primary
+                )
+                tvOptionAdmin.setOnClickListener {
+                    setRole(
+                        PreferencesManager
+                            .getInstance(this@ProfileActivity)
+                            .getPreferences(ROLE_ADMIN),
+                        tvOptionAdmin,
+                        R.drawable.button_primary_ripple_white,
+                        R.color.white,
+                        tvOptionRoot,
+                        R.drawable.button_transparent_ripple_primary,
+                        R.color.primary
+                    )
+                }
+                tvOptionRoot.setOnClickListener {
+                    setRole(
+                        PreferencesManager
+                            .getInstance(this@ProfileActivity)
+                            .getPreferences(ROLE_ROOT),
+                        tvOptionRoot,
+                        R.drawable.button_primary_ripple_white,
+                        R.color.white,
+                        tvOptionAdmin,
+                        R.drawable.button_transparent_ripple_primary,
+                        R.color.primary
+                    )
+                }
+                setActive()
+                tvOptionActive.setOnClickListener { setActive() }
             }
+            iAddProfileShimmer.root.visibility = View.VISIBLE
             tilNameProfile.apply {
                 hint = getString(
                     R.string.label_enter_of,
+                    getString(R.string.label_name),
+                    getString(R.string.admin_menu)
+                )
+                visibility = View.VISIBLE
+            }
+            tilEmailProfile.apply {
+                hint = getString(
+                    R.string.label_enter_of,
                     getString(R.string.label_username),
-                    getString(R.string.admin_menu))
+                    getString(R.string.admin_menu)
+                )
                 visibility = View.VISIBLE
             }
             btnSubmitProfile.visibility = View.VISIBLE
@@ -446,8 +603,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun loadingProfile(isOn: Boolean?) {
-        if (isOn!!)
-        {
+        if (isOn!!) {
             binding.llContentProfile.visibility = View.GONE
             shimmerOn(
                 binding.sflContentProfile,
@@ -463,8 +619,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun loadingCreatedAndUpdate(isOn: Boolean?) {
-        if (isOn!!)
-        {
+        if (isOn!!) {
             binding.iCreatedAndUpdatedProfile.root.visibility = View.GONE
             shimmerOn(
                 binding.sflCreatedAndUpdatedProfile,
@@ -480,8 +635,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun loadingButtonBack(isOn: Boolean?) {
-        if (isOn!!)
-        {
+        if (isOn!!) {
             binding.btnBackProfile.visibility = View.GONE
             shimmerOn(
                 binding.sflBackProfile,
@@ -498,8 +652,7 @@ class ProfileActivity : BaseActivity() {
 
     private fun setAdmin(admin: Admin?) {
         adminFromResponse = admin
-        when (crud)
-        {
+        when (crud) {
             READ -> {
                 when (fromActivity) {
                     DASHBOARD -> {
@@ -532,6 +685,54 @@ class ProfileActivity : BaseActivity() {
                 }
             }
             else -> {}
+        }
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setRole(
+        role: String?,
+        optionPositive: TextView?,
+        backgroundPositive: Int?,
+        textColorPositive: Int?,
+        optionNegative: TextView?,
+        backgroundNegative: Int?,
+        textColorNegative: Int?
+    ) {
+        this.role = role
+        optionPositive?.apply {
+            background = backgroundPositive?.let { resources.getDrawable(it, null) }
+            setTextColor(getColor(textColorPositive!!))
+            setPadding(resources.getDimensionPixelOffset(R.dimen.padding_half_default))
+        }
+        optionNegative?.apply {
+            background = backgroundNegative?.let { resources.getDrawable(it, null) }
+            setTextColor(getColor(textColorNegative!!))
+            setPadding(resources.getDimensionPixelOffset(R.dimen.padding_half_default))
+        }
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setActive() {
+        if (isActive!!) {
+            binding.iAddProfile.tvOptionActive.apply {
+                isActive = false
+                text = getString(R.string.label_active_admin_now)
+                background = resources.getDrawable(
+                    R.drawable.button_dark_green_ripple_white, null
+                )
+                setTextColor(getColor(R.color.white))
+                setPadding(resources.getDimensionPixelOffset(R.dimen.padding_half_default))
+            }
+        } else {
+            binding.iAddProfile.tvOptionActive.apply {
+                isActive = true
+                text = getString(R.string.label_non_active_admin_now)
+                background = resources.getDrawable(
+                    R.drawable.button_red_ripple_white, null
+                )
+                setTextColor(getColor(R.color.white))
+                setPadding(resources.getDimensionPixelOffset(R.dimen.padding_half_default))
+            }
         }
     }
 }

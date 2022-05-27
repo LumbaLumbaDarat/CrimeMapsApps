@@ -634,7 +634,23 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         val fromActivity = getEnumActivityName(map!![FROM_ACTIVITY].toString())
         return when (getEnumCRUD(map[OPERATION_CRUD] as String)) {
             CREATE -> {
-                true
+                when (fromActivity) {
+                    PROFILE -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(
+                                R.string.message_success_add,
+                                getString(R.string.admin_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                }
             }
             READ -> {
                 true

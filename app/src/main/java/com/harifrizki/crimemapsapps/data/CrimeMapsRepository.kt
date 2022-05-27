@@ -70,6 +70,16 @@ class CrimeMapsRepository(
         }.asLiveData()
     }
 
+    override fun adminAdd(
+        admin: Admin?,
+        photoProfile: File?
+    ): LiveData<DataResource<AdminResponse>> {
+        return object : NetworkResource<AdminResponse>() {
+            override fun createCall(): LiveData<ApiResource<AdminResponse>> =
+                remote.adminAdd(admin, photoProfile)
+        }.asLiveData()
+    }
+
     override fun adminUpdate(admin: Admin?): LiveData<DataResource<AdminResponse>> {
         return object : NetworkResource<AdminResponse>() {
             override fun createCall(): LiveData<ApiResource<AdminResponse>> =

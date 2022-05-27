@@ -1,8 +1,8 @@
 package com.harifrizki.crimemapsapps.ui.module.admin
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.AdminResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityListOfAdminBinding
+import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Page
 import com.harifrizki.crimemapsapps.ui.adapter.AdminAdapter
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
@@ -92,7 +93,12 @@ class ListOfAdminActivity : BaseActivity() {
     private val resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     )
-    { }
+    {
+        if (it.resultCode == Activity.RESULT_OK)
+        {
+            if (showMessage(getMap(it.data))) admin()
+        }
+    }
 
     override fun onRefresh() {
         super.onRefresh()
@@ -111,7 +117,7 @@ class ListOfAdminActivity : BaseActivity() {
                 {
                     if (it.data?.adminArrayList?.size!! > ZERO)
                     {
-                        if (it.data.page?.totalContentSize!! >= 1)
+                        if (it.data.page?.totalContentSize!! >= MAX_LIST_IN_RECYCLER_VIEW)
                         {
                             if (doNotLoadData!!)
                             {

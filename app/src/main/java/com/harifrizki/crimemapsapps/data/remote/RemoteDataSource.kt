@@ -170,6 +170,37 @@ class RemoteDataSource: DataSource {
         return result
     }
 
+    override fun adminAdd(
+        admin: Admin?,
+        photoProfile: File?
+    ): LiveData<ApiResource<AdminResponse>> {
+        val result = MutableLiveData<ApiResource<AdminResponse>>()
+        try
+        {
+            val client = NetworkApi.connectToApi().adminAdd(
+                toRequestBody(jsonObject(admin).toString(), "multipart/form-data"),
+                toMultipartBody(
+                    photoProfile,
+                    "adminPhotoProfile",
+                    "multipart/form-data"))
+            client.enqueue(object : Callback<AdminResponse> {
+                override fun onResponse(
+                    call: Call<AdminResponse>,
+                    response: Response<AdminResponse>
+                ) {
+                    convertResponse(response, AdminResponse(), result)
+                }
+
+                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
+                    convertResponse(AdminResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(AdminResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
     override fun adminUpdate(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
         try
