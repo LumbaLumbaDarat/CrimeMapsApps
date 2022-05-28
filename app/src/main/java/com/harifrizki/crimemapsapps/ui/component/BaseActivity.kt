@@ -1,5 +1,6 @@
 package com.harifrizki.crimemapsapps.ui.component
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -701,6 +702,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
             }
             DELETE -> {
                 when (fromActivity) {
+                    PROFILE,
                     LIST_OF_ADMIN -> {
                         ColorToast.roundLineSuccess(
                             this,

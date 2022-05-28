@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.setPadding
 import androidx.lifecycle.Observer
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.AdminResponse
+import com.harifrizki.crimemapsapps.data.remote.response.MessageResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityProfileBinding
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
@@ -27,6 +29,7 @@ import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.ImageType.*
 import com.harifrizki.crimemapsapps.utils.MenuSetting.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
+import com.lumbalumbadrt.colortoast.ColorToast
 import com.orhanobut.logger.Logger
 import java.io.File
 import java.io.IOException
@@ -81,6 +84,16 @@ class ProfileActivity : BaseActivity() {
                         initializeDetailProfile()
                         initializeCreatedAndUpdated()
                         adminById(admin)
+                    }
+                    LIST_OF_ADMIN -> {
+                        appBarTitle = getString(
+                            R.string.label_edit,
+                            getString(R.string.admin_menu)
+                        )
+                        appBarIcon = R.drawable.ic_round_account_circle_24
+                        initializeUpdateProfile()
+                        initializeCreatedAndUpdated()
+                        adminById(map!![ADMIN_MODEL] as Admin)
                     }
                     else -> {}
                 }
@@ -142,8 +155,7 @@ class ProfileActivity : BaseActivity() {
                 when (getEnumActivityName(map!![FROM_ACTIVITY].toString())) {
                     CROP_PHOTO -> {
                         try {
-                            when (crud)
-                            {
+                            when (crud) {
                                 READ -> {
                                     adminUpdatePhotoProfile(
                                         Admin().apply {
@@ -159,7 +171,8 @@ class ProfileActivity : BaseActivity() {
                                         this,
                                         binding.iPhotoProfile.ivAdminPhotoProfile,
                                         uri,
-                                        R.drawable.ic_round_account_box_primary_24)
+                                        R.drawable.ic_round_account_box_primary_24
+                                    )
                                     file = File(uri.path)
                                 }
                                 else -> {}
@@ -452,6 +465,98 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
+    private val adminResetPassword = Observer<DataResource<AdminResponse>> {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
+                    isAfterCRUD = UPDATE
+                    ColorToast.roundLineSuccess(
+                        this,
+                        getString(R.string.app_name),
+                        it.data?.message?.message,
+                        Toast.LENGTH_LONG
+                    )
+                    adminById(it.data?.admin)
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun adminResetPassword(admin: Admin?) {
+        if (networkConnected()) {
+            viewModel.adminResetPassword(admin)
+                .observe(this, adminResetPassword)
+        }
+    }
+
+    private val adminUpdateActive = Observer<DataResource<AdminResponse>> {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
+                    isAfterCRUD = UPDATE
+                    ColorToast.roundLineSuccess(
+                        this,
+                        getString(R.string.app_name),
+                        it.data?.message?.message,
+                        Toast.LENGTH_LONG
+                    )
+                    adminById(it.data?.admin)
+                }
+            }
+            ERROR -> {
+                showLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun adminUpdateActive(admin: Admin?) {
+        if (networkConnected()) {
+            viewModel.adminUpdateActive(admin)
+                .observe(this, adminUpdateActive)
+        }
+    }
+
+    private val adminDelete = Observer<DataResource<MessageResponse>> {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
+                    isAfterCRUD = DELETE
+                    onBackPressed()
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun adminDelete(admin: Admin?) {
+        if (networkConnected()) {
+            viewModel.adminDelete(admin).observe(this, adminDelete)
+        }
+    }
+
     private fun initializePhotoProfile() {
         binding.iPhotoProfile.ivChangePhotoProfile.setOnClickListener {
             showBottomOption(
@@ -591,6 +696,127 @@ class ProfileActivity : BaseActivity() {
         )
     }
 
+    private fun initializeUpdateProfile() {
+        binding.apply {
+            iEditProfile.apply {
+                root.visibility = View.VISIBLE
+                ivBtnEditAdminName.setOnClickListener {
+                    showBottomInput(
+                        this@ProfileActivity,
+                        getString(
+                            R.string.label_plus_two_string,
+                            getString(R.string.label_name),
+                            getString(R.string.setting_profile_menu)
+                        ),
+                        adminFromResponse?.adminName,
+                        getString(R.string.change),
+                        getString(R.string.cancel),
+                        onPositive = {
+                            adminUpdate(Admin().apply {
+                                adminId = adminFromResponse?.adminId
+                                adminName = it
+                                updatedByUUID = admin?.adminId
+                            })
+                            dismissBottomInput()
+                        }
+                    )
+                }
+                ivAdminResetPassword.setOnClickListener {
+                    showOption(
+                        titleOption = getString(
+                            R.string.message_title_reset_password,
+                            getString(R.string.admin_menu)
+                        ),
+                        message = getString(
+                            R.string.message_reset_password,
+                            getString(R.string.admin_menu), adminFromResponse?.adminName
+                        ),
+                        titlePositive = getString(R.string.yes_reset),
+                        titleNegative = getString(R.string.no),
+                        onPositive = {
+                            dismissOption()
+                            adminResetPassword(Admin().apply {
+                                adminId = adminFromResponse?.adminId
+                                updatedByUUID = PreferencesManager
+                                    .getInstance(this@ProfileActivity)
+                                    .getPreferences(LOGIN_MODEL, Admin::class.java)
+                                    .adminId
+                            })
+                        },
+                    )
+                }
+                ivAdminLock.setOnClickListener {
+                    showOption(
+                        titleOption = getString(
+                            R.string.label_plus_two_string,
+                            getLabelActivate(adminFromResponse),
+                            getString(R.string.admin_menu)
+                        ),
+                        message = getString(
+                            R.string.message_activate,
+                            getLabelActivate(adminFromResponse),
+                            getString(R.string.admin_menu),
+                            adminFromResponse?.adminName
+                        ),
+                        titlePositive = getString(
+                            R.string.yes_activate,
+                            getLabelActivate(adminFromResponse)
+                        ),
+                        titleNegative = getString(R.string.no),
+                        colorButtonPositive = getColorActivate(adminFromResponse),
+                        onPositive = {
+                            dismissOption()
+                            adminUpdateActive(Admin().apply {
+                                adminId = adminFromResponse?.adminId
+                                isActive = !adminFromResponse?.isActive!!
+                                updatedByUUID = PreferencesManager
+                                    .getInstance(this@ProfileActivity)
+                                    .getPreferences(LOGIN_MODEL, Admin::class.java)
+                                    .adminId
+                            })
+                        },
+                    )
+                }
+                ivAdminDelete.setOnClickListener {
+                    showOption(
+                        titleOption = getString(
+                            R.string.message_title_delete,
+                            getString(R.string.admin_menu)
+                        ),
+                        message = getString(
+                            R.string.message_delete,
+                            getString(R.string.admin_menu), adminFromResponse?.adminName
+                        ),
+                        titlePositive = getString(R.string.yes_delete),
+                        titleNegative = getString(R.string.no),
+                        colorButtonPositive = R.color.red,
+                        onPositive = {
+                            dismissOption()
+                            adminDelete(
+                                Admin().apply { adminId = adminFromResponse?.adminId })
+                        },
+                    )
+                }
+            }
+            iEditProfileShimmer.root.visibility = View.VISIBLE
+        }
+        widgetStartDrawableShimmer(
+            arrayOf(
+                binding.iEditProfileShimmer.tvAdminName,
+                binding.iEditProfileShimmer.tvEmailAdmin,
+                binding.iEditProfileShimmer.tvAdminRole
+            ), this
+        )
+        widgetStartDrawableShimmer(
+            arrayOf(
+                binding.iEditProfileShimmer.ivBtnEditAdminName,
+                binding.iEditProfileShimmer.ivAdminResetPassword,
+                binding.iEditProfileShimmer.ivAdminLock,
+                binding.iEditProfileShimmer.ivAdminDelete
+            ), this
+        )
+    }
+
     private fun initializeCreatedAndUpdated() {
         widgetStartDrawableShimmer(
             arrayOf(
@@ -650,6 +876,7 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun setAdmin(admin: Admin?) {
         adminFromResponse = admin
         when (crud) {
@@ -666,6 +893,46 @@ class ProfileActivity : BaseActivity() {
                             iDetailProfile.apply {
                                 tvAdminName.text = admin?.adminName
                                 tvEmailAdminName.text = admin?.adminUsername
+                            }
+                            iCreatedAndUpdatedProfile.apply {
+                                tvCreated.text = makeSpannable(
+                                    isSpanBold = true,
+                                    getCreated(admin),
+                                    color = Color.BLACK
+                                )
+                                tvUpdated.text = makeSpannable(
+                                    isSpanBold = true,
+                                    getUpdated(admin),
+                                    color = Color.BLACK
+                                )
+                            }
+                        }
+                    }
+                    LIST_OF_ADMIN -> {
+                        binding.apply {
+                            doGlide(
+                                this@ProfileActivity,
+                                iPhotoProfile.ivAdminPhotoProfile,
+                                admin?.adminImage,
+                                R.drawable.ic_round_account_box_primary_24
+                            )
+                            iEditProfile.apply {
+                                tvAdminName.text = admin?.adminName
+                                tvEmailAdmin.text = admin?.adminUsername
+                                tvAdminRole.text = admin?.adminRole
+                                setActivate(admin, ivAdminLock)
+                                if (admin?.adminRole
+                                        .equals(
+                                            PreferencesManager.getInstance(this@ProfileActivity)
+                                                .getPreferences(ROLE_ROOT)
+                                        )
+                                ) {
+                                    iPhotoProfile.ivChangePhotoProfile.visibility = View.INVISIBLE
+                                    ivBtnEditAdminName.visibility = View.INVISIBLE
+                                    ivAdminResetPassword.visibility = View.GONE
+                                    ivAdminLock.visibility = View.GONE
+                                    ivAdminDelete.visibility = View.GONE
+                                }
                             }
                             iCreatedAndUpdatedProfile.apply {
                                 tvCreated.text = makeSpannable(

@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_default"
             android:layout_marginBottom="@dimen/margin_default"
-            android:text="@string/cancel"
+            android:text="@string/back"
             app:cornerRadius="@dimen/round_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

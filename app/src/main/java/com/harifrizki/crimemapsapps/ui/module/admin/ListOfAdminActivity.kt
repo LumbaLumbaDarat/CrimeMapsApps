@@ -21,6 +21,7 @@ import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.CRUD.*
+import com.harifrizki.crimemapsapps.utils.CRUD.Companion.getEnumCRUD
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 import com.lumbalumbadrt.colortoast.ColorToast
 
@@ -100,7 +101,7 @@ class ListOfAdminActivity : BaseActivity() {
     {
         if (it.resultCode == Activity.RESULT_OK) {
             if (showMessage(getMap(it.data))) {
-                isAfterCRUD = CREATE
+                isAfterCRUD = getEnumCRUD(getMap(it.data)[OPERATION_CRUD].toString())
                 admin()
             }
         }
@@ -320,7 +321,16 @@ class ListOfAdminActivity : BaseActivity() {
             context = this,
             isShimmer = false
         ).apply {
-            onClickAdmin = {}
+            onClickAdmin = {
+                goTo(
+                    ProfileActivity(),
+                    hashMapOf(
+                        FROM_ACTIVITY to getNameOfActivity(LIST_OF_ADMIN),
+                        OPERATION_CRUD to READ,
+                        ADMIN_MODEL to it!!
+                    )
+                )
+            }
             onClickResetPassword = {
                 showOption(
                     titleOption = getString(

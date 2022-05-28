@@ -70,9 +70,12 @@ class AdminAdapter(
                         onClickDelete?.invoke(admin)
                     }
                 }
-                itemView.setOnClickListener {
-                    onClickAdmin?.invoke(admin)
-                }
+                if (!admin.adminUsername
+                        .equals(adminLogin?.adminUsername)
+                )
+                    itemView.setOnClickListener {
+                        onClickAdmin?.invoke(admin)
+                    }
             }
         } else admin = Admin()
         holder.bind(adminLogin, admin, isShimmer)
@@ -107,24 +110,20 @@ class AdminAdapter(
                     ivAdminState.background =
                         if (admin?.isLogin!!) context?.getDrawable(R.drawable.frame_background_green)
                         else context?.getDrawable(R.drawable.frame_background_red)
-                    ivBtnAdminLockAndUnlock.apply {
-                        if (admin.isActive!!) {
-                            background = context.getDrawable(R.drawable.button_red_ripple_white)
-                            setImageResource(R.drawable.ic_round_lock_24)
-                        } else {
-                            background =
-                                context.getDrawable(R.drawable.button_dark_green_ripple_white)
-                            setImageResource(R.drawable.ic_round_lock_open_24)
-                        }
-                    }
+                    setActivate(admin, ivBtnAdminLockAndUnlock)
 
                     if (admin.adminUsername?.equals(adminLogin?.adminUsername)!! ||
-                        admin.adminUsername?.equals(context?.let { PreferencesManager
-                            .getInstance(it)
-                            .getPreferences(DEFAULT_ADMIN_ROOT_USERNAME) })!! ||
-                        admin.adminRole?.equals(context?.let { PreferencesManager
-                            .getInstance(it)
-                            .getPreferences(ROLE_ROOT) })!!) {
+                        admin.adminUsername?.equals(context?.let {
+                            PreferencesManager
+                                .getInstance(it)
+                                .getPreferences(DEFAULT_ADMIN_ROOT_USERNAME)
+                        })!! ||
+                        admin.adminRole?.equals(context?.let {
+                            PreferencesManager
+                                .getInstance(it)
+                                .getPreferences(ROLE_ROOT)
+                        })!!
+                    ) {
                         ivBtnAdminResetPassword.visibility = View.GONE
                         ivBtnAdminLockAndUnlock.visibility = View.GONE
                         ivBtnAdminDelete.visibility = View.GONE

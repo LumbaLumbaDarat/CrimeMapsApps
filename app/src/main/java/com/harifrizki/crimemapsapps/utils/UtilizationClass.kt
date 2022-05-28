@@ -26,6 +26,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.crimemapsapps.R
+import com.harifrizki.crimemapsapps.model.Admin
 import com.orhanobut.logger.Logger
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -184,6 +185,21 @@ fun makeSpannable(
 @SuppressLint("SimpleDateFormat")
 fun Date.localDateTimeToString(): String {
     return SimpleDateFormat("dd MMMM yyyy").format(this)
+}
+
+@SuppressLint("UseCompatLoadingForDrawables")
+fun setActivate(admin: Admin?, imageView: ImageView?) {
+    imageView?.apply {
+        if (admin?.isActive!!) {
+            background =
+                context.getDrawable(R.drawable.button_red_ripple_white)
+            setImageResource(R.drawable.ic_round_lock_24)
+        } else {
+            background =
+                context.getDrawable(R.drawable.button_dark_green_ripple_white)
+            setImageResource(R.drawable.ic_round_lock_open_24)
+        }
+    }
 }
 
 fun layoutStartDrawableShimmer(

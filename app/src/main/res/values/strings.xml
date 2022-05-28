@@ -56,6 +56,7 @@
     <string name="label_add">Tambah %s</string>
     <string name="label_add_on">Tambahkan %s</string>
     <string name="label_enter_of">Masukkan %s %s</string>
+    <string name="label_edit">Ubah %s</string>
 
     <string name="label_plus_two_string">%s %s</string>
     <string name="label_plus_two_string_enter">%s\n%s</string>
