@@ -18,4 +18,7 @@ interface DataSource {
     fun adminUpdate(admin: Admin?): LiveData<ApiResource<AdminResponse>>
     fun adminUpdatePhotoProfile(admin: Admin?, photoProfile: File?): LiveData<ApiResource<AdminResponse>>
     fun adminUpdatePassword(adminId: String?, oldPassword: String?, newPassword: String?): LiveData<ApiResource<AdminResponse>>
+    fun adminResetPassword(admin: Admin?): LiveData<ApiResource<AdminResponse>>
+    fun adminUpdateActive(admin: Admin?): LiveData<ApiResource<AdminResponse>>
+    fun adminDelete(admin: Admin?): LiveData<ApiResource<MessageResponse>>
 }

@@ -29,9 +29,8 @@ import com.harifrizki.crimemapsapps.model.Menu
 import com.harifrizki.crimemapsapps.model.Message
 import com.harifrizki.crimemapsapps.ui.module.ConnectionErrorActivity
 import com.harifrizki.crimemapsapps.utils.*
+import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
-import com.harifrizki.crimemapsapps.utils.ActivityName.PASSWORD
-import com.harifrizki.crimemapsapps.utils.ActivityName.PROFILE
 import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.CRUD.Companion.getEnumCRUD
 import com.harifrizki.crimemapsapps.utils.Error.IS_API_RESPONSE
@@ -529,6 +528,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         optionAnimation: String? = LOTTIE_QUESTION_JSON,
         titlePositive: String? = context?.getString(R.string.ok),
         titleNegative: String? = context?.getString(R.string.cancel),
+        colorButtonPositive: Int? = R.color.primary,
         onPositive: (() -> Unit)?,
         onNegative: (() -> Unit)? = { dismissOption() }
     ) {
@@ -537,6 +537,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
             message?.let { option(it) }
             optionAnimation(optionAnimation)
             buttonPositive(titlePositive)
+            buttonPositive(colorButtonPositive)
             buttonNegative(titleNegative)
             onClickPositive = {
                 onPositive?.invoke()
@@ -647,6 +648,18 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                         )
                         true
                     }
+                    LIST_OF_ADMIN -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(
+                                R.string.message_success_add,
+                                getString(R.string.admin_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
+                        true
+                    }
                     else -> {
                         false
                     }
@@ -687,7 +700,23 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                 }
             }
             DELETE -> {
-                true
+                when (fromActivity) {
+                    LIST_OF_ADMIN -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(
+                                R.string.message_success_delete,
+                                getString(R.string.admin_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
+                        true
+                    }
+                    else -> {
+                        false
+                    }
+                }
             }
             else -> {
                 false
@@ -870,6 +899,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         notificationAndOptionMessage.dismiss()
     }
 
+    @Override
     fun search(
         hint: String?,
         onSearch: ((String?) -> Unit)?
@@ -882,6 +912,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         }
     }
 
+    @Override
     fun loadingList(
         isOn: Boolean?,
         isGetData: Boolean? = false,
@@ -952,10 +983,11 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         }
     }
 
-    fun titleOverloadData(title: String?): String? {
+    fun titleOverloadData(title: String?): String {
         return getString(R.string.message_title_overload_data, title)
     }
 
+    @Override
     fun messageOverloadData(
         totalOverloadData: Int?,
         menuOverloadData: String?,
@@ -980,6 +1012,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         )
     }
 
+    @Override
     fun messageOverloadData(
         totalOverloadData: Int?,
         menuOverloadData: String?,
@@ -1029,6 +1062,18 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
             admin.updatedBy?.adminName,
             admin.updatedDate
         )
+    }
+
+    @Override
+    fun getLabelActivate(admin: Admin?): String {
+        return if (admin?.isActive!!) getString(R.string.label_non_active)
+        else getString(R.string.label_active)
+    }
+
+    @Override
+    fun getColorActivate(admin: Admin?): Int {
+        return if (admin?.isActive!!) R.color.red
+        else R.color.dark_green
     }
 
     @Override

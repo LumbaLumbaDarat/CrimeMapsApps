@@ -5,17 +5,20 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import com.harifrizki.crimemapsapps.databinding.OptionBinding
 import com.harifrizki.crimemapsapps.utils.*
 
 class Option(
     var alertDialog: AlertDialog? = null
 ) {
+    private var context: Context? = null
     private var binding: OptionBinding? = null
     var onClickPositive: (() -> Unit)? = null
     var onClickNegative: (() -> Unit)? = null
 
     fun create(context: Context?) {
+        this.context = context
         val builder: AlertDialog.Builder =
             context.let { AlertDialog.Builder(it!!) }
         binding = OptionBinding.inflate(LayoutInflater.from(context))
@@ -37,17 +40,22 @@ class Option(
         )
     }
 
-    fun titleOption(titleOption: String?) {
+    fun titleOption(titleOption: String?, color: Int? = Color.BLACK) {
         binding?.tvTitleOption?.text = titleOption
     }
 
-    fun option(option: String?, color: Int = Color.BLACK) {
+    fun option(option: String?, color: Int? = Color.BLACK) {
         binding?.tvMessageOption?.text =
-            option?.let { makeSpannable(isSpanBold = true, it, color = color) }
+            makeSpannable(isSpanBold = true, option, color = color)
     }
 
     fun buttonPositive(buttonPositive: String?) {
         binding?.btnPositive?.text = buttonPositive
+    }
+
+    fun buttonPositive(color: Int?) {
+        binding?.btnPositive?.backgroundTintList =
+            ContextCompat.getColorStateList(context!!, color!!)
     }
 
     fun buttonNegative(buttonNegative: String?) {

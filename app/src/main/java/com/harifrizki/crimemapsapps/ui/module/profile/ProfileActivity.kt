@@ -716,7 +716,7 @@ class ProfileActivity : BaseActivity() {
         if (isActive!!) {
             binding.iAddProfile.tvOptionActive.apply {
                 isActive = false
-                text = getString(R.string.label_active_admin_now)
+                text = getString(R.string.label_active)
                 background = resources.getDrawable(
                     R.drawable.button_dark_green_ripple_white, null
                 )
@@ -726,7 +726,7 @@ class ProfileActivity : BaseActivity() {
         } else {
             binding.iAddProfile.tvOptionActive.apply {
                 isActive = true
-                text = getString(R.string.label_non_active_admin_now)
+                text = getString(R.string.label_non_active)
                 background = resources.getDrawable(
                     R.drawable.button_red_ripple_white, null
                 )

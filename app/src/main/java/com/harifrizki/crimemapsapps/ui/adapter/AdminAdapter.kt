@@ -3,19 +3,23 @@ package com.harifrizki.crimemapsapps.ui.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.databinding.ItemAdminBinding
 import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.utils.MAX_ITEM_LIST_SHIMMER
-import com.harifrizki.crimemapsapps.utils.doGlide
-import com.harifrizki.crimemapsapps.utils.layoutStartDrawableShimmer
-import com.harifrizki.crimemapsapps.utils.widgetStartDrawableShimmer
+import com.harifrizki.crimemapsapps.utils.*
 
 class AdminAdapter(
+    var context: Context?,
     var isShimmer: Boolean?
 ) : RecyclerView.Adapter<AdminAdapter.HolderView>() {
+    val adminLogin by lazy {
+        context?.let {
+            PreferencesManager.getInstance(it).getPreferences(LOGIN_MODEL, Admin::class.java)
+        }
+    }
     var admins: ArrayList<Admin>? = ArrayList()
 
     var onClickResetPassword: ((Admin?) -> Unit)? = null
@@ -52,12 +56,11 @@ class AdminAdapter(
 
     override fun onBindViewHolder(holder: HolderView, position: Int) {
         val admin: Admin
-        if (!isShimmer!!)
-        {
+        if (!isShimmer!!) {
             admin = admins!![position]
             holder.apply {
                 binding.apply {
-                    ivBtnAdminResetPassword.setOnClickListener{
+                    ivBtnAdminResetPassword.setOnClickListener {
                         onClickResetPassword?.invoke(admin)
                     }
                     ivBtnAdminLockAndUnlock.setOnClickListener {
@@ -72,7 +75,7 @@ class AdminAdapter(
                 }
             }
         } else admin = Admin()
-        holder.bind(admin, isShimmer)
+        holder.bind(adminLogin, admin, isShimmer)
     }
 
     override fun getItemCount(): Int {
@@ -80,18 +83,25 @@ class AdminAdapter(
         else admins!!.size
     }
 
-    class HolderView(val binding: ItemAdminBinding,
-                     private val context: Context?) :
+    class HolderView(
+        val binding: ItemAdminBinding,
+        private val context: Context?
+    ) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("UseCompatLoadingForDrawables")
-        fun bind(admin: Admin?, isShimmer: Boolean?) =
-            with(binding) {
-                if (!isShimmer!!)
-                {
-                    doGlide(context,
+        fun bind(
+            adminLogin: Admin?,
+            admin: Admin?,
+            isShimmer: Boolean?
+        ) {
+            binding.apply {
+                if (!isShimmer!!) {
+                    doGlide(
+                        context,
                         ivAdminPhotoProfile,
                         admin?.adminImage,
-                        R.drawable.ic_round_account_box_primary_24)
+                        R.drawable.ic_round_account_box_primary_24
+                    )
                     tvAdminName.text = admin?.adminName
                     tvAdminEmail.text = admin?.adminUsername
                     ivAdminState.background =
@@ -102,25 +112,46 @@ class AdminAdapter(
                             background = context.getDrawable(R.drawable.button_red_ripple_white)
                             setImageResource(R.drawable.ic_round_lock_24)
                         } else {
-                            background = context.getDrawable(R.drawable.button_dark_green_ripple_white)
+                            background =
+                                context.getDrawable(R.drawable.button_dark_green_ripple_white)
                             setImageResource(R.drawable.ic_round_lock_open_24)
                         }
                     }
+
+                    if (admin.adminUsername?.equals(adminLogin?.adminUsername)!! ||
+                        admin.adminUsername?.equals(context?.let { PreferencesManager
+                            .getInstance(it)
+                            .getPreferences(DEFAULT_ADMIN_ROOT_USERNAME) })!! ||
+                        admin.adminRole?.equals(context?.let { PreferencesManager
+                            .getInstance(it)
+                            .getPreferences(ROLE_ROOT) })!!) {
+                        ivBtnAdminResetPassword.visibility = View.GONE
+                        ivBtnAdminLockAndUnlock.visibility = View.GONE
+                        ivBtnAdminDelete.visibility = View.GONE
+                    }
+
                 } else {
-                    layoutStartDrawableShimmer(arrayOf(
-                        llAdminBackground
-                    ), context)
-                    widgetStartDrawableShimmer(arrayOf(
-                        ivAdminPhotoProfile,
-                        ivAdminState,
-                        ivBtnAdminDelete,
-                        ivBtnAdminLockAndUnlock,
-                        ivBtnAdminResetPassword
-                    ), context)
-                    widgetStartDrawableShimmer(arrayOf(
-                        tvAdminName, tvAdminEmail
-                    ), context)
+                    layoutStartDrawableShimmer(
+                        arrayOf(
+                            llAdminBackground
+                        ), context
+                    )
+                    widgetStartDrawableShimmer(
+                        arrayOf(
+                            ivAdminPhotoProfile,
+                            ivAdminState,
+                            ivBtnAdminDelete,
+                            ivBtnAdminLockAndUnlock,
+                            ivBtnAdminResetPassword
+                        ), context
+                    )
+                    widgetStartDrawableShimmer(
+                        arrayOf(
+                            tvAdminName, tvAdminEmail
+                        ), context
+                    )
                 }
             }
+        }
     }
 }

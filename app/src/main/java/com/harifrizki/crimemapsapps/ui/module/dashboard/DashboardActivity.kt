@@ -93,9 +93,11 @@ class DashboardActivity : BaseActivity() {
     {
         if (it.resultCode == Activity.RESULT_OK)
         {
-            if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
+            if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!! ||
+                showMessage(getMap(it.data)))
                 utilization()
-            else if (showMessage(getMap(it.data)))
+            else if (showMessage(getMap(it.data)) &&
+                getEnumActivityName(getMap(it.data)[FROM_ACTIVITY].toString()) == PROFILE)
             {
                 initializeAccount(PreferencesManager.
                 getInstance(this).

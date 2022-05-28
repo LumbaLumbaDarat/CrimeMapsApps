@@ -35,6 +35,8 @@ data class Admin(
                 addProperty("adminRole", admin?.adminRole)
                 addProperty("adminPassword", admin?.adminPassword)
                 addProperty("adminImage", admin?.adminImage)
+                addProperty("isLogin", admin?.isLogin)
+                addProperty("active", admin?.isActive)
                 addProperty("createdDate", admin?.createdDate)
                 addProperty("createdBy", admin?.createdByUUID)
                 addProperty("updatedDate", admin?.updatedDate)

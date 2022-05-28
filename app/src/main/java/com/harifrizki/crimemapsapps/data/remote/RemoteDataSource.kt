@@ -287,6 +287,75 @@ class RemoteDataSource: DataSource {
         return result
     }
 
+    override fun adminResetPassword(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
+        val result = MutableLiveData<ApiResource<AdminResponse>>()
+        try
+        {
+            val client = NetworkApi.connectToApi().adminResetPassword(jsonObject(admin))
+            client.enqueue(object : Callback<AdminResponse> {
+                override fun onResponse(
+                    call: Call<AdminResponse>,
+                    response: Response<AdminResponse>
+                ) {
+                    convertResponse(response, AdminResponse(), result)
+                }
+
+                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
+                    convertResponse(AdminResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(AdminResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+    override fun adminUpdateActive(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
+        val result = MutableLiveData<ApiResource<AdminResponse>>()
+        try
+        {
+            val client = NetworkApi.connectToApi().adminUpdateActive(jsonObject(admin))
+            client.enqueue(object : Callback<AdminResponse> {
+                override fun onResponse(
+                    call: Call<AdminResponse>,
+                    response: Response<AdminResponse>
+                ) {
+                    convertResponse(response, AdminResponse(), result)
+                }
+
+                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
+                    convertResponse(AdminResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(AdminResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+    override fun adminDelete(admin: Admin?): LiveData<ApiResource<MessageResponse>> {
+        val result = MutableLiveData<ApiResource<MessageResponse>>()
+        try
+        {
+            val client = NetworkApi.connectToApi().adminDelete(jsonObject(admin))
+            client.enqueue(object : Callback<MessageResponse> {
+                override fun onResponse(
+                    call: Call<MessageResponse>,
+                    response: Response<MessageResponse>
+                ) {
+                    convertResponse(response, MessageResponse(), result)
+                }
+
+                override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
+                    convertResponse(MessageResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(MessageResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
     private fun <T> convertResponse(
         response: Response<T>,
         modelResponse: T,

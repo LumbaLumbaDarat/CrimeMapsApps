@@ -10,10 +10,14 @@
     <string name="title">Title</string>
     <string name="back">Kembali</string>
     <string name="cancel">Batalkan</string>
+    <string name="no">Tidak</string>
     <string name="ok">OK</string>
     <string name="change">Ubah</string>
     <string name="done">Selesai</string>
     <string name="temp">Temp</string>
+    <string name="yes_delete">Ya, Hapus</string>
+    <string name="yes_reset">Ya, Reset</string>
+    <string name="yes_activate">Ya, %s</string>
 
     <string name="label_login">Masuk</string>
     <string name="label_name">Nama</string>
@@ -39,8 +43,8 @@
     <string name="label_role_root">Root</string>
     <string name="label_role_admin">Admin</string>
 
-    <string name="label_active_admin_now">Aktifkan Admin</string>
-    <string name="label_non_active_admin_now">Non-Aktifkan Admin</string>
+    <string name="label_active">Aktifkan</string>
+    <string name="label_non_active">Non-Aktifkan</string>
 
     <string name="label_change_password">Ganti Password</string>
 
@@ -55,6 +59,8 @@
 
     <string name="label_plus_two_string">%s %s</string>
     <string name="label_plus_two_string_enter">%s\n%s</string>
+    <string name="label_plus_two_string_regex_first">[%s] %s</string>
+    <string name="label_plus_two_string_regex_second">%s [%s]</string>
     <string name="label_title_search_by">Cari [%s] Berdasarkan [%s]</string>
     <string name="label_show_overload">Tampilkan Seluruh Data %s</string>
 
@@ -76,6 +82,13 @@
     <string name="notification_information_title">Informasi</string>
     <string name="notification_success_title">Berhasil</string>
 
+    <string name="message_title_delete">Hapus %s</string>
+    <string name="message_delete">Apakah Anda ingin [menghapus] data %s [%s] ?</string>
+    <string name="message_title_reset_password">Reset Password %s</string>
+    <string name="message_reset_password">Apakah Anda ingin [me-reset password] %s [%s] ?</string>
+    <string name="message_activate">Apakah Anda ingin [%s] %s [%s] ?</string>
+
+
     <string name="message_loading">[Mohon menunggu]\nKami sedang mencari apa yang Anda butuhkan</string>
     <string name="message_loading_splash">Memuat koneksi, mohon menunggu…</string>
     <string name="message_loading_login">Mencari data Credential, Mohon menunggu…</string>
@@ -83,6 +96,7 @@
     <string name="message_logout_option">Apakah Anda ingin [keluar] dari aplikasi ?</string>
     <string name="message_success_add">Berhasil menambah %s</string>
     <string name="message_success_update">Berhasil merubah %s</string>
+    <string name="message_success_delete">Berhasil menghapus %s</string>
 
     <string name="message_no_title_network">Tidak Ada Koneksi Internet</string>
     <string name="message_no_network">Sepertinya Perangkat Anda mengalami kendala dalam Jaringan Internet</string>

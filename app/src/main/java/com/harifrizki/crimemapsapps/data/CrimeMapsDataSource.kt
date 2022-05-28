@@ -19,4 +19,7 @@ interface CrimeMapsDataSource {
     fun adminUpdate(admin: Admin?): LiveData<DataResource<AdminResponse>>
     fun adminUpdatePhotoProfile(admin: Admin?, photoProfile: File?): LiveData<DataResource<AdminResponse>>
     fun adminUpdatePassword(adminId: String?, oldPassword: String?, newPassword: String?): LiveData<DataResource<AdminResponse>>
+    fun adminResetPassword(admin: Admin?): LiveData<DataResource<AdminResponse>>
+    fun adminUpdateActive(admin: Admin?): LiveData<DataResource<AdminResponse>>
+    fun adminDelete(admin: Admin?): LiveData<DataResource<MessageResponse>>
 }

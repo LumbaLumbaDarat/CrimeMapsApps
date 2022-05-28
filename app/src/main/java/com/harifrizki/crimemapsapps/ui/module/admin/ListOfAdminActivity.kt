@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.AdminResponse
+import com.harifrizki.crimemapsapps.data.remote.response.MessageResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityListOfAdminBinding
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Page
@@ -18,8 +19,8 @@ import com.harifrizki.crimemapsapps.ui.component.BaseActivity
 import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
-import com.harifrizki.crimemapsapps.utils.ActivityName.LIST_OF_ADMIN
-import com.harifrizki.crimemapsapps.utils.CRUD.CREATE
+import com.harifrizki.crimemapsapps.utils.ActivityName.*
+import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 import com.lumbalumbadrt.colortoast.ColorToast
 
@@ -40,6 +41,7 @@ class ListOfAdminActivity : BaseActivity() {
     private var adminAdapter: AdminAdapter? = null
 
     private var page: Page? = null
+    private var isAfterCRUD: CRUD? = NONE
     private var doNotLoadData: Boolean? = true
     private var searchName: String? = EMPTY_STRING
 
@@ -79,9 +81,11 @@ class ListOfAdminActivity : BaseActivity() {
             btnBackListOfAdmin.setOnClickListener { onBackPressed() }
         }
         search(
-            getString(R.string.label_title_search_by,
+            getString(
+                R.string.label_title_search_by,
                 getString(R.string.admin_menu),
-                getString(R.string.label_name)),
+                getString(R.string.label_name)
+            ),
             onSearch = {
                 searchName = it
                 admin()
@@ -94,9 +98,11 @@ class ListOfAdminActivity : BaseActivity() {
         ActivityResultContracts.StartActivityForResult()
     )
     {
-        if (it.resultCode == Activity.RESULT_OK)
-        {
-            if (showMessage(getMap(it.data))) admin()
+        if (it.resultCode == Activity.RESULT_OK) {
+            if (showMessage(getMap(it.data))) {
+                isAfterCRUD = CREATE
+                admin()
+            }
         }
     }
 
@@ -106,6 +112,14 @@ class ListOfAdminActivity : BaseActivity() {
         admin()
     }
 
+    override fun onBackPressed() {
+        onBackPressed(
+            getNameOfActivity(LIST_OF_ADMIN),
+            isAfterCRUD!!.name
+        )
+        super.onBackPressed()
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private val admin = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
@@ -113,28 +127,31 @@ class ListOfAdminActivity : BaseActivity() {
                 loadingList(true)
             }
             SUCCESS -> {
-                if (isResponseSuccess(it.data?.message))
-                {
-                    if (it.data?.adminArrayList?.size!! > ZERO)
-                    {
-                        if (it.data.page?.totalContentSize!! >= MAX_LIST_IN_RECYCLER_VIEW)
-                        {
-                            if (doNotLoadData!!)
-                            {
+                if (isResponseSuccess(it.data?.message)) {
+                    if (it.data?.adminArrayList?.size!! > ZERO) {
+                        if (it.data.page?.totalContentSize!! >= MAX_LIST_IN_RECYCLER_VIEW) {
+                            if (doNotLoadData!!) {
                                 showNotificationAndOptionMessageInformation(
                                     title = titleOverloadData(getString(R.string.admin_menu)),
                                     message = messageOverloadData(
                                         it.data.page?.totalContentSize,
                                         getString(R.string.admin_menu),
-                                        getString(R.string.label_name)),
+                                        getString(R.string.label_name)
+                                    ),
                                     useOption = true,
-                                    buttonPositive = getString(R.string.label_title_search_by,
+                                    buttonPositive = getString(
+                                        R.string.label_title_search_by,
                                         getString(R.string.admin_menu),
-                                        getString(R.string.label_plus_two_string,
+                                        getString(
+                                            R.string.label_plus_two_string,
                                             getString(R.string.label_name),
-                                            getString(R.string.admin_menu))),
-                                    buttonNegative = getString(R.string.label_show_overload,
-                                        getString(R.string.admin_menu)),
+                                            getString(R.string.admin_menu)
+                                        )
+                                    ),
+                                    buttonNegative = getString(
+                                        R.string.label_show_overload,
+                                        getString(R.string.admin_menu)
+                                    ),
                                     onPositive = {
                                         binding.iSearchListOfAdmin.tieSearch.requestFocus()
                                     },
@@ -146,17 +163,23 @@ class ListOfAdminActivity : BaseActivity() {
                                 loadingList(
                                     isOn = false,
                                     isGetData = true,
-                                    isOverloadData = true)
+                                    isOverloadData = true
+                                )
                             } else setAdminAdapter(it.data)
                         } else setAdminAdapter(it.data)
                     } else {
-                        showEmpty(getString(R.string.label_not_found),
-                            getString(R.string.message_empty_list,
-                                getString(R.string.admin_menu)))
+                        showEmpty(
+                            getString(R.string.label_not_found),
+                            getString(
+                                R.string.message_empty_list,
+                                getString(R.string.admin_menu)
+                            )
+                        )
                         loadingList(
                             isOn = false,
                             isGetData = false,
-                            isOverloadData = false)
+                            isOverloadData = false
+                        )
                     }
                 }
             }
@@ -164,10 +187,12 @@ class ListOfAdminActivity : BaseActivity() {
                 loadingList(
                     isOn = false,
                     isGetData = false,
-                    isOverloadData = false)
+                    isOverloadData = false
+                )
                 showEmptyError(
                     getString(R.string.message_error_something_wrong),
-                    it.errorResponse?.errorMessage)
+                    it.errorResponse?.errorMessage
+                )
                 goTo(it.errorResponse)
             }
             else -> {}
@@ -175,32 +200,203 @@ class ListOfAdminActivity : BaseActivity() {
     }
 
     private fun admin() {
-        if (networkConnected())
-        {
+        if (networkConnected()) {
             var pageNo: String? = INITIALIZE_PAGE_NO.toString()
-            if (page != null)
-            {
+            if (page != null) {
                 if (page?.nextPage!!.isEmpty())
                     ColorToast.roundLineInfo(
                         this,
                         getString(R.string.app_name),
-                        getString(R.string.message_all_data_was_load,
-                            getString(R.string.admin_menu)),
-                        Toast.LENGTH_LONG)
+                        getString(
+                            R.string.message_all_data_was_load,
+                            getString(R.string.admin_menu)
+                        ),
+                        Toast.LENGTH_LONG
+                    )
                 else pageNo = page?.nextPage!!
             }
             viewModel.admin(pageNo, searchName).observe(this, admin)
         }
     }
 
+    private val adminResetPassword = Observer<DataResource<AdminResponse>> {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
+                    ColorToast.roundLineSuccess(
+                        this,
+                        getString(R.string.app_name),
+                        it.data?.message?.message,
+                        Toast.LENGTH_LONG
+                    )
+                    admin()
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun adminResetPassword(admin: Admin?) {
+        if (networkConnected()) {
+            viewModel.adminResetPassword(admin)
+                .observe(this, adminResetPassword)
+        }
+    }
+
+    private val adminUpdateActive = Observer<DataResource<AdminResponse>> {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
+                    ColorToast.roundLineSuccess(
+                        this,
+                        getString(R.string.app_name),
+                        it.data?.message?.message,
+                        Toast.LENGTH_LONG
+                    )
+                    admin()
+                }
+            }
+            ERROR -> {
+                showLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun adminUpdateActive(admin: Admin?) {
+        if (networkConnected()) {
+            viewModel.adminUpdateActive(admin)
+                .observe(this, adminUpdateActive)
+        }
+    }
+
+    private val adminDelete = Observer<DataResource<MessageResponse>> {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading()
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
+                    isAfterCRUD = DELETE
+                    ColorToast.roundLineSuccess(
+                        this,
+                        getString(R.string.app_name),
+                        it.data?.message?.message,
+                        Toast.LENGTH_LONG
+                    )
+                    admin()
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun adminDelete(admin: Admin?) {
+        if (networkConnected()) {
+            viewModel.adminDelete(admin).observe(this, adminDelete)
+        }
+    }
+
     private fun initializeAdmin() {
         adminAdapter = AdminAdapter(
+            context = this,
             isShimmer = false
         ).apply {
             onClickAdmin = {}
-            onClickResetPassword = {}
-            onClickLockAndUnlock = {}
-            onClickDelete = {}
+            onClickResetPassword = {
+                showOption(
+                    titleOption = getString(
+                        R.string.message_title_reset_password,
+                        getString(R.string.admin_menu)
+                    ),
+                    message = getString(
+                        R.string.message_reset_password,
+                        getString(R.string.admin_menu), it?.adminName
+                    ),
+                    titlePositive = getString(R.string.yes_reset),
+                    titleNegative = getString(R.string.no),
+                    onPositive = {
+                        dismissOption()
+                        adminResetPassword(Admin().apply {
+                            adminId = it?.adminId
+                            updatedByUUID = PreferencesManager
+                                .getInstance(this@ListOfAdminActivity)
+                                .getPreferences(LOGIN_MODEL, Admin::class.java)
+                                .adminId
+                        })
+                    },
+                )
+            }
+            onClickLockAndUnlock = {
+                showOption(
+                    titleOption = getString(
+                        R.string.label_plus_two_string,
+                        getLabelActivate(it),
+                        getString(R.string.admin_menu)
+                    ),
+                    message = getString(
+                        R.string.message_activate,
+                        getLabelActivate(it),
+                        getString(R.string.admin_menu),
+                        it?.adminName
+                    ),
+                    titlePositive = getString(
+                        R.string.yes_activate,
+                        getLabelActivate(it)
+                    ),
+                    titleNegative = getString(R.string.no),
+                    colorButtonPositive = getColorActivate(it),
+                    onPositive = {
+                        dismissOption()
+                        adminUpdateActive(Admin().apply {
+                            adminId = it?.adminId
+                            isActive = !it?.isActive!!
+                            updatedByUUID = PreferencesManager
+                                .getInstance(this@ListOfAdminActivity)
+                                .getPreferences(LOGIN_MODEL, Admin::class.java)
+                                .adminId
+                        })
+                    },
+                )
+            }
+            onClickDelete = {
+                showOption(
+                    titleOption = getString(
+                        R.string.message_title_delete,
+                        getString(R.string.admin_menu)
+                    ),
+                    message = getString(
+                        R.string.message_delete,
+                        getString(R.string.admin_menu), it?.adminName
+                    ),
+                    titlePositive = getString(R.string.yes_delete),
+                    titleNegative = getString(R.string.no),
+                    colorButtonPositive = R.color.red,
+                    onPositive = {
+                        dismissOption()
+                        adminDelete(
+                            Admin().apply { adminId = it?.adminId })
+                    },
+                )
+            }
         }
         binding.apply {
             rvListOfAdmin.apply {
@@ -209,7 +405,10 @@ class ListOfAdminActivity : BaseActivity() {
             }
             rvListOfAdminShimmer.apply {
                 layoutManager = LinearLayoutManager(this@ListOfAdminActivity)
-                adapter = AdminAdapter(isShimmer = true)
+                adapter = AdminAdapter(
+                    context = this@ListOfAdminActivity,
+                    isShimmer = true
+                )
             }
         }
     }
@@ -225,7 +424,8 @@ class ListOfAdminActivity : BaseActivity() {
             loadingList(
                 isOn = false,
                 isGetData = true,
-                isOverloadData = false)
+                isOverloadData = false
+            )
         }
     }
 }
