@@ -22,4 +22,6 @@ interface CrimeMapsDataSource {
     fun adminResetPassword(admin: Admin?): LiveData<DataResource<AdminResponse>>
     fun adminUpdateActive(admin: Admin?): LiveData<DataResource<AdminResponse>>
     fun adminDelete(admin: Admin?): LiveData<DataResource<MessageResponse>>
+
+    fun provinceByName(pageNo: String?, name: String?): LiveData<DataResource<ProvinceResponse>>
 }

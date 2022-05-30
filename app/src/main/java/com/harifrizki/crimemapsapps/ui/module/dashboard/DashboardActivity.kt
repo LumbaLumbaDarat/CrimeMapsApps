@@ -5,9 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.PopupWindow
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,28 +14,26 @@ import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.MessageResponse
 import com.harifrizki.crimemapsapps.data.remote.response.UtilizationResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityDashboardBinding
-import com.harifrizki.crimemapsapps.databinding.LayoutListBinding
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Utilization
-import com.harifrizki.crimemapsapps.ui.adapter.MenuAdapter
 import com.harifrizki.crimemapsapps.ui.adapter.MenuAreaAdapter
 import com.harifrizki.crimemapsapps.ui.adapter.MenuAreaDetailAdapter
-import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminActivity
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
 import com.harifrizki.crimemapsapps.ui.component.MenuArea
 import com.harifrizki.crimemapsapps.ui.component.MenuAreaDetail
+import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminActivity
+import com.harifrizki.crimemapsapps.ui.module.area.ListOfAreaActivity
 import com.harifrizki.crimemapsapps.ui.module.login.LoginActivity
 import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
-import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
+import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
 import com.harifrizki.crimemapsapps.utils.MenuSetting.*
-import com.harifrizki.crimemapsapps.utils.CRUD.*
-import com.harifrizki.crimemapsapps.utils.CRUD.Companion.getEnumCRUD
-import com.lumbalumbadrt.colortoast.ColorToast
+import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
+import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -410,8 +405,13 @@ class DashboardActivity : BaseActivity() {
         menuAreaAdapter = MenuAreaAdapter(false)
         menuAreaAdapter?.apply {
             menuAreas = menuAreas()
-            onClickMenuArea = {
-
+            onClickItem = {
+                Logger.e(it.toString())
+                goTo(
+                    ListOfAreaActivity(),
+                    hashMapOf(
+                        FROM_ACTIVITY to getNameOfActivity(DASHBOARD),
+                        AREA to (it.menuAreaType as MenuAreaType)))
             }
             notifyDataSetChanged()
         }

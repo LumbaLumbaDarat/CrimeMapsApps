@@ -6,7 +6,7 @@ import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 class DataResource<T>(val responseStatus: ResponseStatus, val data: T?, val errorResponse: ErrorResponse?) {
     companion object {
         fun <T> success(data: T?): DataResource<T>                              = DataResource(SUCCESS, data, null)
-        fun <T> error(errorResponse: ErrorResponse?, data: T?): DataResource<T> = DataResource(ERROR, data, errorResponse)
+        fun <T> error(errorResponse: ErrorResponse?, data: T?): DataResource<T> = DataResource(ERROR,   data, errorResponse)
         fun <T> loading(data: T?): DataResource<T>                              = DataResource(LOADING, data, null)
     }
 }

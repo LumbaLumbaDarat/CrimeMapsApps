@@ -48,6 +48,8 @@
 
     <string name="label_change_password">Ganti Password</string>
 
+    <string name="label_create_by">Dibuat oleh [%s]</string>
+    <string name="label_create_at">Dibuat pada [%s]</string>
     <string name="label_create_by_and_created_date">Dibuat oleh [%s], pada [%s]</string>
     <string name="label_updated_by_and_updated_date">Diubah oleh [%s], pada [%s]</string>
     <string name="label_not_yet_updated">Belum ada perubahan data.</string>

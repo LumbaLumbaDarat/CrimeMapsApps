@@ -87,7 +87,7 @@ class PasswordActivity : BaseActivity() {
     override fun onBackPressed() {
         onBackPressed(
             getNameOfActivity(PASSWORD),
-            isAfterCRUD!!.name)
+            isAfterCRUD)
         super.onBackPressed()
     }
 

@@ -268,7 +268,7 @@ class ProfileActivity : BaseActivity() {
     override fun onBackPressed() {
         onBackPressed(
             getNameOfActivity(PROFILE),
-            isAfterCRUD!!.name
+            isAfterCRUD
         )
         super.onBackPressed()
     }

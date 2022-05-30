@@ -18,10 +18,9 @@ import com.harifrizki.crimemapsapps.ui.adapter.AdminAdapter
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
 import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
 import com.harifrizki.crimemapsapps.utils.*
-import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
+import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.CRUD.*
-import com.harifrizki.crimemapsapps.utils.CRUD.Companion.getEnumCRUD
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 import com.lumbalumbadrt.colortoast.ColorToast
 
@@ -101,7 +100,7 @@ class ListOfAdminActivity : BaseActivity() {
     {
         if (it.resultCode == Activity.RESULT_OK) {
             if (showMessage(getMap(it.data))) {
-                isAfterCRUD = getEnumCRUD(getMap(it.data)[OPERATION_CRUD].toString())
+                isAfterCRUD = getMap(it.data)[OPERATION_CRUD] as CRUD
                 admin()
             }
         }
@@ -116,7 +115,7 @@ class ListOfAdminActivity : BaseActivity() {
     override fun onBackPressed() {
         onBackPressed(
             getNameOfActivity(LIST_OF_ADMIN),
-            isAfterCRUD!!.name
+            isAfterCRUD
         )
         super.onBackPressed()
     }

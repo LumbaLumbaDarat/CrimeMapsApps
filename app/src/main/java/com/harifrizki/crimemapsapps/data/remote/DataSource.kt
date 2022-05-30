@@ -21,4 +21,6 @@ interface DataSource {
     fun adminResetPassword(admin: Admin?): LiveData<ApiResource<AdminResponse>>
     fun adminUpdateActive(admin: Admin?): LiveData<ApiResource<AdminResponse>>
     fun adminDelete(admin: Admin?): LiveData<ApiResource<MessageResponse>>
+
+    fun provinceByName(pageNo: String?, name: String?): LiveData<ApiResource<ProvinceResponse>>
 }

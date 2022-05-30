@@ -23,6 +23,9 @@ const val ADMIN_UPDATE_ACTIVE        = "$ADMIN/activated/"
 const val ADMIN_RESET_PASSWORD       = "$ADMIN/reset-password/"
 const val ADMIN_DELETE               = "$ADMIN/$DELETE/"
 
+const val PROVINCE         = "$VERSION_API/province"
+const val PROVINCE_BY_NAME = "$PROVINCE/search-by-name"
+
 const val CONNECT_TIME_OUT: Long = 5
 const val READ_TIME_OUT: Long    = 30
 const val WRITE_TIME_OUT: Long   = 15

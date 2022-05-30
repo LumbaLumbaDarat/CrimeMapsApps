@@ -12,7 +12,7 @@ import java.io.File
 class CrimeMapsRepository(
     private val remote: RemoteDataSource,
     private val executor: AppExecutor
-): CrimeMapsDataSource {
+) : CrimeMapsDataSource {
     companion object {
         @Volatile
         private var instance: CrimeMapsRepository? = null
@@ -126,6 +126,16 @@ class CrimeMapsRepository(
         return object : NetworkResource<MessageResponse>() {
             override fun createCall(): LiveData<ApiResource<MessageResponse>> =
                 remote.adminDelete(admin)
+        }.asLiveData()
+    }
+
+    override fun provinceByName(
+        pageNo: String?,
+        name: String?
+    ): LiveData<DataResource<ProvinceResponse>> {
+        return object : NetworkResource<ProvinceResponse>() {
+            override fun createCall(): LiveData<ApiResource<ProvinceResponse>> =
+                remote.provinceByName(pageNo, name)
         }.asLiveData()
     }
 }

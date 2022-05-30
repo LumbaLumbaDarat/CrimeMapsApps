@@ -73,4 +73,10 @@ interface EndPoint {
     @POST(ADMIN_DELETE)
     fun adminDelete(@Body jsonObject: JsonObject):
             Call<MessageResponse>
+
+    @FormUrlEncoded
+    @POST(PROVINCE_BY_NAME)
+    fun provinceByName(@Query("pageNo") pageNo: String,
+                       @Field("provinceName") provinceName: String):
+            Call<ProvinceResponse>
 }

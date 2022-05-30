@@ -3,6 +3,7 @@ package com.harifrizki.crimemapsapps.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -26,7 +27,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.crimemapsapps.R
+import com.harifrizki.crimemapsapps.data.remote.response.ProvinceResponse
 import com.harifrizki.crimemapsapps.model.Admin
+import com.harifrizki.crimemapsapps.model.Province
 import com.orhanobut.logger.Logger
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -75,6 +78,39 @@ fun getVersion(context: Context?): String {
         Logger.e("getVersion: ".plus(e.message.toString()))
         EMPTY_STRING
     }
+}
+
+fun <T> getModel(any: Any?, modelClass: Class<T>): T {
+    return when {
+        modelClass.isAssignableFrom(ProvinceResponse::class.java) -> {
+            (any as ProvinceResponse) as T
+        }
+        modelClass.isAssignableFrom(Province::class.java) -> {
+            (any as Province) as T
+        }
+        else -> {
+            Logger.e("Unknown modelClass class: " + modelClass.name)
+            throw Throwable("Unknown modelClass class: " + modelClass.name)
+        }
+    }
+}
+
+fun getCreateBy(context: Context?, createdBy: String?): String? {
+    return if (createdBy == null)
+        context?.getString(R.string.label_null_created_and_updated)
+    else context?.getString(
+        R.string.label_create_by,
+        createdBy
+    )
+}
+
+fun getCreateAt(context: Context?, createdAt: String?): String? {
+    return if (createdAt == null)
+        context?.getString(R.string.label_null_created_and_updated)
+    else context?.getString(
+        R.string.label_create_at,
+        createdAt
+    )
 }
 
 fun getNameForImageTemp(context: Context?, imageType: ImageType?): String {
@@ -138,10 +174,10 @@ fun toMultipartBody(file: File?, name: String?, mediaType: String?): MultipartBo
 }
 
 fun makeSpannable(
-    isSpanBold: Boolean?,
+    isSpanBold: Boolean? = true,
     text: String?,
     regex: String? = SPAN_REGEX,
-    color: Int? = ZERO
+    color: Int? = Color.BLACK
 ): SpannableStringBuilder {
     val stringBuffer = StringBuffer()
     val spannableStringBuilder = SpannableStringBuilder()

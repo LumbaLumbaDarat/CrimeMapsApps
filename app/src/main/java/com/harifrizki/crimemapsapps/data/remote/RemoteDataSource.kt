@@ -19,7 +19,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
-class RemoteDataSource: DataSource {
+class RemoteDataSource : DataSource {
     companion object {
         private val TAG: String =
             RemoteDataSource::javaClass.name
@@ -35,8 +35,7 @@ class RemoteDataSource: DataSource {
 
     override fun handshake(): LiveData<ApiResource<HandshakeResponse>> {
         val result = MutableLiveData<ApiResource<HandshakeResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().handshake()
             client.enqueue(object : Callback<HandshakeResponse> {
                 override fun onResponse(
@@ -58,11 +57,13 @@ class RemoteDataSource: DataSource {
 
     override fun login(admin: Admin?): LiveData<ApiResource<LoginResponse>> {
         val result = MutableLiveData<ApiResource<LoginResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().login(jsonObject(admin))
             client.enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
                     convertResponse(response, LoginResponse(), result)
                 }
 
@@ -78,8 +79,7 @@ class RemoteDataSource: DataSource {
 
     override fun logout(admin: Admin?): LiveData<ApiResource<MessageResponse>> {
         val result = MutableLiveData<ApiResource<MessageResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().logout(jsonObject(admin))
             client.enqueue(object : Callback<MessageResponse> {
                 override fun onResponse(
@@ -101,8 +101,7 @@ class RemoteDataSource: DataSource {
 
     override fun utilization(): LiveData<ApiResource<UtilizationResponse>> {
         val result = MutableLiveData<ApiResource<UtilizationResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().utilization()
             client.enqueue(object : Callback<UtilizationResponse> {
                 override fun onResponse(
@@ -124,11 +123,12 @@ class RemoteDataSource: DataSource {
 
     override fun adminByName(pageNo: String?, name: String?): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try
-        {
-            val client = pageNo?.let { name?.let { name ->
-                NetworkApi.connectToApi().adminByName(it, name)
-            } }
+        try {
+            val client = pageNo?.let {
+                name?.let { name ->
+                    NetworkApi.connectToApi().adminByName(it, name)
+                }
+            }
             client?.enqueue(object : Callback<AdminResponse> {
                 override fun onResponse(
                     call: Call<AdminResponse>,
@@ -149,8 +149,7 @@ class RemoteDataSource: DataSource {
 
     override fun adminById(adminId: String?): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try
-        {
+        try {
             val client = adminId?.let { NetworkApi.connectToApi().adminById(it) }
             client?.enqueue(object : Callback<AdminResponse> {
                 override fun onResponse(
@@ -175,14 +174,15 @@ class RemoteDataSource: DataSource {
         photoProfile: File?
     ): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().adminAdd(
                 toRequestBody(jsonObject(admin).toString(), "multipart/form-data"),
                 toMultipartBody(
                     photoProfile,
                     "adminPhotoProfile",
-                    "multipart/form-data"))
+                    "multipart/form-data"
+                )
+            )
             client.enqueue(object : Callback<AdminResponse> {
                 override fun onResponse(
                     call: Call<AdminResponse>,
@@ -203,8 +203,7 @@ class RemoteDataSource: DataSource {
 
     override fun adminUpdate(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().adminUpdate(jsonObject(admin))
             client.enqueue(object : Callback<AdminResponse> {
                 override fun onResponse(
@@ -229,14 +228,15 @@ class RemoteDataSource: DataSource {
         photoProfile: File?
     ): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().adminUpdatePhotoProfile(
                 toRequestBody(jsonObject(admin).toString(), "multipart/form-data"),
                 toMultipartBody(
                     photoProfile,
                     "adminPhotoProfile",
-                    "multipart/form-data"))
+                    "multipart/form-data"
+                )
+            )
             client.enqueue(object : Callback<AdminResponse> {
                 override fun onResponse(
                     call: Call<AdminResponse>,
@@ -261,14 +261,16 @@ class RemoteDataSource: DataSource {
         newPassword: String?
     ): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try
-        {
-            val client = adminId?.let { oldPassword?.let { oldPassword ->
-                newPassword?.let { newPassword ->
-                    NetworkApi.connectToApi().adminUpdatePassword(
-                        it, oldPassword, newPassword)
+        try {
+            val client = adminId?.let {
+                oldPassword?.let { oldPassword ->
+                    newPassword?.let { newPassword ->
+                        NetworkApi.connectToApi().adminUpdatePassword(
+                            it, oldPassword, newPassword
+                        )
+                    }
                 }
-            } }
+            }
             client?.enqueue(object : Callback<AdminResponse> {
                 override fun onResponse(
                     call: Call<AdminResponse>,
@@ -289,8 +291,7 @@ class RemoteDataSource: DataSource {
 
     override fun adminResetPassword(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().adminResetPassword(jsonObject(admin))
             client.enqueue(object : Callback<AdminResponse> {
                 override fun onResponse(
@@ -312,8 +313,7 @@ class RemoteDataSource: DataSource {
 
     override fun adminUpdateActive(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
         val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().adminUpdateActive(jsonObject(admin))
             client.enqueue(object : Callback<AdminResponse> {
                 override fun onResponse(
@@ -335,8 +335,7 @@ class RemoteDataSource: DataSource {
 
     override fun adminDelete(admin: Admin?): LiveData<ApiResource<MessageResponse>> {
         val result = MutableLiveData<ApiResource<MessageResponse>>()
-        try
-        {
+        try {
             val client = NetworkApi.connectToApi().adminDelete(jsonObject(admin))
             client.enqueue(object : Callback<MessageResponse> {
                 override fun onResponse(
@@ -356,15 +355,46 @@ class RemoteDataSource: DataSource {
         return result
     }
 
+    override fun provinceByName(
+        pageNo: String?,
+        name: String?
+    ): LiveData<ApiResource<ProvinceResponse>> {
+        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
+        try {
+            val client = pageNo?.let {
+                name?.let { name ->
+                    NetworkApi.connectToApi().provinceByName(it, name)
+                }
+            }
+            client?.enqueue(object : Callback<ProvinceResponse> {
+                override fun onResponse(
+                    call: Call<ProvinceResponse>,
+                    response: Response<ProvinceResponse>
+                ) {
+                    convertResponse(response, ProvinceResponse(), result)
+                }
+
+                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
+                    convertResponse(ProvinceResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(ProvinceResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
     private fun <T> convertResponse(
         response: Response<T>,
         modelResponse: T,
-        result: MutableLiveData<ApiResource<T>>)
-    {
+        result: MutableLiveData<ApiResource<T>>
+    ) {
         if (response.isSuccessful)
             result.value = ApiResource.success(response.body()!!)
-        else result.value = ApiResource.error(modelResponse,
-            errorResponse(response, JSONObject(response.errorBody()?.string())))
+        else result.value = ApiResource.error(
+            modelResponse,
+            errorResponse(response, JSONObject(response.errorBody()?.string()))
+        )
     }
 
     private fun <T> convertResponse(
@@ -372,11 +402,9 @@ class RemoteDataSource: DataSource {
         result: MutableLiveData<ApiResource<T>>,
         throwable: Throwable,
         responseStatus: ResponseStatus
-    )
-    {
+    ) {
         Logger.e(throwable.message.toString());
-        when (responseStatus)
-        {
+        when (responseStatus) {
             ERROR -> {
                 result.value = ApiResource.error(modelResponse, errorResponse(throwable))
             }

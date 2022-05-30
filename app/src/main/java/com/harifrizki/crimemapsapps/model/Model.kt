@@ -47,6 +47,29 @@ data class Admin(
 }
 
 @Parcelize
+data class Province(
+    @field:SerializedName("provinceId")   var provinceId: String? = null,
+    @field:SerializedName("provinceName") var provinceName: String? = null,
+    @field:SerializedName("createdBy")    var createdBy: Admin? = null,
+    @field:SerializedName("createdDate")  var createdDate: String? = null,
+    @field:SerializedName("updatedBy")    var updatedBy: Admin? = null,
+    @field:SerializedName("updatedDate")  var updatedDate: String? = null,
+) : Parcelable {
+    companion object {
+        fun jsonObject(province: Province?) : JsonObject {
+            return JsonObject().apply {
+                addProperty("provinceId", province?.provinceId)
+                addProperty("provinceName", province?.provinceName)
+                addProperty("createdBy", Admin.jsonObject(province?.createdBy).toString())
+                addProperty("createdDate", province?.createdDate)
+                addProperty("updatedBy", Admin.jsonObject(province?.updatedBy).toString())
+                addProperty("updatedDate", province?.updatedDate)
+            }
+        }
+    }
+}
+
+@Parcelize
 data class Page(
     @field:SerializedName("pageNo")             var pageNo: Int? = null,
     @field:SerializedName("totalPage")          var totalPage: Int? = null,

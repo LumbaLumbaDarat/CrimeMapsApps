@@ -26,7 +26,7 @@ open class MenuArea(
 ) {
     var onClickMenuArea: ((MenuArea?) -> Unit?)? = null
 
-    constructor(): this(
+    constructor() : this(
         null,
         null,
 
@@ -47,7 +47,8 @@ open class MenuArea(
                 text = titleMenuArea
                 if (checkBuildOS(Build.VERSION_CODES.M))
                     colorTitleMenuArea?.let {
-                        setTextColor(ContextCompat.getColor(context, it)) }
+                        setTextColor(ContextCompat.getColor(context, it))
+                    }
                 else colorTitleMenuArea?.let { setTextColor(context.getColor(it)) }
             }
 
@@ -55,7 +56,8 @@ open class MenuArea(
                 text = countMenuArea.toString()
                 if (checkBuildOS(Build.VERSION_CODES.M))
                     colorCountMenuArea?.let {
-                        setTextColor(ContextCompat.getColor(context, it)) }
+                        setTextColor(ContextCompat.getColor(context, it))
+                    }
                 else colorCountMenuArea?.let { setTextColor(context.getColor(it)) }
             }
 
@@ -68,29 +70,31 @@ open class MenuArea(
                     )
                 }?.let {
                     setColorFilter(
-                        it, android.graphics.PorterDuff.Mode.MULTIPLY)
+                        it, android.graphics.PorterDuff.Mode.MULTIPLY
+                    )
                 }
             }
 
             backgroundMenuArea?.let {
-                clBackgroundMenuArea.setBackgroundResource(it) }
+                clBackgroundMenuArea.setBackgroundResource(it)
+            }
 
             clBackgroundMenuArea.setOnClickListener {
                 onClickMenuArea?.invoke(
                     MenuArea(
-                    context,
-                    binding,
+                        context,
+                        binding,
 
-                    menuAreaType,
-                    titleMenuArea,
-                    iconMenuArea,
-                    countMenuArea,
+                        menuAreaType,
+                        titleMenuArea,
+                        iconMenuArea,
+                        countMenuArea,
 
-                    colorTitleMenuArea,
-                    colorIconMenuArea,
-                    colorCountMenuArea,
-                    backgroundMenuArea
-                )
+                        colorTitleMenuArea,
+                        colorIconMenuArea,
+                        colorCountMenuArea,
+                        backgroundMenuArea
+                    )
                 )
             }
         }

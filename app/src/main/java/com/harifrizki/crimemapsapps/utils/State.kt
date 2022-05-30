@@ -1,6 +1,7 @@
 package com.harifrizki.crimemapsapps.utils
 
 import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminActivity
+import com.harifrizki.crimemapsapps.ui.module.area.ListOfAreaActivity
 import com.harifrizki.crimemapsapps.ui.module.cropphoto.CropPhotoActivity
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardActivity
 import com.harifrizki.crimemapsapps.ui.module.password.PasswordActivity
@@ -27,7 +28,11 @@ enum class MenuAreaType {
     MENU_AREA_CITY_ID,
     MENU_AREA_SUB_DISTRICT_ID,
     MENU_AREA_URBAN_VILLAGE_ID,
-    MENU_AREA_ADMIN_ID
+    MENU_AREA_ADMIN_ID;
+
+    companion object {
+        fun getEnumMenuAreaType(menuAreaType: String) = values().find { it.name == menuAreaType }
+    }
 }
 
 enum class MenuSetting {
@@ -57,9 +62,9 @@ enum class CRUD {
     UPDATE,
     DELETE;
 
-    companion object {
-        fun getEnumCRUD(crud: String) = values().find { it.name == crud }
-    }
+//    companion object {
+//        fun getEnumCRUD(crud: String) = values().find { it.name == crud }
+//    }
 }
 
 enum class ActivityName(val nameOfActivity: String) {
@@ -67,7 +72,8 @@ enum class ActivityName(val nameOfActivity: String) {
     PROFILE(ProfileActivity::class.java.name),
     PASSWORD(PasswordActivity::class.java.name),
     CROP_PHOTO(CropPhotoActivity::class.java.name),
-    LIST_OF_ADMIN(ListOfAdminActivity::class.java.name);
+    LIST_OF_ADMIN(ListOfAdminActivity::class.java.name),
+    LIST_OF_AREA(ListOfAreaActivity::class.java.name);
 
     companion object {
         fun getNameOfActivity(activityName: ActivityName): String = activityName.nameOfActivity

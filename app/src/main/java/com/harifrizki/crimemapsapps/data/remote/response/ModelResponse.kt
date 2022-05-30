@@ -30,6 +30,13 @@ data class AdminResponse(
     @SerializedName("message") var message : Message? = null
 )
 
+data class ProvinceResponse(
+    @SerializedName("province")  var province: Province? = null,
+    @SerializedName("provinces") var provinceArrayList: ArrayList<Province>? = null,
+    @SerializedName("page")      var page: Page? = null,
+    @SerializedName("message")   var message : Message? = null
+)
+
 data class MessageResponse(
     @SerializedName("message") var message : Message? = null
 )

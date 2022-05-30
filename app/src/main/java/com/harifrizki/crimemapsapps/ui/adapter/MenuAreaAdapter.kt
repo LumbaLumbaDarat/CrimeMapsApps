@@ -15,7 +15,7 @@ class MenuAreaAdapter(
     var isShimmer: Boolean?
 ): RecyclerView.Adapter<MenuAreaAdapter.HolderView>() {
     var menuAreas: ArrayList<MenuArea>? = ArrayList()
-    var onClickMenuArea: ((MenuArea) -> Unit)? = null
+    var onClickItem: ((MenuArea) -> Unit)? = null
 
     @SuppressLint("NotifyDataSetChanged")
     fun addMenuAreas(menuAreas: ArrayList<MenuArea>?) {
@@ -36,14 +36,9 @@ class MenuAreaAdapter(
     }
 
     override fun onBindViewHolder(holder: HolderView, position: Int) {
-        val menuArea: MenuArea
-        if (!isShimmer!!)
-        {
-            menuArea = menuAreas!![position]
-            holder.itemView.setOnClickListener {
-                onClickMenuArea?.invoke(menuArea)
-            }
-        } else menuArea = MenuArea()
+        val menuArea: MenuArea = if (!isShimmer!!) {
+            menuAreas!![position]
+        } else MenuArea()
         holder.bind(menuArea, isShimmer)
     }
 
@@ -65,7 +60,11 @@ class MenuAreaAdapter(
                 menuArea.binding = this
                 menuArea.context = context
                 menuArea.apply {
-                    create()
+                    create().apply {
+                        onClickMenuArea = {
+                            onClickItem?.invoke(it!!)
+                        }
+                    }
                 }
             } else {
                 layoutStartDrawableShimmer(

@@ -62,6 +62,7 @@ const val LOTTIE_DEBUG_MODE_JSON   = "debug_mode.json"
 const val INTENT_DATA           = "INTENT_DATA"
 const val FROM_ACTIVITY         = "FROM_ACTIVITY"
 const val OPERATION_CRUD        = "OPERATION_CRUD"
+const val AREA                  = "AREA"
 
 const val URI_IMAGE  = "URI_IMAGE"
 const val NAME_IMAGE = "NAME_IMAGE"

@@ -1,6 +1,5 @@
 package com.harifrizki.crimemapsapps.ui.component
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -21,6 +20,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.harifrizki.crimemapsapps.BuildConfig
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
+import com.harifrizki.crimemapsapps.data.remote.response.ProvinceResponse
 import com.harifrizki.crimemapsapps.databinding.AppBarBinding
 import com.harifrizki.crimemapsapps.databinding.EmptyBinding
 import com.harifrizki.crimemapsapps.databinding.NotificationAndOptionMessageBinding
@@ -28,15 +28,16 @@ import com.harifrizki.crimemapsapps.databinding.SearchBinding
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Menu
 import com.harifrizki.crimemapsapps.model.Message
+import com.harifrizki.crimemapsapps.model.Province
 import com.harifrizki.crimemapsapps.ui.module.ConnectionErrorActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
 import com.harifrizki.crimemapsapps.utils.CRUD.*
-import com.harifrizki.crimemapsapps.utils.CRUD.Companion.getEnumCRUD
 import com.harifrizki.crimemapsapps.utils.Error.IS_API_RESPONSE
 import com.harifrizki.crimemapsapps.utils.Error.IS_NO_NETWORK
 import com.harifrizki.crimemapsapps.utils.MenuSetting.*
+import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
 import com.harifrizki.crimemapsapps.utils.NotificationType.*
 import com.lumbalumbadrt.colortoast.ColorToast
 import com.orhanobut.logger.AndroidLogAdapter
@@ -116,11 +117,22 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun onBackPressed(fromActivity: String?, operationCRUD: String?) {
+    fun onBackPressed(fromActivity: String?, crud: CRUD?) {
         onBackPressed(
             hashMapOf(
                 FROM_ACTIVITY to fromActivity!!,
-                OPERATION_CRUD to operationCRUD!!
+                OPERATION_CRUD to crud!!
+            )
+        )
+    }
+
+    @Override
+    fun onBackPressed(fromActivity: String?, crud: CRUD?, menuAreaType: MenuAreaType?) {
+        onBackPressed(
+            hashMapOf(
+                FROM_ACTIVITY to fromActivity!!,
+                OPERATION_CRUD to crud!!,
+                AREA to menuAreaType!!
             )
         )
     }
@@ -634,7 +646,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     @Override
     fun showMessage(map: HashMap<String, Any>?): Boolean {
         val fromActivity = getEnumActivityName(map!![FROM_ACTIVITY].toString())
-        return when (getEnumCRUD(map[OPERATION_CRUD] as String)) {
+        return when (map[OPERATION_CRUD] as CRUD) {
             CREATE -> {
                 when (fromActivity) {
                     PROFILE -> {
@@ -1076,6 +1088,28 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     fun getColorActivate(admin: Admin?): Int {
         return if (admin?.isActive!!) R.color.red
         else R.color.dark_green
+    }
+
+    @Override
+    fun getAreaName(menuAreaType: MenuAreaType?, area: Any?): String? {
+        return when (menuAreaType) {
+            MENU_AREA_PROVINCE_ID -> {
+                getModel(area, Province::class.java).provinceName
+                //(area as Province).provinceName
+            }
+            MENU_AREA_CITY_ID -> {
+                EMPTY_STRING
+            }
+            MENU_AREA_SUB_DISTRICT_ID -> {
+                EMPTY_STRING
+            }
+            MENU_AREA_URBAN_VILLAGE_ID -> {
+                EMPTY_STRING
+            }
+            else -> {
+                EMPTY_STRING
+            }
+        }
     }
 
     @Override
