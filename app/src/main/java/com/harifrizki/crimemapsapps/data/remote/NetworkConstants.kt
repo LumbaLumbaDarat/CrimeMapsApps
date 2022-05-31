@@ -26,6 +26,15 @@ const val ADMIN_DELETE               = "$ADMIN/$DELETE/"
 const val PROVINCE         = "$VERSION_API/province"
 const val PROVINCE_BY_NAME = "$PROVINCE/search-by-name"
 
+const val CITY         = "$VERSION_API/city"
+const val CITY_BY_NAME = "$CITY/search-by-name"
+
+const val SUB_DISTRICT         = "$VERSION_API/sub-district"
+const val SUB_DISTRICT_BY_NAME = "$SUB_DISTRICT/search-by-name"
+
+const val URBAN_VILLAGE         = "$VERSION_API/urban-village"
+const val URBAN_VILLAGE_BY_NAME = "$URBAN_VILLAGE/search-by-name"
+
 const val CONNECT_TIME_OUT: Long = 5
 const val READ_TIME_OUT: Long    = 30
 const val WRITE_TIME_OUT: Long   = 15

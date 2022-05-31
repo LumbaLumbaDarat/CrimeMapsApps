@@ -5,10 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -25,10 +22,7 @@ import com.harifrizki.crimemapsapps.databinding.AppBarBinding
 import com.harifrizki.crimemapsapps.databinding.EmptyBinding
 import com.harifrizki.crimemapsapps.databinding.NotificationAndOptionMessageBinding
 import com.harifrizki.crimemapsapps.databinding.SearchBinding
-import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.model.Menu
-import com.harifrizki.crimemapsapps.model.Message
-import com.harifrizki.crimemapsapps.model.Province
+import com.harifrizki.crimemapsapps.model.*
 import com.harifrizki.crimemapsapps.ui.module.ConnectionErrorActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
@@ -1058,6 +1052,34 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
+    fun enableAccess(buttons: Array<Button>) {
+        buttons.forEach {
+            it.isEnabled = true
+        }
+    }
+
+    @Override
+    fun disableAccess(buttons: Array<Button>) {
+        buttons.forEach {
+            it.isEnabled = false
+        }
+    }
+
+    @Override
+    fun enableAccess(imageView: Array<ImageView>) {
+        imageView.forEach {
+            it.isEnabled = true
+        }
+    }
+
+    @Override
+    fun disableAccess(imageView: Array<ImageView>) {
+        imageView.forEach {
+            it.isEnabled = false
+        }
+    }
+
+    @Override
     fun getCreated(admin: Admin?): String {
         return if (admin?.createdBy == null)
             getString(R.string.label_null_created_and_updated)
@@ -1095,16 +1117,15 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         return when (menuAreaType) {
             MENU_AREA_PROVINCE_ID -> {
                 getModel(area, Province::class.java).provinceName
-                //(area as Province).provinceName
             }
             MENU_AREA_CITY_ID -> {
-                EMPTY_STRING
+                getModel(area, City::class.java).cityName
             }
             MENU_AREA_SUB_DISTRICT_ID -> {
-                EMPTY_STRING
+                getModel(area, SubDistrict::class.java).subDistrictName
             }
             MENU_AREA_URBAN_VILLAGE_ID -> {
-                EMPTY_STRING
+                getModel(area, UrbanVillage::class.java).urbanVillageName
             }
             else -> {
                 EMPTY_STRING

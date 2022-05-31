@@ -8,7 +8,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harifrizki.crimemapsapps.R
+import com.harifrizki.crimemapsapps.data.remote.response.CityResponse
 import com.harifrizki.crimemapsapps.data.remote.response.ProvinceResponse
+import com.harifrizki.crimemapsapps.data.remote.response.SubDistrictResponse
+import com.harifrizki.crimemapsapps.data.remote.response.UrbanVillageResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityListOfAreaBinding
 import com.harifrizki.crimemapsapps.model.Message
 import com.harifrizki.crimemapsapps.model.Page
@@ -136,6 +139,18 @@ class ListOfAreaActivity : BaseActivity() {
         area(it as DataResource<Any?>)
     }
 
+    private val city = Observer<DataResource<CityResponse>> {
+        area(it as DataResource<Any?>)
+    }
+
+    private val subDistrict = Observer<DataResource<SubDistrictResponse>> {
+        area(it as DataResource<Any?>)
+    }
+
+    private val urbanVillage = Observer<DataResource<UrbanVillageResponse>> {
+        area(it as DataResource<Any?>)
+    }
+
     private fun area(it: DataResource<Any?>) {
         when (it.responseStatus) {
             LOADING -> {
@@ -152,11 +167,29 @@ class ListOfAreaActivity : BaseActivity() {
                             getModel(it.data, ProvinceResponse::class.java).provinceArrayList?.size
                         page = getModel(it.data, ProvinceResponse::class.java).page
                     }
+                    MENU_AREA_CITY_ID -> {
+                        message = getModel(it.data, CityResponse::class.java).message
+                        size =
+                            getModel(it.data, CityResponse::class.java).cityArrayList?.size
+                        page = getModel(it.data, CityResponse::class.java).page
+                    }
+                    MENU_AREA_SUB_DISTRICT_ID -> {
+                        message = getModel(it.data, SubDistrictResponse::class.java).message
+                        size =
+                            getModel(it.data, SubDistrictResponse::class.java).subDistrictArrayList?.size
+                        page = getModel(it.data, SubDistrictResponse::class.java).page
+                    }
+                    MENU_AREA_URBAN_VILLAGE_ID -> {
+                        message = getModel(it.data, UrbanVillageResponse::class.java).message
+                        size =
+                            getModel(it.data, UrbanVillageResponse::class.java).urbanVillageArrayList?.size
+                        page = getModel(it.data, UrbanVillageResponse::class.java).page
+                    }
                     else -> {}
                 }
                 if (isResponseSuccess(message)) {
                     if (size!! > ZERO) {
-                        if (page?.totalContentSize!! >= 1) {
+                        if (page?.totalContentSize!! >= MAX_LIST_IN_RECYCLER_VIEW) {
                             if (doNotLoadData!!) {
                                 showNotificationAndOptionMessageInformation(
                                     title = titleOverloadData(appBarTitle),
@@ -247,9 +280,18 @@ class ListOfAreaActivity : BaseActivity() {
                     viewModel.province(pageNo, searchName)
                         .observe(this, province)
                 }
-                MENU_AREA_CITY_ID -> {}
-                MENU_AREA_SUB_DISTRICT_ID -> {}
-                MENU_AREA_URBAN_VILLAGE_ID -> {}
+                MENU_AREA_CITY_ID -> {
+                    viewModel.city(pageNo, searchName)
+                        .observe(this, city)
+                }
+                MENU_AREA_SUB_DISTRICT_ID -> {
+                    viewModel.subDistrict(pageNo, searchName)
+                        .observe(this, subDistrict)
+                }
+                MENU_AREA_URBAN_VILLAGE_ID -> {
+                    viewModel.urbanVillage(pageNo, searchName)
+                        .observe(this, urbanVillage)
+                }
                 else -> {}
             }
         }
@@ -302,12 +344,57 @@ class ListOfAreaActivity : BaseActivity() {
     private fun setArea(any: Any?) {
         when (menuAreaType) {
             MENU_AREA_PROVINCE_ID -> {
-                val provinceResponse = getModel(any, ProvinceResponse::class.java)
-                page = provinceResponse.page
+                val response = getModel(any, ProvinceResponse::class.java)
+                page = response.page
                 areaAdapter?.apply {
                     if (page?.pageNo == INITIALIZE_PAGE_NO)
-                        setAreas(provinceResponse.provinceArrayList as ArrayList<Any>)
-                    else addAreas(provinceResponse.provinceArrayList as ArrayList<Any>)
+                        setAreas(response.provinceArrayList as ArrayList<Any>)
+                    else addAreas(response.provinceArrayList as ArrayList<Any>)
+                    notifyDataSetChanged()
+                    loadingList(
+                        isOn = false,
+                        isGetData = true,
+                        isOverloadData = false
+                    )
+                }
+            }
+            MENU_AREA_CITY_ID -> {
+                val response = getModel(any, CityResponse::class.java)
+                page = response.page
+                areaAdapter?.apply {
+                    if (page?.pageNo == INITIALIZE_PAGE_NO)
+                        setAreas(response.cityArrayList as ArrayList<Any>)
+                    else addAreas(response.cityArrayList as ArrayList<Any>)
+                    notifyDataSetChanged()
+                    loadingList(
+                        isOn = false,
+                        isGetData = true,
+                        isOverloadData = false
+                    )
+                }
+            }
+            MENU_AREA_SUB_DISTRICT_ID -> {
+                val response = getModel(any, SubDistrictResponse::class.java)
+                page = response.page
+                areaAdapter?.apply {
+                    if (page?.pageNo == INITIALIZE_PAGE_NO)
+                        setAreas(response.subDistrictArrayList as ArrayList<Any>)
+                    else addAreas(response.subDistrictArrayList as ArrayList<Any>)
+                    notifyDataSetChanged()
+                    loadingList(
+                        isOn = false,
+                        isGetData = true,
+                        isOverloadData = false
+                    )
+                }
+            }
+            MENU_AREA_URBAN_VILLAGE_ID -> {
+                val response = getModel(any, UrbanVillageResponse::class.java)
+                page = response.page
+                areaAdapter?.apply {
+                    if (page?.pageNo == INITIALIZE_PAGE_NO)
+                        setAreas(response.urbanVillageArrayList as ArrayList<Any>)
+                    else addAreas(response.urbanVillageArrayList as ArrayList<Any>)
                     notifyDataSetChanged()
                     loadingList(
                         isOn = false,

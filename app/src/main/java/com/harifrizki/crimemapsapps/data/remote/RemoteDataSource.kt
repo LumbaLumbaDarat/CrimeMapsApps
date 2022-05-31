@@ -384,6 +384,90 @@ class RemoteDataSource : DataSource {
         return result
     }
 
+    override fun cityByName(pageNo: String?, name: String?): LiveData<ApiResource<CityResponse>> {
+        val result = MutableLiveData<ApiResource<CityResponse>>()
+        try {
+            val client = pageNo?.let {
+                name?.let { name ->
+                    NetworkApi.connectToApi().cityByName(it, name)
+                }
+            }
+            client?.enqueue(object : Callback<CityResponse> {
+                override fun onResponse(
+                    call: Call<CityResponse>,
+                    response: Response<CityResponse>
+                ) {
+                    convertResponse(response, CityResponse(), result)
+                }
+
+                override fun onFailure(call: Call<CityResponse>, t: Throwable) {
+                    convertResponse(CityResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(CityResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+    override fun subDistrictByName(
+        pageNo: String?,
+        name: String?
+    ): LiveData<ApiResource<SubDistrictResponse>> {
+        val result = MutableLiveData<ApiResource<SubDistrictResponse>>()
+        try {
+            val client = pageNo?.let {
+                name?.let { name ->
+                    NetworkApi.connectToApi().subDistrictByName(it, name)
+                }
+            }
+            client?.enqueue(object : Callback<SubDistrictResponse> {
+                override fun onResponse(
+                    call: Call<SubDistrictResponse>,
+                    response: Response<SubDistrictResponse>
+                ) {
+                    convertResponse(response, SubDistrictResponse(), result)
+                }
+
+                override fun onFailure(call: Call<SubDistrictResponse>, t: Throwable) {
+                    convertResponse(SubDistrictResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(SubDistrictResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+    override fun urbanVillageByName(
+        pageNo: String?,
+        name: String?
+    ): LiveData<ApiResource<UrbanVillageResponse>> {
+        val result = MutableLiveData<ApiResource<UrbanVillageResponse>>()
+        try {
+            val client = pageNo?.let {
+                name?.let { name ->
+                    NetworkApi.connectToApi().urbanVillageByName(it, name)
+                }
+            }
+            client?.enqueue(object : Callback<UrbanVillageResponse> {
+                override fun onResponse(
+                    call: Call<UrbanVillageResponse>,
+                    response: Response<UrbanVillageResponse>
+                ) {
+                    convertResponse(response, UrbanVillageResponse(), result)
+                }
+
+                override fun onFailure(call: Call<UrbanVillageResponse>, t: Throwable) {
+                    convertResponse(UrbanVillageResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(UrbanVillageResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
     private fun <T> convertResponse(
         response: Response<T>,
         modelResponse: T,

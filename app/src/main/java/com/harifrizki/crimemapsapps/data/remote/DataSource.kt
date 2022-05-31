@@ -23,4 +23,10 @@ interface DataSource {
     fun adminDelete(admin: Admin?): LiveData<ApiResource<MessageResponse>>
 
     fun provinceByName(pageNo: String?, name: String?): LiveData<ApiResource<ProvinceResponse>>
+
+    fun cityByName(pageNo: String?, name: String?): LiveData<ApiResource<CityResponse>>
+
+    fun subDistrictByName(pageNo: String?, name: String?): LiveData<ApiResource<SubDistrictResponse>>
+
+    fun urbanVillageByName(pageNo: String?, name: String?): LiveData<ApiResource<UrbanVillageResponse>>
 }

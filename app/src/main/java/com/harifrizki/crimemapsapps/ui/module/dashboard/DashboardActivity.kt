@@ -406,7 +406,6 @@ class DashboardActivity : BaseActivity() {
         menuAreaAdapter?.apply {
             menuAreas = menuAreas()
             onClickItem = {
-                Logger.e(it.toString())
                 goTo(
                     ListOfAreaActivity(),
                     hashMapOf(

@@ -37,6 +37,27 @@ data class ProvinceResponse(
     @SerializedName("message")   var message : Message? = null
 )
 
+data class CityResponse(
+    @SerializedName("city")    var city: City? = null,
+    @SerializedName("cities")  var cityArrayList: ArrayList<City>? = null,
+    @SerializedName("page")    var page: Page? = null,
+    @SerializedName("message") var message : Message? = null
+)
+
+data class SubDistrictResponse(
+    @SerializedName("subDistrict")  var subDistrict: SubDistrict? = null,
+    @SerializedName("subDistricts") var subDistrictArrayList: ArrayList<SubDistrict>? = null,
+    @SerializedName("page")         var page: Page? = null,
+    @SerializedName("message")      var message : Message? = null
+)
+
+data class UrbanVillageResponse(
+    @SerializedName("urbanVillage")  var urbanVillage: UrbanVillage? = null,
+    @SerializedName("urbanVillages") var urbanVillageArrayList: ArrayList<UrbanVillage>? = null,
+    @SerializedName("page")          var page: Page? = null,
+    @SerializedName("message")       var message : Message? = null
+)
+
 data class MessageResponse(
     @SerializedName("message") var message : Message? = null
 )

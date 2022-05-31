@@ -70,6 +70,81 @@ data class Province(
 }
 
 @Parcelize
+data class City(
+    @field:SerializedName("cityId")      var cityId: String? = null,
+    @field:SerializedName("province")    var province: Province? = null,
+    @field:SerializedName("cityName")    var cityName: String? = null,
+    @field:SerializedName("createdBy")   var createdBy: Admin? = null,
+    @field:SerializedName("createdDate") var createdDate: String? = null,
+    @field:SerializedName("updatedBy")   var updatedBy: Admin? = null,
+    @field:SerializedName("updatedDate") var updatedDate: String? = null,
+) : Parcelable {
+    companion object {
+        fun jsonObject(city: City?) : JsonObject {
+            return JsonObject().apply {
+                addProperty("cityId", city?.cityId)
+                addProperty("province", Province.jsonObject(city?.province).toString())
+                addProperty("cityName", city?.cityName)
+                addProperty("createdBy", Admin.jsonObject(city?.createdBy).toString())
+                addProperty("createdDate", city?.createdDate)
+                addProperty("updatedBy", Admin.jsonObject(city?.updatedBy).toString())
+                addProperty("updatedDate", city?.updatedDate)
+            }
+        }
+    }
+}
+
+@Parcelize
+data class SubDistrict(
+    @field:SerializedName("subDistrictId")   var subDistrictId: String? = null,
+    @field:SerializedName("city")            var city: City? = null,
+    @field:SerializedName("subDistrictName") var subDistrictName: String? = null,
+    @field:SerializedName("createdBy")       var createdBy: Admin? = null,
+    @field:SerializedName("createdDate")     var createdDate: String? = null,
+    @field:SerializedName("updatedBy")       var updatedBy: Admin? = null,
+    @field:SerializedName("updatedDate")     var updatedDate: String? = null,
+) : Parcelable {
+    companion object {
+        fun jsonObject(subDistrict: SubDistrict?) : JsonObject {
+            return JsonObject().apply {
+                addProperty("subDistrictId", subDistrict?.subDistrictId)
+                addProperty("city", City.jsonObject(subDistrict?.city).toString())
+                addProperty("subDistrictName", subDistrict?.subDistrictName)
+                addProperty("createdBy", Admin.jsonObject(subDistrict?.createdBy).toString())
+                addProperty("createdDate", subDistrict?.createdDate)
+                addProperty("updatedBy", Admin.jsonObject(subDistrict?.updatedBy).toString())
+                addProperty("updatedDate", subDistrict?.updatedDate)
+            }
+        }
+    }
+}
+
+@Parcelize
+data class UrbanVillage(
+    @field:SerializedName("urbanVillageId")   var urbanVillageId: String? = null,
+    @field:SerializedName("subDistrict")      var subDistrict: SubDistrict? = null,
+    @field:SerializedName("urbanVillageName") var urbanVillageName: String? = null,
+    @field:SerializedName("createdBy")        var createdBy: Admin? = null,
+    @field:SerializedName("createdDate")      var createdDate: String? = null,
+    @field:SerializedName("updatedBy")        var updatedBy: Admin? = null,
+    @field:SerializedName("updatedDate")      var updatedDate: String? = null,
+) : Parcelable {
+    companion object {
+        fun jsonObject(urbanVillage: UrbanVillage?) : JsonObject {
+            return JsonObject().apply {
+                addProperty("urbanVillageId", urbanVillage?.urbanVillageId)
+                addProperty("subDistrict", SubDistrict.jsonObject(urbanVillage?.subDistrict).toString())
+                addProperty("urbanVillageName", urbanVillage?.urbanVillageName)
+                addProperty("createdBy", Admin.jsonObject(urbanVillage?.createdBy).toString())
+                addProperty("createdDate", urbanVillage?.createdDate)
+                addProperty("updatedBy", Admin.jsonObject(urbanVillage?.updatedBy).toString())
+                addProperty("updatedDate", urbanVillage?.updatedDate)
+            }
+        }
+    }
+}
+
+@Parcelize
 data class Page(
     @field:SerializedName("pageNo")             var pageNo: Int? = null,
     @field:SerializedName("totalPage")          var totalPage: Int? = null,

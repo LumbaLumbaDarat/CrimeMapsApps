@@ -124,6 +124,7 @@ class ListOfAdminActivity : BaseActivity() {
     private val admin = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
             LOADING -> {
+                disableAccess()
                 loadingList(true)
             }
             SUCCESS -> {
@@ -182,8 +183,10 @@ class ListOfAdminActivity : BaseActivity() {
                         )
                     }
                 }
+                enableAccess()
             }
             ERROR -> {
+                enableAccess()
                 loadingList(
                     isOn = false,
                     isGetData = false,
@@ -222,6 +225,7 @@ class ListOfAdminActivity : BaseActivity() {
     private val adminResetPassword = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
             LOADING -> {
+                disableAccess()
                 showLoading()
             }
             SUCCESS -> {
@@ -235,8 +239,10 @@ class ListOfAdminActivity : BaseActivity() {
                     )
                     admin()
                 }
+                enableAccess()
             }
             ERROR -> {
+                enableAccess()
                 dismissLoading()
                 goTo(it.errorResponse)
             }
@@ -254,6 +260,7 @@ class ListOfAdminActivity : BaseActivity() {
     private val adminUpdateActive = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
             LOADING -> {
+                disableAccess()
                 showLoading()
             }
             SUCCESS -> {
@@ -267,8 +274,10 @@ class ListOfAdminActivity : BaseActivity() {
                     )
                     admin()
                 }
+                enableAccess()
             }
             ERROR -> {
+                enableAccess()
                 showLoading()
                 goTo(it.errorResponse)
             }
@@ -286,6 +295,7 @@ class ListOfAdminActivity : BaseActivity() {
     private val adminDelete = Observer<DataResource<MessageResponse>> {
         when (it.responseStatus) {
             LOADING -> {
+                disableAccess()
                 showLoading()
             }
             SUCCESS -> {
@@ -300,8 +310,10 @@ class ListOfAdminActivity : BaseActivity() {
                     )
                     admin()
                 }
+                enableAccess()
             }
             ERROR -> {
+                enableAccess()
                 dismissLoading()
                 goTo(it.errorResponse)
             }
@@ -436,5 +448,25 @@ class ListOfAdminActivity : BaseActivity() {
                 isOverloadData = false
             )
         }
+    }
+
+    private fun disableAccess() {
+        disableAccess(
+            arrayOf(
+                binding.iAppBarListOfAdmin.ivBtnRightAppBar,
+                binding.iSearchListOfAdmin.ibSearch
+            )
+        )
+        disableAccess(arrayOf(binding.btnBackListOfAdmin))
+    }
+
+    private fun enableAccess() {
+        enableAccess(
+            arrayOf(
+                binding.iAppBarListOfAdmin.ivBtnRightAppBar,
+                binding.iSearchListOfAdmin.ibSearch
+            )
+        )
+        enableAccess(arrayOf(binding.btnBackListOfAdmin))
     }
 }

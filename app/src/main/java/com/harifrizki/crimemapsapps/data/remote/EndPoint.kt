@@ -79,4 +79,22 @@ interface EndPoint {
     fun provinceByName(@Query("pageNo") pageNo: String,
                        @Field("provinceName") provinceName: String):
             Call<ProvinceResponse>
+
+    @FormUrlEncoded
+    @POST(CITY_BY_NAME)
+    fun cityByName(@Query("pageNo") pageNo: String,
+                   @Field("cityName") cityName: String):
+            Call<CityResponse>
+
+    @FormUrlEncoded
+    @POST(SUB_DISTRICT_BY_NAME)
+    fun subDistrictByName(@Query("pageNo") pageNo: String,
+                          @Field("subDistrictName") subDistrictName: String):
+            Call<SubDistrictResponse>
+
+    @FormUrlEncoded
+    @POST(URBAN_VILLAGE_BY_NAME)
+    fun urbanVillageByName(@Query("pageNo") pageNo: String,
+                           @Field("urbanVillageName") urbanVillageName: String):
+            Call<UrbanVillageResponse>
 }

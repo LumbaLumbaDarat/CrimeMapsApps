@@ -138,4 +138,31 @@ class CrimeMapsRepository(
                 remote.provinceByName(pageNo, name)
         }.asLiveData()
     }
+
+    override fun cityByName(pageNo: String?, name: String?): LiveData<DataResource<CityResponse>> {
+        return object : NetworkResource<CityResponse>() {
+            override fun createCall(): LiveData<ApiResource<CityResponse>> =
+                remote.cityByName(pageNo, name)
+        }.asLiveData()
+    }
+
+    override fun subDistrictByName(
+        pageNo: String?,
+        name: String?
+    ): LiveData<DataResource<SubDistrictResponse>> {
+        return object : NetworkResource<SubDistrictResponse>() {
+            override fun createCall(): LiveData<ApiResource<SubDistrictResponse>> =
+                remote.subDistrictByName(pageNo, name)
+        }.asLiveData()
+    }
+
+    override fun urbanVillageByName(
+        pageNo: String?,
+        name: String?
+    ): LiveData<DataResource<UrbanVillageResponse>> {
+        return object : NetworkResource<UrbanVillageResponse>() {
+            override fun createCall(): LiveData<ApiResource<UrbanVillageResponse>> =
+                remote.urbanVillageByName(pageNo, name)
+        }.asLiveData()
+    }
 }

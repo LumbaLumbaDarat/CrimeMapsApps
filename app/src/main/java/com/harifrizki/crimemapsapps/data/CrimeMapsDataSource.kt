@@ -24,4 +24,10 @@ interface CrimeMapsDataSource {
     fun adminDelete(admin: Admin?): LiveData<DataResource<MessageResponse>>
 
     fun provinceByName(pageNo: String?, name: String?): LiveData<DataResource<ProvinceResponse>>
+
+    fun cityByName(pageNo: String?, name: String?): LiveData<DataResource<CityResponse>>
+
+    fun subDistrictByName(pageNo: String?, name: String?): LiveData<DataResource<SubDistrictResponse>>
+
+    fun urbanVillageByName(pageNo: String?, name: String?): LiveData<DataResource<UrbanVillageResponse>>
 }

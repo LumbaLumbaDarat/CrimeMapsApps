@@ -27,9 +27,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.crimemapsapps.R
+import com.harifrizki.crimemapsapps.data.remote.response.CityResponse
 import com.harifrizki.crimemapsapps.data.remote.response.ProvinceResponse
-import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.model.Province
+import com.harifrizki.crimemapsapps.data.remote.response.SubDistrictResponse
+import com.harifrizki.crimemapsapps.data.remote.response.UrbanVillageResponse
+import com.harifrizki.crimemapsapps.model.*
 import com.orhanobut.logger.Logger
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -87,6 +89,24 @@ fun <T> getModel(any: Any?, modelClass: Class<T>): T {
         }
         modelClass.isAssignableFrom(Province::class.java) -> {
             (any as Province) as T
+        }
+        modelClass.isAssignableFrom(CityResponse::class.java) -> {
+            (any as CityResponse) as T
+        }
+        modelClass.isAssignableFrom(City::class.java) -> {
+            (any as City) as T
+        }
+        modelClass.isAssignableFrom(SubDistrictResponse::class.java) -> {
+            (any as SubDistrictResponse) as T
+        }
+        modelClass.isAssignableFrom(SubDistrict::class.java) -> {
+            (any as SubDistrict) as T
+        }
+        modelClass.isAssignableFrom(UrbanVillageResponse::class.java) -> {
+            (any as UrbanVillageResponse) as T
+        }
+        modelClass.isAssignableFrom(UrbanVillage::class.java) -> {
+            (any as UrbanVillage) as T
         }
         else -> {
             Logger.e("Unknown modelClass class: " + modelClass.name)
@@ -177,7 +197,7 @@ fun makeSpannable(
     isSpanBold: Boolean? = true,
     text: String?,
     regex: String? = SPAN_REGEX,
-    color: Int? = Color.BLACK
+    color: Int? = ZERO
 ): SpannableStringBuilder {
     val stringBuffer = StringBuffer()
     val spannableStringBuilder = SpannableStringBuilder()

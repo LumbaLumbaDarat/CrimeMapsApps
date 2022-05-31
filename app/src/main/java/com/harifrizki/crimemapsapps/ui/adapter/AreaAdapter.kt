@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.harifrizki.crimemapsapps.databinding.ItemAreaBinding
+import com.harifrizki.crimemapsapps.model.City
 import com.harifrizki.crimemapsapps.model.Province
+import com.harifrizki.crimemapsapps.model.SubDistrict
+import com.harifrizki.crimemapsapps.model.UrbanVillage
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
 
@@ -95,6 +98,51 @@ class AreaAdapter(
                                 )
                                 tvCreatedDateArea.text = makeSpannable(
                                     text = getCreateAt(context, province.createdDate)
+                                )
+                            }
+                        }
+                        MENU_AREA_CITY_ID -> {
+                            val city = getModel(area, City::class.java)
+                            binding.apply {
+                                tvNameArea.text = city.cityName
+                                tvCreatedByArea.text = makeSpannable(
+                                    text = getCreateBy(
+                                        context,
+                                        city.createdBy?.adminName
+                                    )
+                                )
+                                tvCreatedDateArea.text = makeSpannable(
+                                    text = getCreateAt(context, city.createdDate)
+                                )
+                            }
+                        }
+                        MENU_AREA_SUB_DISTRICT_ID -> {
+                            val subDistrict = getModel(area, SubDistrict::class.java)
+                            binding.apply {
+                                tvNameArea.text = subDistrict.subDistrictName
+                                tvCreatedByArea.text = makeSpannable(
+                                    text = getCreateBy(
+                                        context,
+                                        subDistrict.createdBy?.adminName
+                                    )
+                                )
+                                tvCreatedDateArea.text = makeSpannable(
+                                    text = getCreateAt(context, subDistrict.createdDate)
+                                )
+                            }
+                        }
+                        MENU_AREA_URBAN_VILLAGE_ID -> {
+                            val urbanVillage = getModel(area, UrbanVillage::class.java)
+                            binding.apply {
+                                tvNameArea.text = urbanVillage.urbanVillageName
+                                tvCreatedByArea.text = makeSpannable(
+                                    text = getCreateBy(
+                                        context,
+                                        urbanVillage.createdBy?.adminName
+                                    )
+                                )
+                                tvCreatedDateArea.text = makeSpannable(
+                                    text = getCreateAt(context, urbanVillage.createdDate)
                                 )
                             }
                         }
