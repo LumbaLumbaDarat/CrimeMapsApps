@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.harifrizki.crimemapsapps.data.remote.*
 import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.model.Admin
+import com.harifrizki.crimemapsapps.model.Province
 import com.harifrizki.crimemapsapps.utils.ApiResource
 import com.harifrizki.crimemapsapps.utils.AppExecutor
 import com.harifrizki.crimemapsapps.utils.DataResource
@@ -136,6 +137,34 @@ class CrimeMapsRepository(
         return object : NetworkResource<ProvinceResponse>() {
             override fun createCall(): LiveData<ApiResource<ProvinceResponse>> =
                 remote.provinceByName(pageNo, name)
+        }.asLiveData()
+    }
+
+    override fun provinceById(provinceId: String?): LiveData<DataResource<ProvinceResponse>> {
+        return object : NetworkResource<ProvinceResponse>() {
+            override fun createCall(): LiveData<ApiResource<ProvinceResponse>> =
+                remote.provinceById(provinceId)
+        }.asLiveData()
+    }
+
+    override fun provinceAdd(province: Province?): LiveData<DataResource<ProvinceResponse>> {
+        return object : NetworkResource<ProvinceResponse>() {
+            override fun createCall(): LiveData<ApiResource<ProvinceResponse>> =
+                remote.provinceAdd(province)
+        }.asLiveData()
+    }
+
+    override fun provinceUpdate(province: Province?): LiveData<DataResource<ProvinceResponse>> {
+        return object : NetworkResource<ProvinceResponse>() {
+            override fun createCall(): LiveData<ApiResource<ProvinceResponse>> =
+                remote.provinceUpdate(province)
+        }.asLiveData()
+    }
+
+    override fun provinceDelete(province: Province?): LiveData<DataResource<ProvinceResponse>> {
+        return object : NetworkResource<ProvinceResponse>() {
+            override fun createCall(): LiveData<ApiResource<ProvinceResponse>> =
+                remote.provinceDelete(province)
         }.asLiveData()
     }
 

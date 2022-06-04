@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/srl_form_area"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context=".ui.module.formarea.FormAreaActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/i_app_bar_form_area"
+            layout="@layout/app_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nsv_form_area"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@+id/btn_submit_area"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/i_app_bar_form_area">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/padding_half_default"
+                android:paddingHorizontal="@dimen/padding_default"
+                android:paddingBottom="@dimen/padding_default">
+
+                <Button
+                    android:id="@+id/btn_child_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_default"
+                    android:text="@string/title"
+                    app:cornerRadius="@dimen/round_default" />
+
+                <include
+                    android:id="@+id/i_parent_area_one"
+                    layout="@layout/parent_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_half_default"/>
+
+                <include
+                    android:id="@+id/i_parent_area_two"
+                    layout="@layout/parent_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_half_default" />
+
+                <include
+                    android:id="@+id/i_parent_area_third"
+                    layout="@layout/parent_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_half_default" />
+
+                <include
+                    android:id="@+id/i_parent_area_fourth"
+                    layout="@layout/parent_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_half_default" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/sfl_parent_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <include
+                            android:id="@+id/i_parent_area_one_shimmer"
+                            layout="@layout/parent_area"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_half_default"/>
+
+                        <include
+                            android:id="@+id/i_parent_area_two_shimmer"
+                            layout="@layout/parent_area"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_half_default" />
+
+                        <include
+                            android:id="@+id/i_parent_area_third_shimmer"
+                            layout="@layout/parent_area"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_half_default" />
+
+                        <include
+                            android:id="@+id/i_parent_area_fourth_shimmer"
+                            layout="@layout/parent_area"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_half_default" />
+                    </LinearLayout>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_name_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_half_default"
+                    android:layout_marginBottom="@dimen/margin_default"
+                    android:background="@drawable/frame_text_input_layout"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tie_name_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/frame_text_input_layout_inner"
+                        android:hint="@string/title"
+                        android:inputType="textPersonName"
+                        android:singleLine="true"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/sfl_name_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_name_area_shimmer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_half_default"
+                        android:layout_marginBottom="@dimen/margin_default"
+                        android:background="@drawable/frame_text_input_layout"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_name_area_shimmer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/frame_text_input_layout_inner"
+                            android:hint="@string/title"
+                            android:inputType="textPersonName"
+                            android:singleLine="true"
+                            app:boxStrokeWidth="0dp"
+                            app:boxStrokeWidthFocused="0dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <include
+                    android:id="@+id/i_created_and_update_area"
+                    layout="@layout/created_and_update"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/sfl_create_and_update_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <include
+                        android:id="@+id/i_created_and_update_area_shimmer"
+                        layout="@layout/created_and_update"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.facebook.shimmer.ShimmerFrameLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <Button
+            android:id="@+id/btn_submit_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_default"
+            android:text="@string/title"
+            app:cornerRadius="@dimen/round_default"
+            app:layout_constraintBottom_toTopOf="@+id/btn_back_area"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <Button
+            android:id="@+id/btn_back_area"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_default"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:text="@string/title"
+            app:cornerRadius="@dimen/round_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

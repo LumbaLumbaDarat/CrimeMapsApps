@@ -6,6 +6,8 @@ import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse.Companion.errorResponse
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Admin.Companion.jsonObject
+import com.harifrizki.crimemapsapps.model.Province.Companion.jsonObject
+import com.harifrizki.crimemapsapps.model.Province
 import com.harifrizki.crimemapsapps.utils.ApiResource
 import com.harifrizki.crimemapsapps.utils.ResponseStatus
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
@@ -367,6 +369,94 @@ class RemoteDataSource : DataSource {
                 }
             }
             client?.enqueue(object : Callback<ProvinceResponse> {
+                override fun onResponse(
+                    call: Call<ProvinceResponse>,
+                    response: Response<ProvinceResponse>
+                ) {
+                    convertResponse(response, ProvinceResponse(), result)
+                }
+
+                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
+                    convertResponse(ProvinceResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(ProvinceResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+    override fun provinceById(provinceId: String?): LiveData<ApiResource<ProvinceResponse>> {
+        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
+        try {
+            val client = provinceId?.let { NetworkApi.connectToApi().provinceById(it) }
+            client?.enqueue(object : Callback<ProvinceResponse> {
+                override fun onResponse(
+                    call: Call<ProvinceResponse>,
+                    response: Response<ProvinceResponse>
+                ) {
+                    convertResponse(response, ProvinceResponse(), result)
+                }
+
+                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
+                    convertResponse(ProvinceResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(ProvinceResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+    override fun provinceAdd(province: Province?): LiveData<ApiResource<ProvinceResponse>> {
+        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
+        try {
+            val client = NetworkApi.connectToApi().provinceAdd(jsonObject(province))
+            client.enqueue(object : Callback<ProvinceResponse> {
+                override fun onResponse(
+                    call: Call<ProvinceResponse>,
+                    response: Response<ProvinceResponse>
+                ) {
+                    convertResponse(response, ProvinceResponse(), result)
+                }
+
+                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
+                    convertResponse(ProvinceResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(ProvinceResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+    override fun provinceUpdate(province: Province?): LiveData<ApiResource<ProvinceResponse>> {
+        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
+        try {
+            val client = NetworkApi.connectToApi().provinceUpdate(jsonObject(province))
+            client.enqueue(object : Callback<ProvinceResponse> {
+                override fun onResponse(
+                    call: Call<ProvinceResponse>,
+                    response: Response<ProvinceResponse>
+                ) {
+                    convertResponse(response, ProvinceResponse(), result)
+                }
+
+                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
+                    convertResponse(ProvinceResponse(), result, t, ERROR)
+                }
+            })
+        } catch (e: Exception) {
+            convertResponse(ProvinceResponse(), result, e, EMPTY)
+        }
+        return result
+    }
+
+    override fun provinceDelete(province: Province?): LiveData<ApiResource<ProvinceResponse>> {
+        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
+        try {
+            val client = NetworkApi.connectToApi().provinceDelete(jsonObject(province))
+            client.enqueue(object : Callback<ProvinceResponse> {
                 override fun onResponse(
                     call: Call<ProvinceResponse>,
                     response: Response<ProvinceResponse>

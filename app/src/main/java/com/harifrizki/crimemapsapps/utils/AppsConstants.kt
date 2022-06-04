@@ -47,6 +47,7 @@ const val ROLE_ADMIN = "ROLE_ADMIN"
 
 const val LOGIN_MODEL = "LOGIN_MODEL"
 const val ADMIN_MODEL = "ADMIN_MODEL"
+const val AREA_MODEL  = "AREA_MODEL"
 
 const val ERROR_RESPONSE = "ERROR_RESPONSE"
 const val IS_AFTER_ERROR = "IS_AFTER_ERROR"

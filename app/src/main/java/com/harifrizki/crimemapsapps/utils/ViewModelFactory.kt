@@ -7,6 +7,7 @@ import com.harifrizki.crimemapsapps.data.CrimeMapsRepository
 import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminViewModel
 import com.harifrizki.crimemapsapps.ui.module.area.ListOfAreaViewModel
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardViewModel
+import com.harifrizki.crimemapsapps.ui.module.formarea.FormAreaViewModel
 import com.harifrizki.crimemapsapps.ui.module.login.LoginViewModel
 import com.harifrizki.crimemapsapps.ui.module.password.PasswordViewModel
 import com.harifrizki.crimemapsapps.ui.module.profile.ProfileViewModel
@@ -52,6 +53,9 @@ class ViewModelFactory private constructor (private val crimeMapsRepository: Cri
             }
             modelClass.isAssignableFrom(ListOfAreaViewModel::class.java) -> {
                 ListOfAreaViewModel(crimeMapsRepository) as T
+            }
+            modelClass.isAssignableFrom(FormAreaViewModel::class.java) -> {
+                FormAreaViewModel(crimeMapsRepository) as T
             }
             else -> {
                 Logger.e("Unknown ViewModel class: " + modelClass.name)

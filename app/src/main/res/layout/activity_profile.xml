@@ -179,7 +179,8 @@
                     android:id="@+id/i_created_and_updated_profile"
                     layout="@layout/created_and_update"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_default"/>
 
                 <com.facebook.shimmer.ShimmerFrameLayout
                     android:id="@+id/sfl_created_and_updated_profile"
@@ -191,7 +192,8 @@
                         android:id="@+id/i_created_and_updated_profile_shimmer"
                         layout="@layout/created_and_update"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_default"/>
                 </com.facebook.shimmer.ShimmerFrameLayout>
 
                 <Button

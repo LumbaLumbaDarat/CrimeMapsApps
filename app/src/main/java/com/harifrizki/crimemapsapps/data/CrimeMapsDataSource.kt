@@ -3,7 +3,7 @@ package com.harifrizki.crimemapsapps.data
 import androidx.lifecycle.LiveData
 import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.utils.ApiResource
+import com.harifrizki.crimemapsapps.model.Province
 import com.harifrizki.crimemapsapps.utils.DataResource
 import java.io.File
 
@@ -24,6 +24,10 @@ interface CrimeMapsDataSource {
     fun adminDelete(admin: Admin?): LiveData<DataResource<MessageResponse>>
 
     fun provinceByName(pageNo: String?, name: String?): LiveData<DataResource<ProvinceResponse>>
+    fun provinceById(provinceId: String?): LiveData<DataResource<ProvinceResponse>>
+    fun provinceAdd(province: Province?): LiveData<DataResource<ProvinceResponse>>
+    fun provinceUpdate(province: Province?): LiveData<DataResource<ProvinceResponse>>
+    fun provinceDelete(province: Province?): LiveData<DataResource<ProvinceResponse>>
 
     fun cityByName(pageNo: String?, name: String?): LiveData<DataResource<CityResponse>>
 

@@ -2,6 +2,7 @@ package com.harifrizki.crimemapsapps.ui.component
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.text.method.PasswordTransformationMethod
 import android.view.View
@@ -17,11 +18,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.harifrizki.crimemapsapps.BuildConfig
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
-import com.harifrizki.crimemapsapps.data.remote.response.ProvinceResponse
-import com.harifrizki.crimemapsapps.databinding.AppBarBinding
-import com.harifrizki.crimemapsapps.databinding.EmptyBinding
-import com.harifrizki.crimemapsapps.databinding.NotificationAndOptionMessageBinding
-import com.harifrizki.crimemapsapps.databinding.SearchBinding
+import com.harifrizki.crimemapsapps.databinding.*
 import com.harifrizki.crimemapsapps.model.*
 import com.harifrizki.crimemapsapps.ui.module.ConnectionErrorActivity
 import com.harifrizki.crimemapsapps.utils.*
@@ -33,6 +30,7 @@ import com.harifrizki.crimemapsapps.utils.Error.IS_NO_NETWORK
 import com.harifrizki.crimemapsapps.utils.MenuSetting.*
 import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
 import com.harifrizki.crimemapsapps.utils.NotificationType.*
+import com.harifrizki.crimemapsapps.utils.ParamArea.*
 import com.lumbalumbadrt.colortoast.ColorToast
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -262,6 +260,10 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         nestedScrollView?.fullScroll(View.FOCUS_UP)
     }
 
+    fun useScrollForRefresh(use: Boolean?) {
+
+    }
+
     @Override
     fun showRootView() {
         rootView?.visibility = View.VISIBLE
@@ -446,7 +448,8 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun showLoading() {
+    fun showLoading(message: String? = getString(R.string.message_loading_splash)) {
+        loading.setMessage(true, message, Color.BLACK)
         loading.show()
     }
 
@@ -666,6 +669,116 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                             Toast.LENGTH_LONG
                         )
                         true
+                    }
+                    LIST_OF_AREA -> {
+                        when (map[AREA] as MenuAreaType) {
+                            MENU_AREA_PROVINCE_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_add,
+                                        getString(R.string.province_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_CITY_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_add,
+                                        getString(R.string.city_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_SUB_DISTRICT_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_add,
+                                        getString(R.string.sub_district_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_URBAN_VILLAGE_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_add,
+                                        getString(R.string.urban_village_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            else -> {
+                                false
+                            }
+                        }
+                    }
+                    FORM_AREA -> {
+                        when (map[AREA] as MenuAreaType) {
+                            MENU_AREA_PROVINCE_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_add,
+                                        getString(R.string.province_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_CITY_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_add,
+                                        getString(R.string.city_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_SUB_DISTRICT_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_add,
+                                        getString(R.string.sub_district_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_URBAN_VILLAGE_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_add,
+                                        getString(R.string.urban_village_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            else -> {
+                                false
+                            }
+                        }
                     }
                     else -> {
                         false
@@ -1052,30 +1165,51 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun enableAccess(buttons: Array<Button>) {
-        buttons.forEach {
+    fun enableAccess(buttons: Array<Button>?) {
+        buttons!!.forEach {
             it.isEnabled = true
         }
     }
 
     @Override
-    fun disableAccess(buttons: Array<Button>) {
-        buttons.forEach {
+    fun disableAccess(buttons: Array<Button>?) {
+        buttons!!.forEach {
             it.isEnabled = false
         }
     }
 
     @Override
-    fun enableAccess(imageView: Array<ImageView>) {
-        imageView.forEach {
+    fun enableAccess(imageView: Array<ImageView>?) {
+        imageView!!.forEach {
             it.isEnabled = true
         }
     }
 
     @Override
-    fun disableAccess(imageView: Array<ImageView>) {
-        imageView.forEach {
+    fun disableAccess(imageView: Array<ImageView>?) {
+        imageView!!.forEach {
             it.isEnabled = false
+        }
+    }
+
+    @Override
+    fun parentAreaVisibility(parentAreas: Array<ParentAreaBinding>?, visibility: Int?) {
+        parentAreas?.forEach {
+            it.root.visibility = visibility!!
+        }
+    }
+
+    @Override
+    fun buttonVisibility(buttons: Array<Button>?, visibility: Int?) {
+        buttons?.forEach {
+            it.visibility = visibility!!
+        }
+    }
+
+    @Override
+    fun imageViewVisibility(imageViews: Array<ImageView>?, visibility: Int?) {
+        imageViews?.forEach {
+            it.visibility = visibility!!
         }
     }
 
@@ -1086,6 +1220,16 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         else getString(
             R.string.label_create_by_and_created_date,
             admin.createdBy?.adminName, admin.createdDate
+        )
+    }
+
+    @Override
+    fun getCreated(admin: Admin?, createdDate: String?): String {
+        return if (admin?.adminId == null)
+            getString(R.string.label_null_created_and_updated)
+        else getString(
+            R.string.label_create_by_and_created_date,
+            admin.adminName, createdDate
         )
     }
 
@@ -1101,9 +1245,39 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun getLabelActivate(admin: Admin?): String {
-        return if (admin?.isActive!!) getString(R.string.label_non_active)
-        else getString(R.string.label_active)
+    fun getUpdated(admin: Admin?, updatedDate: String?): String {
+        return if (admin?.adminId == null)
+            getString(R.string.label_not_yet_updated)
+        else getString(
+            R.string.label_updated_by_and_updated_date,
+            admin.adminName,
+            updatedDate
+        )
+    }
+
+    @Override
+    fun getLabelActivate(
+        admin: Admin?,
+        isUseMessageAppend: Boolean? = false,
+        isReverse: Boolean? = false
+    ): String {
+        return if (!isReverse!!) {
+            if (!isUseMessageAppend!!) {
+                if (admin?.isActive!!) getString(R.string.label_non_active)
+                else getString(R.string.label_active)
+            } else {
+                if (admin?.isActive!!) getString(R.string.label_non_active_append)
+                else getString(R.string.label_active_append)
+            }
+        } else {
+            if (!isUseMessageAppend!!) {
+                if (admin?.isActive!!) getString(R.string.label_active)
+                else getString(R.string.label_non_active)
+            } else {
+                if (admin?.isActive!!) getString(R.string.label_active_append)
+                else getString(R.string.label_non_active_append)
+            }
+        }
     }
 
     @Override
@@ -1113,19 +1287,27 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     @Override
-    fun getAreaName(menuAreaType: MenuAreaType?, area: Any?): String? {
+    fun getParamArea(menuAreaType: MenuAreaType?, area: Any?, paramArea: ParamArea?): String? {
         return when (menuAreaType) {
             MENU_AREA_PROVINCE_ID -> {
-                getModel(area, Province::class.java).provinceName
+                val province = getModel(area, Province::class.java)
+                if (paramArea == NAME) province.provinceName
+                else province.provinceId
             }
             MENU_AREA_CITY_ID -> {
-                getModel(area, City::class.java).cityName
+                val city = getModel(area, City::class.java)
+                if (paramArea == NAME) city.cityName
+                else city.cityId
             }
             MENU_AREA_SUB_DISTRICT_ID -> {
-                getModel(area, SubDistrict::class.java).subDistrictName
+                val subDistrict = getModel(area, SubDistrict::class.java)
+                if (paramArea == NAME) subDistrict.subDistrictName
+                else subDistrict.subDistrictId
             }
             MENU_AREA_URBAN_VILLAGE_ID -> {
-                getModel(area, UrbanVillage::class.java).urbanVillageName
+                val urbanVillage = getModel(area, UrbanVillage::class.java)
+                if (paramArea == NAME) urbanVillage.urbanVillageName
+                else urbanVillage.urbanVillageId
             }
             else -> {
                 EMPTY_STRING

@@ -44,6 +44,7 @@ class ListOfAdminActivity : BaseActivity() {
     private var isAfterCRUD: CRUD? = NONE
     private var doNotLoadData: Boolean? = true
     private var searchName: String? = EMPTY_STRING
+    private var stateActive: String? = EMPTY_STRING
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -226,18 +227,37 @@ class ListOfAdminActivity : BaseActivity() {
         when (it.responseStatus) {
             LOADING -> {
                 disableAccess()
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_reset_append,
+                            getString(R.string.label_password)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
-                    ColorToast.roundLineSuccess(
-                        this,
-                        getString(R.string.app_name),
-                        it.data?.message?.message,
-                        Toast.LENGTH_LONG
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success,
+                            getString(
+                                R.string.label_plus_two_string,
+                                getString(
+                                    R.string.label_reset_append,
+                                    getString(R.string.label_password)
+                                ),
+                                getString(R.string.admin_menu)
+                            )
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            admin()
+                        }
                     )
-                    admin()
                 }
                 enableAccess()
             }
@@ -261,24 +281,45 @@ class ListOfAdminActivity : BaseActivity() {
         when (it.responseStatus) {
             LOADING -> {
                 disableAccess()
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_plus_two_string,
+                            stateActive,
+                            getString(R.string.admin_menu)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
-                    ColorToast.roundLineSuccess(
-                        this,
-                        getString(R.string.app_name),
-                        it.data?.message?.message,
-                        Toast.LENGTH_LONG
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success,
+                            getString(
+                                R.string.label_plus_two_string,
+                                getLabelActivate(
+                                    it.data?.admin,
+                                    isUseMessageAppend = true,
+                                    isReverse = true
+                                ),
+                                getString(R.string.admin_menu)
+                            )
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            admin()
+                        }
                     )
-                    admin()
                 }
                 enableAccess()
             }
             ERROR -> {
                 enableAccess()
-                showLoading()
+                dismissLoading()
                 goTo(it.errorResponse)
             }
             else -> {}
@@ -296,19 +337,30 @@ class ListOfAdminActivity : BaseActivity() {
         when (it.responseStatus) {
             LOADING -> {
                 disableAccess()
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_delete_append,
+                            getString(R.string.admin_menu)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
                     isAfterCRUD = DELETE
-                    ColorToast.roundLineSuccess(
-                        this,
-                        getString(R.string.app_name),
-                        it.data?.message?.message,
-                        Toast.LENGTH_LONG
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_delete,
+                            getString(R.string.admin_menu)),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            admin()
+                        }
                     )
-                    admin()
                 }
                 enableAccess()
             }
@@ -367,6 +419,7 @@ class ListOfAdminActivity : BaseActivity() {
                 )
             }
             onClickLockAndUnlock = {
+                stateActive = getLabelActivate(it, true)
                 showOption(
                     titleOption = getString(
                         R.string.label_plus_two_string,

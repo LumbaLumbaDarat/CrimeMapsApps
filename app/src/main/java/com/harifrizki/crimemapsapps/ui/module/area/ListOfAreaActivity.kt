@@ -1,6 +1,7 @@
 package com.harifrizki.crimemapsapps.ui.module.area
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,15 +16,17 @@ import com.harifrizki.crimemapsapps.data.remote.response.UrbanVillageResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityListOfAreaBinding
 import com.harifrizki.crimemapsapps.model.Message
 import com.harifrizki.crimemapsapps.model.Page
-import com.harifrizki.crimemapsapps.ui.adapter.AdminAdapter
 import com.harifrizki.crimemapsapps.ui.adapter.AreaAdapter
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
+import com.harifrizki.crimemapsapps.ui.module.formarea.FormAreaActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
+import com.harifrizki.crimemapsapps.utils.CRUD.*
+import com.harifrizki.crimemapsapps.utils.ParamArea.*
 import com.lumbalumbadrt.colortoast.ColorToast
 
 class ListOfAreaActivity : BaseActivity() {
@@ -48,7 +51,7 @@ class ListOfAreaActivity : BaseActivity() {
     private var fromActivity: ActivityName? = null
 
     private var page: Page? = null
-    private var isAfterCRUD: CRUD? = CRUD.NONE
+    private var isAfterCRUD: CRUD? = NONE
     private var doNotLoadData: Boolean? = true
     private var searchName: String? = EMPTY_STRING
 
@@ -76,18 +79,25 @@ class ListOfAreaActivity : BaseActivity() {
             else -> {}
         }
 
-        appBar(binding.iAppBarListOfArea,
-            appBarTitle,
-            R.drawable.ic_round_location_city_24,
-            R.color.primary,
-            R.drawable.frame_background_secondary,
-            R.drawable.ic_round_add_24,
-            R.color.white,
-            R.drawable.button_primary_ripple_white,
-            onClick = {
-
-            })
         binding.apply {
+            appBar(iAppBarListOfArea,
+                appBarTitle,
+                R.drawable.ic_round_location_city_24,
+                R.color.primary,
+                R.drawable.frame_background_secondary,
+                R.drawable.ic_round_add_24,
+                R.color.white,
+                R.drawable.button_primary_ripple_white,
+                onClick = {
+                    goTo(
+                        FormAreaActivity(),
+                        hashMapOf(
+                            FROM_ACTIVITY to getNameOfActivity(LIST_OF_AREA),
+                            AREA to menuAreaType!!,
+                            OPERATION_CRUD to CREATE
+                        )
+                    )
+                })
             createSearch(iSearchListOfArea)
             createRootView(rvListOfArea, sflListOfArea)
             createEmpty(iEmptyListOfArea)
@@ -118,7 +128,14 @@ class ListOfAreaActivity : BaseActivity() {
     private val resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     )
-    { }
+    {
+        if (it.resultCode == Activity.RESULT_OK) {
+            if (showMessage(getMap(it.data))) {
+                isAfterCRUD = getMap(it.data)[OPERATION_CRUD] as CRUD
+                area()
+            }
+        }
+    }
 
     override fun onRefresh() {
         super.onRefresh()
@@ -176,13 +193,19 @@ class ListOfAreaActivity : BaseActivity() {
                     MENU_AREA_SUB_DISTRICT_ID -> {
                         message = getModel(it.data, SubDistrictResponse::class.java).message
                         size =
-                            getModel(it.data, SubDistrictResponse::class.java).subDistrictArrayList?.size
+                            getModel(
+                                it.data,
+                                SubDistrictResponse::class.java
+                            ).subDistrictArrayList?.size
                         page = getModel(it.data, SubDistrictResponse::class.java).page
                     }
                     MENU_AREA_URBAN_VILLAGE_ID -> {
                         message = getModel(it.data, UrbanVillageResponse::class.java).message
                         size =
-                            getModel(it.data, UrbanVillageResponse::class.java).urbanVillageArrayList?.size
+                            getModel(
+                                it.data,
+                                UrbanVillageResponse::class.java
+                            ).urbanVillageArrayList?.size
                         page = getModel(it.data, UrbanVillageResponse::class.java).page
                     }
                     else -> {}
@@ -303,7 +326,17 @@ class ListOfAreaActivity : BaseActivity() {
             menuAreaType = menuAreaType,
             isShimmer = false
         ).apply {
-            onClickArea = {}
+            onClickArea = {
+                goTo(
+                    FormAreaActivity(),
+                    hashMapOf(
+                        FROM_ACTIVITY to getNameOfActivity(LIST_OF_AREA),
+                        AREA to menuAreaType!!,
+                        OPERATION_CRUD to READ,
+                        AREA_MODEL to getParamArea(menuAreaType!!, it, ID)!!,
+                    )
+                )
+            }
             onClickDelete = {
                 showOption(
                     titleOption = getString(
@@ -313,7 +346,7 @@ class ListOfAreaActivity : BaseActivity() {
                     message = getString(
                         R.string.message_delete,
                         appBarTitle,
-                        getAreaName(menuAreaType, it)
+                        getParamArea(menuAreaType, it, NAME)
                     ),
                     titlePositive = getString(R.string.yes_delete),
                     titleNegative = getString(R.string.no),

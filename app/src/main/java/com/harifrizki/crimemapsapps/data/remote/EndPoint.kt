@@ -81,6 +81,23 @@ interface EndPoint {
             Call<ProvinceResponse>
 
     @FormUrlEncoded
+    @POST(PROVINCE_BY_ID)
+    fun provinceById(@Field("provinceId") provinceId: String):
+            Call<ProvinceResponse>
+
+    @POST(PROVINCE_ADD)
+    fun provinceAdd(@Body jsonObject: JsonObject):
+            Call<ProvinceResponse>
+
+    @POST(PROVINCE_UPDATE)
+    fun provinceUpdate(@Body jsonObject: JsonObject):
+            Call<ProvinceResponse>
+
+    @POST(PROVINCE_DELETE)
+    fun provinceDelete(@Body jsonObject: JsonObject):
+            Call<ProvinceResponse>
+
+    @FormUrlEncoded
     @POST(CITY_BY_NAME)
     fun cityByName(@Query("pageNo") pageNo: String,
                    @Field("cityName") cityName: String):

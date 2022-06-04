@@ -90,7 +90,7 @@ class LoginActivity : BaseActivity() {
         when (it.responseStatus)
         {
             LOADING -> {
-                showLoading()
+                showLoading(getString(R.string.message_loading_login))
             }
             SUCCESS -> {
                 dismissLoading()

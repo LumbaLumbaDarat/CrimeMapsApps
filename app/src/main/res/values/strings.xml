@@ -19,11 +19,12 @@
     <string name="yes_reset">Ya, Reset</string>
     <string name="yes_activate">Ya, %s</string>
 
+    <string name="label_id">ID</string>
     <string name="label_login">Masuk</string>
     <string name="label_name">Nama</string>
     <string name="label_username">Email</string>
     <string name="label_password">Kata Sandi</string>
-    <string name="label_photo_profile">Foto Profile</string>
+    <string name="label_photo_profile">Foto Profil</string>
     <string name="label_existing_password">Kata Sandi saat ini</string>
     <string name="label_new_password">Kata Sandi Baru</string>
     <string name="label_confirm_new_password">Konfirmasi Kata Sandi Baru</string>
@@ -32,8 +33,8 @@
     <string name="label_welcome_greeting_main">Selamat Datang</string>
     <string name="label_get_image_from">Ambil Gambar melalui</string>
 
-    <string name="label_show_password">Tampilkan Password</string>
-    <string name="label_hide_password">Sembunyikan Password</string>
+    <string name="label_show_password">Tampilkan Kata Sandi</string>
+    <string name="label_hide_password">Sembunyikan Kata Sandi</string>
 
     <string name="label_count_data">%s</string>
     <string name="label_count_today">Data input per hari ini</string>
@@ -44,9 +45,11 @@
     <string name="label_role_admin">Admin</string>
 
     <string name="label_active">Aktifkan</string>
+    <string name="label_active_append">Mengaktifkan</string>
     <string name="label_non_active">Non-Aktifkan</string>
+    <string name="label_non_active_append">Menonaktifkan</string>
 
-    <string name="label_change_password">Ganti Password</string>
+    <string name="label_change_password">Ganti Kata Sandi</string>
 
     <string name="label_create_by">Dibuat oleh [%s]</string>
     <string name="label_create_at">Dibuat pada [%s]</string>
@@ -57,8 +60,12 @@
 
     <string name="label_add">Tambah %s</string>
     <string name="label_add_on">Tambahkan %s</string>
+    <string name="label_add_append">Menambahkan %s</string>
     <string name="label_enter_of">Masukkan %s %s</string>
     <string name="label_edit">Ubah %s</string>
+    <string name="label_edit_append">Merubah %s</string>
+    <string name="label_reset_append">Me-reset %s</string>
+    <string name="label_delete_append">Menghapus %s</string>
 
     <string name="label_plus_two_string">%s %s</string>
     <string name="label_plus_two_string_enter">%s\n%s</string>
@@ -66,6 +73,7 @@
     <string name="label_plus_two_string_regex_second">%s [%s]</string>
     <string name="label_title_search_by">Cari [%s] Berdasarkan [%s]</string>
     <string name="label_show_overload">Tampilkan Seluruh Data %s</string>
+    <string name="label_see_child">Lihat seluruh %s yang teregristasi dengan %s ini</string>
 
     <string name="admin_menu">Admin</string>
     <string name="crime_location_menu">Lokasi Rawan Kriminal</string>
@@ -87,19 +95,19 @@
 
     <string name="message_title_delete">Hapus %s</string>
     <string name="message_delete">Apakah Anda ingin [menghapus] data %s [%s] ?</string>
-    <string name="message_title_reset_password">Reset Password %s</string>
-    <string name="message_reset_password">Apakah Anda ingin [me-reset password] %s [%s] ?</string>
+    <string name="message_title_reset_password">Reset Kata Sandi %s</string>
+    <string name="message_reset_password">Apakah Anda ingin [me-reset Kata Sandi] %s [%s] ?</string>
     <string name="message_activate">Apakah Anda ingin [%s] %s [%s] ?</string>
 
-
-    <string name="message_loading">[Mohon menunggu]\nKami sedang mencari apa yang Anda butuhkan</string>
     <string name="message_loading_splash">Memuat koneksi, mohon menunggu…</string>
-    <string name="message_loading_login">Mencari data Credential, Mohon menunggu…</string>
+    <string name="message_loading_login">[Mohon menunggu]\nKami sedang [mencari] data [Credential Anda]</string>
+    <string name="message_loading">[Mohon menunggu]\nKami sedang [%s]</string>
 
     <string name="message_logout_option">Apakah Anda ingin [keluar] dari aplikasi ?</string>
-    <string name="message_success_add">Berhasil menambah %s</string>
-    <string name="message_success_update">Berhasil merubah %s</string>
-    <string name="message_success_delete">Berhasil menghapus %s</string>
+    <string name="message_success">Berhasil %s</string>
+    <string name="message_success_add">Berhasil Menambahkan %s</string>
+    <string name="message_success_update">Berhasil Merubah %s</string>
+    <string name="message_success_delete">Berhasil Menghapus %s</string>
 
     <string name="message_no_title_network">Tidak Ada Koneksi Internet</string>
     <string name="message_no_network">Sepertinya Perangkat Anda mengalami kendala dalam Jaringan Internet</string>

@@ -384,13 +384,31 @@ class ProfileActivity : BaseActivity() {
     private val adminAdd = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
             LOADING -> {
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_add_append,
+                            getString(R.string.admin_menu)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
                     isAfterCRUD = CREATE
-                    onBackPressed()
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_add,
+                            getString(R.string.admin_menu)
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            onBackPressed()
+                        }
+                    )
                 }
             }
             ERROR -> {
@@ -410,16 +428,34 @@ class ProfileActivity : BaseActivity() {
     private val adminUpdate = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
             LOADING -> {
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_edit_append,
+                            getString(R.string.admin_menu)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
-                    setAdmin(it.data?.admin)
-                    if (it.data?.admin?.adminId.equals(admin?.adminId))
-                        PreferencesManager.getInstance(this)
-                            .setPreferences(LOGIN_MODEL, it.data?.admin)
                     isAfterCRUD = UPDATE
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_update,
+                            getString(R.string.admin_menu)
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            setAdmin(it.data?.admin)
+                            if (it.data?.admin?.adminId.equals(admin?.adminId))
+                                PreferencesManager.getInstance(this)
+                                    .setPreferences(LOGIN_MODEL, it.data?.admin)
+                        }
+                    )
                 }
             }
             ERROR -> {
@@ -439,16 +475,34 @@ class ProfileActivity : BaseActivity() {
     private val adminUpdatePhotoProfile = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
             LOADING -> {
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_edit_append,
+                            getString(R.string.label_photo_profile)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
-                    setAdmin(it.data?.admin)
-                    if (it.data?.admin?.adminId.equals(admin?.adminId))
-                        PreferencesManager.getInstance(this)
-                            .setPreferences(LOGIN_MODEL, it.data?.admin)
                     isAfterCRUD = UPDATE
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_update,
+                            getString(R.string.label_photo_profile)
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            setAdmin(it.data?.admin)
+                            if (it.data?.admin?.adminId.equals(admin?.adminId))
+                                PreferencesManager.getInstance(this)
+                                    .setPreferences(LOGIN_MODEL, it.data?.admin)
+                        }
+                    )
                 }
             }
             ERROR -> {
@@ -468,19 +522,38 @@ class ProfileActivity : BaseActivity() {
     private val adminResetPassword = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
             LOADING -> {
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_reset_append,
+                            getString(R.string.label_password)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
                     isAfterCRUD = UPDATE
-                    ColorToast.roundLineSuccess(
-                        this,
-                        getString(R.string.app_name),
-                        it.data?.message?.message,
-                        Toast.LENGTH_LONG
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success,
+                            getString(
+                                R.string.label_plus_two_string,
+                                getString(
+                                    R.string.label_reset_append,
+                                    getString(R.string.label_password)
+                                ),
+                                getString(R.string.admin_menu)
+                            )
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            adminById(it.data?.admin)
+                        }
                     )
-                    adminById(it.data?.admin)
                 }
             }
             ERROR -> {
@@ -501,23 +574,43 @@ class ProfileActivity : BaseActivity() {
     private val adminUpdateActive = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
             LOADING -> {
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_plus_two_string,
+                            getLabelActivate(adminFromResponse, true),
+                            getString(R.string.admin_menu)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
                     isAfterCRUD = UPDATE
-                    ColorToast.roundLineSuccess(
-                        this,
-                        getString(R.string.app_name),
-                        it.data?.message?.message,
-                        Toast.LENGTH_LONG
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success, getString(
+                                R.string.label_plus_two_string,
+                                getLabelActivate(
+                                    it.data?.admin,
+                                    isUseMessageAppend = true,
+                                    isReverse = true
+                                ),
+                                getString(R.string.admin_menu)
+                            )
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            adminById(it.data?.admin)
+                        }
                     )
-                    adminById(it.data?.admin)
                 }
             }
             ERROR -> {
-                showLoading()
+                dismissLoading()
                 goTo(it.errorResponse)
             }
             else -> {}
@@ -534,13 +627,31 @@ class ProfileActivity : BaseActivity() {
     private val adminDelete = Observer<DataResource<MessageResponse>> {
         when (it.responseStatus) {
             LOADING -> {
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_delete_append,
+                            getString(R.string.admin_menu)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
                     isAfterCRUD = DELETE
-                    onBackPressed()
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_delete,
+                            getString(R.string.admin_menu)
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            onBackPressed()
+                        }
+                    )
                 }
             }
             ERROR -> {

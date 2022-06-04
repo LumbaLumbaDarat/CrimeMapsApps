@@ -42,24 +42,31 @@ class PasswordActivity : BaseActivity() {
         create(this, resultLauncher)
 
         binding.apply {
-            appBar(iAppBarPassword,
+            appBar(
+                iAppBarPassword,
                 getString(R.string.label_change_password),
                 R.drawable.ic_round_vpn_key_24,
                 R.color.primary,
-                R.drawable.frame_background_secondary)
-            prepareResetTextInputEditText(arrayOf(
-                tieExistingPassword,
-                tieNewPassword,
-                tieConfirmNewPassword
-            ))
-            prepareShowAndHidePassword(arrayOf(
-                tieExistingPassword,
-                tieNewPassword,
-                tieConfirmNewPassword
-            ))
+                R.drawable.frame_background_secondary
+            )
+            prepareResetTextInputEditText(
+                arrayOf(
+                    tieExistingPassword,
+                    tieNewPassword,
+                    tieConfirmNewPassword
+                )
+            )
+            prepareShowAndHidePassword(
+                arrayOf(
+                    tieExistingPassword,
+                    tieNewPassword,
+                    tieConfirmNewPassword
+                )
+            )
             srlPassword.apply {
                 setThemeForSwipeRefreshLayoutLoadingAnimation(
-                    this@PasswordActivity, this)
+                    this@PasswordActivity, this
+                )
                 setOnRefreshListener(this@PasswordActivity)
             }
             ivBtnShowHidePassword.setOnClickListener(onClickListener)
@@ -72,8 +79,7 @@ class PasswordActivity : BaseActivity() {
         ActivityResultContracts.StartActivityForResult()
     )
     {
-        if (it.resultCode == Activity.RESULT_OK)
-        {
+        if (it.resultCode == Activity.RESULT_OK) {
             if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
                 resetTextInputEditText()
         }
@@ -87,7 +93,8 @@ class PasswordActivity : BaseActivity() {
     override fun onBackPressed() {
         onBackPressed(
             getNameOfActivity(PASSWORD),
-            isAfterCRUD)
+            isAfterCRUD
+        )
         super.onBackPressed()
     }
 
@@ -98,32 +105,48 @@ class PasswordActivity : BaseActivity() {
                     isHidePassword = showAndHide(
                         ivBtnShowHidePassword,
                         isHidePassword,
-                        tvMessageShowHidePassword)
+                        tvMessageShowHidePassword
+                    )
                 }
             }
-            R.id.btn_submit_password -> { validatePassword() }
-            R.id.btn_cancel_password -> { onBackPressed() }
+            R.id.btn_submit_password -> {
+                validatePassword()
+            }
+            R.id.btn_cancel_password -> {
+                onBackPressed()
+            }
         }
     }
 
     private val adminUpdatePassword = Observer<DataResource<AdminResponse>> {
-        when (it.responseStatus)
-        {
+        when (it.responseStatus) {
             LOADING -> {
-                showLoading()
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_edit_append,
+                            getString(R.string.label_password)
+                        )
+                    )
+                )
             }
             SUCCESS -> {
                 dismissLoading()
-                if (isResponseSuccess(it.data?.message))
-                {
+                if (isResponseSuccess(it.data?.message)) {
                     isAfterCRUD = UPDATE
-                    runBlocking {
-                        launch {
-                            delay(WAIT_FOR_RUN_HANDLER_500_MS.toLong())
+                    resetTextInputEditText()
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_update,
+                            getString(R.string.label_change_password)
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
                             onBackPressed()
-                            finish()
                         }
-                    }
+                    )
                 }
             }
             ERROR -> {
@@ -136,24 +159,23 @@ class PasswordActivity : BaseActivity() {
 
     private fun adminUpdatePassword(adminId: String?, oldPassword: String?, newPassword: String?) {
         if (networkConnected()) {
-            viewModel.adminUpdatePassword(adminId, oldPassword, newPassword).observe(this, adminUpdatePassword)
+            viewModel.adminUpdatePassword(adminId, oldPassword, newPassword)
+                .observe(this, adminUpdatePassword)
         }
     }
 
     private fun validatePassword() {
-        if (!textInputEditTextIsEmpty(binding.tieExistingPassword))
-        {
-            if (!textInputEditTextIsEmpty(binding.tieNewPassword))
-            {
-                if (!textInputEditTextIsEmpty(binding.tieConfirmNewPassword))
-                {
+        if (!textInputEditTextIsEmpty(binding.tieExistingPassword)) {
+            if (!textInputEditTextIsEmpty(binding.tieNewPassword)) {
+                if (!textInputEditTextIsEmpty(binding.tieConfirmNewPassword)) {
                     if (isValidPasswordAndConfirmPassword(
                             binding.tieNewPassword.text.toString().trim(),
                             binding.tieConfirmNewPassword.text.toString().trim()
-                    )) {
+                        )
+                    ) {
                         adminUpdatePassword(
-                            PreferencesManager.getInstance(this).
-                            getPreferences(LOGIN_MODEL, Admin::class.java).adminId,
+                            PreferencesManager.getInstance(this)
+                                .getPreferences(LOGIN_MODEL, Admin::class.java).adminId,
                             binding.tieExistingPassword.text.toString().trim(),
                             binding.tieNewPassword.text.toString().trim()
                         )
@@ -161,18 +183,26 @@ class PasswordActivity : BaseActivity() {
                         message = getString(
                             R.string.message_error_validate_not_valid,
                             getString(R.string.label_new_password),
-                            getString(R.string.label_confirm_new_password)))
+                            getString(R.string.label_confirm_new_password)
+                        )
+                    )
                 } else showWarning(
                     message = getString(
                         R.string.message_error_empty,
-                        getString(R.string.label_confirm_new_password)))
+                        getString(R.string.label_confirm_new_password)
+                    )
+                )
             } else showWarning(
                 message = getString(
                     R.string.message_error_empty,
-                    getString(R.string.label_new_password)))
+                    getString(R.string.label_new_password)
+                )
+            )
         } else showWarning(
             message = getString(
                 R.string.message_error_empty,
-                getString(R.string.label_existing_password)))
+                getString(R.string.label_existing_password)
+            )
+        )
     }
 }

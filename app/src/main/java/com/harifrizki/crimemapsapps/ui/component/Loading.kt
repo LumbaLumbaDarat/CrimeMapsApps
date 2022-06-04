@@ -10,35 +10,32 @@ import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.databinding.LoadingBinding
 import com.harifrizki.crimemapsapps.utils.makeSpannable
 
-class Loading (
-    var alertDialog: AlertDialog? = null,
-    var message: String? = null
+class Loading(
+    var alertDialog: AlertDialog? = null
 ) {
+    var binding: LoadingBinding? = null
 
     fun create(context: Context?) {
         val builder: AlertDialog.Builder =
             context.let { AlertDialog.Builder(it!!) }
-        val binding: LoadingBinding =
+        binding =
             LoadingBinding.inflate(
                 LayoutInflater.from(context)
             )
-        builder.setView(binding.root)
-        binding.tvMessageLoading.apply {
-            text = if (!TextUtils.isEmpty(message))
-                makeSpannable(
-                    isSpanBold = true,
-                    message!!,
-                    color = Color.BLACK)
-            else makeSpannable(
-                isSpanBold = true,
-                context?.getString(R.string.message_loading),
-                color = Color.BLACK)
-        }
+        builder.setView(binding!!.root)
 
         alertDialog = builder.create()
         alertDialog!!.setCancelable(false)
         alertDialog!!.window?.setBackgroundDrawable(
             ColorDrawable(Color.TRANSPARENT)
+        )
+    }
+
+    fun setMessage(isSpanBold: Boolean?, message: String?, color: Int?) {
+        binding?.tvMessageLoading?.text = makeSpannable(
+            isSpanBold = isSpanBold,
+            message,
+            color = color
         )
     }
 

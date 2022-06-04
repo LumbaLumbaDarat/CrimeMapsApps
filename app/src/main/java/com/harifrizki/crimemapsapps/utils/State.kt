@@ -4,6 +4,7 @@ import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminActivity
 import com.harifrizki.crimemapsapps.ui.module.area.ListOfAreaActivity
 import com.harifrizki.crimemapsapps.ui.module.cropphoto.CropPhotoActivity
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardActivity
+import com.harifrizki.crimemapsapps.ui.module.formarea.FormAreaActivity
 import com.harifrizki.crimemapsapps.ui.module.password.PasswordActivity
 import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
 
@@ -61,10 +62,23 @@ enum class CRUD {
     READ,
     UPDATE,
     DELETE;
+}
 
-//    companion object {
-//        fun getEnumCRUD(crud: String) = values().find { it.name == crud }
-//    }
+enum class ParentAreaAction {
+    PARENT_AREA_ACTION_NONE,
+    PARENT_AREA_ICON_RIGHT,
+    PARENT_AREA_ACTION_RIGHT,
+    PARENT_AREA_ICON_LEFT,
+    PARENT_AREA_ACTION_LEFT,
+    PARENT_AREA_ICON_BOTH,
+    PARENT_AREA_ACTION_BOTH
+}
+
+enum class ParamArea {
+    ID,
+    NAME,
+    PARENT_ID,
+    PARENT_NAME
 }
 
 enum class ActivityName(val nameOfActivity: String) {
@@ -73,7 +87,8 @@ enum class ActivityName(val nameOfActivity: String) {
     PASSWORD(PasswordActivity::class.java.name),
     CROP_PHOTO(CropPhotoActivity::class.java.name),
     LIST_OF_ADMIN(ListOfAdminActivity::class.java.name),
-    LIST_OF_AREA(ListOfAreaActivity::class.java.name);
+    LIST_OF_AREA(ListOfAreaActivity::class.java.name),
+    FORM_AREA(FormAreaActivity::class.java.name);
 
     companion object {
         fun getNameOfActivity(activityName: ActivityName): String = activityName.nameOfActivity
