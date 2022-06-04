@@ -3,6 +3,7 @@ package com.harifrizki.crimemapsapps.ui.module.formarea
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.harifrizki.crimemapsapps.data.CrimeMapsRepository
+import com.harifrizki.crimemapsapps.data.remote.response.MessageResponse
 import com.harifrizki.crimemapsapps.data.remote.response.ProvinceResponse
 import com.harifrizki.crimemapsapps.model.Province
 import com.harifrizki.crimemapsapps.utils.DataResource
@@ -14,6 +15,6 @@ class FormAreaViewModel(private val crimeMapsRepository: CrimeMapsRepository) : 
         crimeMapsRepository.provinceAdd(province)
     fun provinceUpdate(province: Province?): LiveData<DataResource<ProvinceResponse>> =
         crimeMapsRepository.provinceUpdate(province)
-    fun provinceDelete(province: Province?): LiveData<DataResource<ProvinceResponse>> =
+    fun provinceDelete(province: Province?): LiveData<DataResource<MessageResponse>> =
         crimeMapsRepository.provinceDelete(province)
 }

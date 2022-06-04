@@ -27,7 +27,7 @@ interface DataSource {
     fun provinceById(provinceId: String?): LiveData<ApiResource<ProvinceResponse>>
     fun provinceAdd(province: Province?): LiveData<ApiResource<ProvinceResponse>>
     fun provinceUpdate(province: Province?): LiveData<ApiResource<ProvinceResponse>>
-    fun provinceDelete(province: Province?): LiveData<ApiResource<ProvinceResponse>>
+    fun provinceDelete(province: Province?): LiveData<ApiResource<MessageResponse>>
 
     fun cityByName(pageNo: String?, name: String?): LiveData<ApiResource<CityResponse>>
 

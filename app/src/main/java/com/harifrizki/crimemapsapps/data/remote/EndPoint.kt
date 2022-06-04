@@ -95,7 +95,7 @@ interface EndPoint {
 
     @POST(PROVINCE_DELETE)
     fun provinceDelete(@Body jsonObject: JsonObject):
-            Call<ProvinceResponse>
+            Call<MessageResponse>
 
     @FormUrlEncoded
     @POST(CITY_BY_NAME)

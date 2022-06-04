@@ -100,9 +100,13 @@ class ListOfAdminActivity : BaseActivity() {
     )
     {
         if (it.resultCode == Activity.RESULT_OK) {
-            if (showMessage(getMap(it.data))) {
-                isAfterCRUD = getMap(it.data)[OPERATION_CRUD] as CRUD
+            if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
                 admin()
+            else {
+                if (showMessage(getMap(it.data))) {
+                    isAfterCRUD = getMap(it.data)[OPERATION_CRUD] as CRUD
+                    admin()
+                }
             }
         }
     }

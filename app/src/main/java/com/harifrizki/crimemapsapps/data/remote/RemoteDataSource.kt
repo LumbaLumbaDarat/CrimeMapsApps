@@ -8,11 +8,9 @@ import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Admin.Companion.jsonObject
 import com.harifrizki.crimemapsapps.model.Province.Companion.jsonObject
 import com.harifrizki.crimemapsapps.model.Province
-import com.harifrizki.crimemapsapps.utils.ApiResource
-import com.harifrizki.crimemapsapps.utils.ResponseStatus
+import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
-import com.harifrizki.crimemapsapps.utils.toMultipartBody
-import com.harifrizki.crimemapsapps.utils.toRequestBody
+import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import org.json.JSONObject
@@ -411,7 +409,13 @@ class RemoteDataSource : DataSource {
     override fun provinceAdd(province: Province?): LiveData<ApiResource<ProvinceResponse>> {
         val result = MutableLiveData<ApiResource<ProvinceResponse>>()
         try {
-            val client = NetworkApi.connectToApi().provinceAdd(jsonObject(province))
+            val client = NetworkApi.connectToApi()
+                .provinceAdd(
+                    jsonObject(
+                        province,
+                        CREATE
+                    )
+                )
             client.enqueue(object : Callback<ProvinceResponse> {
                 override fun onResponse(
                     call: Call<ProvinceResponse>,
@@ -433,7 +437,13 @@ class RemoteDataSource : DataSource {
     override fun provinceUpdate(province: Province?): LiveData<ApiResource<ProvinceResponse>> {
         val result = MutableLiveData<ApiResource<ProvinceResponse>>()
         try {
-            val client = NetworkApi.connectToApi().provinceUpdate(jsonObject(province))
+            val client = NetworkApi.connectToApi()
+                .provinceUpdate(
+                    jsonObject(
+                        province,
+                        CRUD.UPDATE
+                    )
+                )
             client.enqueue(object : Callback<ProvinceResponse> {
                 override fun onResponse(
                     call: Call<ProvinceResponse>,
@@ -452,24 +462,30 @@ class RemoteDataSource : DataSource {
         return result
     }
 
-    override fun provinceDelete(province: Province?): LiveData<ApiResource<ProvinceResponse>> {
-        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
+    override fun provinceDelete(province: Province?): LiveData<ApiResource<MessageResponse>> {
+        val result = MutableLiveData<ApiResource<MessageResponse>>()
         try {
-            val client = NetworkApi.connectToApi().provinceDelete(jsonObject(province))
-            client.enqueue(object : Callback<ProvinceResponse> {
+            val client = NetworkApi.connectToApi()
+                .provinceDelete(
+                    jsonObject(
+                        province,
+                        CRUD.DELETE
+                    )
+                )
+            client.enqueue(object : Callback<MessageResponse> {
                 override fun onResponse(
-                    call: Call<ProvinceResponse>,
-                    response: Response<ProvinceResponse>
+                    call: Call<MessageResponse>,
+                    response: Response<MessageResponse>
                 ) {
-                    convertResponse(response, ProvinceResponse(), result)
+                    convertResponse(response, MessageResponse(), result)
                 }
 
-                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
-                    convertResponse(ProvinceResponse(), result, t, ERROR)
+                override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
+                    convertResponse(MessageResponse(), result, t, ERROR)
                 }
             })
         } catch (e: Exception) {
-            convertResponse(ProvinceResponse(), result, e, EMPTY)
+            convertResponse(MessageResponse(), result, e, EMPTY)
         }
         return result
     }

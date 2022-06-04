@@ -27,10 +27,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.crimemapsapps.R
-import com.harifrizki.crimemapsapps.data.remote.response.CityResponse
-import com.harifrizki.crimemapsapps.data.remote.response.ProvinceResponse
-import com.harifrizki.crimemapsapps.data.remote.response.SubDistrictResponse
-import com.harifrizki.crimemapsapps.data.remote.response.UrbanVillageResponse
+import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.model.*
 import com.orhanobut.logger.Logger
 import okhttp3.MediaType.Companion.toMediaType
@@ -107,6 +104,9 @@ fun <T> getModel(any: Any?, modelClass: Class<T>): T {
         }
         modelClass.isAssignableFrom(UrbanVillage::class.java) -> {
             (any as UrbanVillage) as T
+        }
+        modelClass.isAssignableFrom(MessageResponse::class.java) -> {
+            (any as MessageResponse) as T
         }
         else -> {
             Logger.e("Unknown modelClass class: " + modelClass.name)

@@ -9,13 +9,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harifrizki.crimemapsapps.R
-import com.harifrizki.crimemapsapps.data.remote.response.CityResponse
-import com.harifrizki.crimemapsapps.data.remote.response.ProvinceResponse
-import com.harifrizki.crimemapsapps.data.remote.response.SubDistrictResponse
-import com.harifrizki.crimemapsapps.data.remote.response.UrbanVillageResponse
+import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.databinding.ActivityListOfAreaBinding
 import com.harifrizki.crimemapsapps.model.Message
 import com.harifrizki.crimemapsapps.model.Page
+import com.harifrizki.crimemapsapps.model.Province
 import com.harifrizki.crimemapsapps.ui.adapter.AreaAdapter
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
 import com.harifrizki.crimemapsapps.ui.module.formarea.FormAreaActivity
@@ -130,9 +128,13 @@ class ListOfAreaActivity : BaseActivity() {
     )
     {
         if (it.resultCode == Activity.RESULT_OK) {
-            if (showMessage(getMap(it.data))) {
-                isAfterCRUD = getMap(it.data)[OPERATION_CRUD] as CRUD
+            if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
                 area()
+            else {
+                if (showMessage(getMap(it.data))) {
+                    isAfterCRUD = getMap(it.data)[OPERATION_CRUD] as CRUD
+                    area()
+                }
             }
         }
     }
@@ -228,7 +230,7 @@ class ListOfAreaActivity : BaseActivity() {
                                         getString(
                                             R.string.label_plus_two_string,
                                             appBarTitle,
-                                            getString(R.string.admin_menu)
+                                            getString(R.string.label_name)
                                         )
                                     ),
                                     buttonNegative = getString(
@@ -320,6 +322,67 @@ class ListOfAreaActivity : BaseActivity() {
         }
     }
 
+    private val provinceDelete = Observer<DataResource<MessageResponse>> {
+        areaDelete(it as DataResource<Any?>)
+    }
+
+    private fun areaDelete(it: DataResource<Any?>) {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_delete_append,
+                            appBarTitle
+                        )
+                    )
+                )
+            }
+            SUCCESS -> {
+                val message: Message? = getModel(
+                    it.data,
+                    MessageResponse::class.java
+                ).message
+                dismissLoading()
+                if (isResponseSuccess(message)) {
+                    isAfterCRUD = DELETE
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_delete,
+                            appBarTitle
+                        ),
+                        message = message?.message,
+                        onClick = {
+                            dismissNotification()
+                            area()
+                        }
+                    )
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun areaDelete(any: Any?) {
+        if (networkConnected()) {
+            when (menuAreaType) {
+                MENU_AREA_PROVINCE_ID -> {
+                    viewModel.provinceDelete(getModel(any, Province::class.java))
+                        .observe(this, provinceDelete)
+                }
+                MENU_AREA_CITY_ID -> {}
+                MENU_AREA_SUB_DISTRICT_ID -> {}
+                MENU_AREA_URBAN_VILLAGE_ID -> {}
+                else -> {}
+            }
+        }
+    }
+
     private fun initializeArea() {
         areaAdapter = AreaAdapter(
             context = this,
@@ -352,6 +415,7 @@ class ListOfAreaActivity : BaseActivity() {
                     titleNegative = getString(R.string.no),
                     colorButtonPositive = R.color.red,
                     onPositive = {
+                        areaDelete(it)
                         dismissOption()
                     },
                 )

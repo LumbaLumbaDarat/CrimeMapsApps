@@ -27,7 +27,7 @@ interface CrimeMapsDataSource {
     fun provinceById(provinceId: String?): LiveData<DataResource<ProvinceResponse>>
     fun provinceAdd(province: Province?): LiveData<DataResource<ProvinceResponse>>
     fun provinceUpdate(province: Province?): LiveData<DataResource<ProvinceResponse>>
-    fun provinceDelete(province: Province?): LiveData<DataResource<ProvinceResponse>>
+    fun provinceDelete(province: Province?): LiveData<DataResource<MessageResponse>>
 
     fun cityByName(pageNo: String?, name: String?): LiveData<DataResource<CityResponse>>
 

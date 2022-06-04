@@ -4,6 +4,8 @@ import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
+import com.harifrizki.crimemapsapps.utils.CRUD
+import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.EMPTY_STRING
 import com.harifrizki.crimemapsapps.utils.MenuSetting
 import com.harifrizki.crimemapsapps.utils.MenuSetting.MENU_NONE
@@ -57,28 +59,19 @@ data class Province(
     @field:SerializedName("updatedDate") var updatedDate: String? = null,
 ) : Parcelable {
     companion object {
-        fun jsonObject(province: Province?): JsonObject {
-            return Gson().fromJson(Gson().toJson(province), JsonObject::class.java)
-//            return JsonObject().apply {
-//                addProperty("provinceId", province?.provinceId)
-//                addProperty("provinceName", province?.provinceName)
-//                addProperty(
-//                    "createdBy", Gson().toJson(
-//                        Admin.jsonObject(
-//                            province?.createdBy
-//                        )
-//                    )
-//                )
-//                addProperty("createdDate", province?.createdDate)
-//                addProperty(
-//                    "updatedBy", Gson().toJson(
-//                        Admin.jsonObject(
-//                            province?.updatedBy
-//                        )
-//                    )
-//                )
-//                addProperty("updatedDate", province?.updatedDate)
-//            }
+        fun jsonObject(province: Province?, jsonForCRUD: CRUD?): JsonObject {
+            return when (jsonForCRUD) {
+                CREATE,
+                UPDATE -> {
+                    Gson().fromJson(Gson().toJson(province), JsonObject::class.java)
+                }
+                DELETE -> {
+                    JsonObject().apply {
+                        addProperty("provinceId", province?.provinceId)
+                    }
+                }
+                else -> { JsonObject() }
+            }
         }
     }
 }
@@ -95,15 +88,7 @@ data class City(
 ) : Parcelable {
     companion object {
         fun jsonObject(city: City?): JsonObject {
-            return JsonObject().apply {
-                addProperty("cityId", city?.cityId)
-                addProperty("province", Province.jsonObject(city?.province).toString())
-                addProperty("cityName", city?.cityName)
-                addProperty("createdBy", Admin.jsonObject(city?.createdBy).toString())
-                addProperty("createdDate", city?.createdDate)
-                addProperty("updatedBy", Admin.jsonObject(city?.updatedBy).toString())
-                addProperty("updatedDate", city?.updatedDate)
-            }
+            return Gson().fromJson(Gson().toJson(city), JsonObject::class.java)
         }
     }
 }
@@ -120,15 +105,7 @@ data class SubDistrict(
 ) : Parcelable {
     companion object {
         fun jsonObject(subDistrict: SubDistrict?): JsonObject {
-            return JsonObject().apply {
-                addProperty("subDistrictId", subDistrict?.subDistrictId)
-                addProperty("city", City.jsonObject(subDistrict?.city).toString())
-                addProperty("subDistrictName", subDistrict?.subDistrictName)
-                addProperty("createdBy", Admin.jsonObject(subDistrict?.createdBy).toString())
-                addProperty("createdDate", subDistrict?.createdDate)
-                addProperty("updatedBy", Admin.jsonObject(subDistrict?.updatedBy).toString())
-                addProperty("updatedDate", subDistrict?.updatedDate)
-            }
+            return Gson().fromJson(Gson().toJson(subDistrict), JsonObject::class.java)
         }
     }
 }
@@ -145,18 +122,7 @@ data class UrbanVillage(
 ) : Parcelable {
     companion object {
         fun jsonObject(urbanVillage: UrbanVillage?): JsonObject {
-            return JsonObject().apply {
-                addProperty("urbanVillageId", urbanVillage?.urbanVillageId)
-                addProperty(
-                    "subDistrict",
-                    SubDistrict.jsonObject(urbanVillage?.subDistrict).toString()
-                )
-                addProperty("urbanVillageName", urbanVillage?.urbanVillageName)
-                addProperty("createdBy", Admin.jsonObject(urbanVillage?.createdBy).toString())
-                addProperty("createdDate", urbanVillage?.createdDate)
-                addProperty("updatedBy", Admin.jsonObject(urbanVillage?.updatedBy).toString())
-                addProperty("updatedDate", urbanVillage?.updatedDate)
-            }
+            return Gson().fromJson(Gson().toJson(urbanVillage), JsonObject::class.java)
         }
     }
 }

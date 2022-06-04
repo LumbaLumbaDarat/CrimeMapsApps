@@ -161,9 +161,9 @@ class CrimeMapsRepository(
         }.asLiveData()
     }
 
-    override fun provinceDelete(province: Province?): LiveData<DataResource<ProvinceResponse>> {
-        return object : NetworkResource<ProvinceResponse>() {
-            override fun createCall(): LiveData<ApiResource<ProvinceResponse>> =
+    override fun provinceDelete(province: Province?): LiveData<DataResource<MessageResponse>> {
+        return object : NetworkResource<MessageResponse>() {
+            override fun createCall(): LiveData<ApiResource<MessageResponse>> =
                 remote.provinceDelete(province)
         }.asLiveData()
     }
