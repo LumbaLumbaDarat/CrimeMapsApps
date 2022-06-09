@@ -55,6 +55,7 @@
     <string name="label_create_at">Dibuat pada [%s]</string>
     <string name="label_create_by_and_created_date">Dibuat oleh [%s], pada [%s]</string>
     <string name="label_updated_by_and_updated_date">Diubah oleh [%s], pada [%s]</string>
+    <string name="label_not_yet">Belum ada %s</string>
     <string name="label_not_yet_updated">Belum ada perubahan data.</string>
     <string name="label_null_created_and_updated">Tidak Ditemukan.</string>
 
@@ -93,6 +94,8 @@
     <string name="notification_information_title">Informasi</string>
     <string name="notification_success_title">Berhasil</string>
 
+    <string name="message_choose_parent_for_this_area">Pilih [%s] yang akan diregistrasikan dengan [%s] ini</string>
+    <string name="message_area_registration">[%s] ini teregristrasi dengan [%s]</string>
     <string name="message_title_delete">Hapus %s</string>
     <string name="message_delete">Apakah Anda ingin [menghapus] data %s [%s] ?</string>
     <string name="message_title_reset_password">Reset Kata Sandi %s</string>

@@ -84,7 +84,12 @@ class SplashScreenActivity : BaseActivity() {
                         setPreferences(ROLE_ROOT, it.data?.handshake?.roleAdminRoot)
                         setPreferences(ROLE_ADMIN, it.data?.handshake?.roleAdmin)
                         setPreferences(DEFAULT_IMAGE_ADMIN, it.data?.handshake?.defaultImageAdmin)
-                        setPreferences(DEFAULT_ADMIN_ROOT_USERNAME, it.data?.handshake?.firstRootAdmin)
+                        setPreferences(DEFAULT_ADMIN_ROOT_USERNAME, it.data?.handshake
+                            ?.firstRootAdmin)
+                        setPreferences(DISTANCE_UNIT, it.data?.handshake?.distanceUnit)
+                        setPreferences(MAX_DISTANCE, it.data?.handshake?.maxDistance)
+                        setPreferences(MAX_UPLOAD_IMAGE_CRIME_LOCATION, it.data?.handshake
+                            ?.maxUploadImageCrimeLocation)
                     }
 
                     val intent: Intent = if (admin == null)

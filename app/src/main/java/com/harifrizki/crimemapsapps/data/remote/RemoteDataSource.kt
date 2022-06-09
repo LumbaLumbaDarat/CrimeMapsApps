@@ -4,12 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse.Companion.errorResponse
-import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.model.Admin.Companion.jsonObject
-import com.harifrizki.crimemapsapps.model.Province.Companion.jsonObject
-import com.harifrizki.crimemapsapps.model.Province
+import com.harifrizki.crimemapsapps.model.*
 import com.harifrizki.crimemapsapps.utils.*
-import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
+import com.harifrizki.crimemapsapps.utils.ResponseStatus.EMPTY
+import com.harifrizki.crimemapsapps.utils.ResponseStatus.ERROR
 import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -34,225 +32,96 @@ class RemoteDataSource : DataSource {
     }
 
     override fun handshake(): LiveData<ApiResource<HandshakeResponse>> {
-        val result = MutableLiveData<ApiResource<HandshakeResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().handshake()
-            client.enqueue(object : Callback<HandshakeResponse> {
-                override fun onResponse(
-                    call: Call<HandshakeResponse>,
-                    response: Response<HandshakeResponse>
-                ) {
-                    convertResponse(response, HandshakeResponse(), result)
-                }
-
-                override fun onFailure(call: Call<HandshakeResponse>, t: Throwable) {
-                    convertResponse(HandshakeResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(HandshakeResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().handshake(),
+            HandshakeResponse()
+        )
     }
 
     override fun login(admin: Admin?): LiveData<ApiResource<LoginResponse>> {
-        val result = MutableLiveData<ApiResource<LoginResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().login(jsonObject(admin))
-            client.enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
-                ) {
-                    convertResponse(response, LoginResponse(), result)
-                }
-
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    convertResponse(LoginResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(LoginResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().login(Admin.jsonObject(admin)),
+            LoginResponse()
+        )
     }
 
     override fun logout(admin: Admin?): LiveData<ApiResource<MessageResponse>> {
-        val result = MutableLiveData<ApiResource<MessageResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().logout(jsonObject(admin))
-            client.enqueue(object : Callback<MessageResponse> {
-                override fun onResponse(
-                    call: Call<MessageResponse>,
-                    response: Response<MessageResponse>
-                ) {
-                    convertResponse(response, MessageResponse(), result)
-                }
-
-                override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
-                    convertResponse(MessageResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(MessageResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().logout(Admin.jsonObject(admin)),
+            MessageResponse()
+        )
     }
 
     override fun utilization(): LiveData<ApiResource<UtilizationResponse>> {
-        val result = MutableLiveData<ApiResource<UtilizationResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().utilization()
-            client.enqueue(object : Callback<UtilizationResponse> {
-                override fun onResponse(
-                    call: Call<UtilizationResponse>,
-                    response: Response<UtilizationResponse>
-                ) {
-                    convertResponse(response, UtilizationResponse(), result)
-                }
-
-                override fun onFailure(call: Call<UtilizationResponse>, t: Throwable) {
-                    convertResponse(UtilizationResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(UtilizationResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().utilization(),
+            UtilizationResponse()
+        )
     }
 
-    override fun adminByName(pageNo: String?, name: String?): LiveData<ApiResource<AdminResponse>> {
-        val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try {
-            val client = pageNo?.let {
-                name?.let { name ->
-                    NetworkApi.connectToApi().adminByName(it, name)
-                }
-            }
-            client?.enqueue(object : Callback<AdminResponse> {
-                override fun onResponse(
-                    call: Call<AdminResponse>,
-                    response: Response<AdminResponse>
-                ) {
-                    convertResponse(response, AdminResponse(), result)
-                }
-
-                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
-                    convertResponse(AdminResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(AdminResponse(), result, e, EMPTY)
-        }
-        return result
+    override fun admin(pageNo: String?, admin: Admin?): LiveData<ApiResource<AdminResponse>> {
+        return response(
+            NetworkApi.connectToApi().admin(
+                PARAM_NAME,
+                pageNo!!,
+                Admin.jsonObject(admin)
+            ),
+            AdminResponse()
+        )
     }
 
-    override fun adminById(adminId: String?): LiveData<ApiResource<AdminResponse>> {
-        val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try {
-            val client = adminId?.let { NetworkApi.connectToApi().adminById(it) }
-            client?.enqueue(object : Callback<AdminResponse> {
-                override fun onResponse(
-                    call: Call<AdminResponse>,
-                    response: Response<AdminResponse>
-                ) {
-                    convertResponse(response, AdminResponse(), result)
-                }
-
-                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
-                    convertResponse(AdminResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(AdminResponse(), result, e, EMPTY)
-        }
-        return result
+    override fun adminDetail(adminId: String?): LiveData<ApiResource<AdminResponse>> {
+        return response(
+            NetworkApi.connectToApi().adminDetail(adminId!!),
+            AdminResponse()
+        )
     }
 
     override fun adminAdd(
         admin: Admin?,
         photoProfile: File?
     ): LiveData<ApiResource<AdminResponse>> {
-        val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().adminAdd(
-                toRequestBody(jsonObject(admin).toString(), "multipart/form-data"),
+        return response(
+            NetworkApi.connectToApi().adminAdd(
+                toRequestBody(
+                    Admin.jsonObject(admin).toString(),
+                    "multipart/form-data"
+                ),
                 toMultipartBody(
                     photoProfile,
                     "adminPhotoProfile",
                     "multipart/form-data"
                 )
-            )
-            client.enqueue(object : Callback<AdminResponse> {
-                override fun onResponse(
-                    call: Call<AdminResponse>,
-                    response: Response<AdminResponse>
-                ) {
-                    convertResponse(response, AdminResponse(), result)
-                }
-
-                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
-                    convertResponse(AdminResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(AdminResponse(), result, e, EMPTY)
-        }
-        return result
+            ),
+            AdminResponse()
+        )
     }
 
     override fun adminUpdate(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
-        val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().adminUpdate(jsonObject(admin))
-            client.enqueue(object : Callback<AdminResponse> {
-                override fun onResponse(
-                    call: Call<AdminResponse>,
-                    response: Response<AdminResponse>
-                ) {
-                    convertResponse(response, AdminResponse(), result)
-                }
-
-                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
-                    convertResponse(AdminResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(AdminResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().adminUpdate(Admin.jsonObject(admin)),
+            AdminResponse()
+        )
     }
 
     override fun adminUpdatePhotoProfile(
         admin: Admin?,
         photoProfile: File?
     ): LiveData<ApiResource<AdminResponse>> {
-        val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().adminUpdatePhotoProfile(
-                toRequestBody(jsonObject(admin).toString(), "multipart/form-data"),
+        return response(
+            NetworkApi.connectToApi().adminUpdatePhotoProfile(
+                toRequestBody(
+                    Admin.jsonObject(admin).toString(),
+                    "multipart/form-data"
+                ),
                 toMultipartBody(
                     photoProfile,
                     "adminPhotoProfile",
                     "multipart/form-data"
                 )
-            )
-            client.enqueue(object : Callback<AdminResponse> {
-                override fun onResponse(
-                    call: Call<AdminResponse>,
-                    response: Response<AdminResponse>
-                ) {
-                    convertResponse(response, AdminResponse(), result)
-                }
-
-                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
-                    convertResponse(AdminResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(AdminResponse(), result, e, EMPTY)
-        }
-        return result
+            ),
+            AdminResponse()
+        )
     }
 
     override fun adminUpdatePassword(
@@ -260,316 +129,330 @@ class RemoteDataSource : DataSource {
         oldPassword: String?,
         newPassword: String?
     ): LiveData<ApiResource<AdminResponse>> {
-        val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try {
-            val client = adminId?.let {
-                oldPassword?.let { oldPassword ->
-                    newPassword?.let { newPassword ->
-                        NetworkApi.connectToApi().adminUpdatePassword(
-                            it, oldPassword, newPassword
-                        )
-                    }
-                }
-            }
-            client?.enqueue(object : Callback<AdminResponse> {
-                override fun onResponse(
-                    call: Call<AdminResponse>,
-                    response: Response<AdminResponse>
-                ) {
-                    convertResponse(response, AdminResponse(), result)
-                }
-
-                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
-                    convertResponse(AdminResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(AdminResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().adminUpdatePassword(
+                adminId!!,
+                oldPassword!!,
+                newPassword!!
+            ),
+            AdminResponse()
+        )
     }
 
     override fun adminResetPassword(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
-        val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().adminResetPassword(jsonObject(admin))
-            client.enqueue(object : Callback<AdminResponse> {
-                override fun onResponse(
-                    call: Call<AdminResponse>,
-                    response: Response<AdminResponse>
-                ) {
-                    convertResponse(response, AdminResponse(), result)
-                }
-
-                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
-                    convertResponse(AdminResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(AdminResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().adminResetPassword(Admin.jsonObject(admin)),
+            AdminResponse()
+        )
     }
 
     override fun adminUpdateActive(admin: Admin?): LiveData<ApiResource<AdminResponse>> {
-        val result = MutableLiveData<ApiResource<AdminResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().adminUpdateActive(jsonObject(admin))
-            client.enqueue(object : Callback<AdminResponse> {
-                override fun onResponse(
-                    call: Call<AdminResponse>,
-                    response: Response<AdminResponse>
-                ) {
-                    convertResponse(response, AdminResponse(), result)
-                }
-
-                override fun onFailure(call: Call<AdminResponse>, t: Throwable) {
-                    convertResponse(AdminResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(AdminResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().adminUpdateActive(Admin.jsonObject(admin)),
+            AdminResponse()
+        )
     }
 
     override fun adminDelete(admin: Admin?): LiveData<ApiResource<MessageResponse>> {
-        val result = MutableLiveData<ApiResource<MessageResponse>>()
-        try {
-            val client = NetworkApi.connectToApi().adminDelete(jsonObject(admin))
-            client.enqueue(object : Callback<MessageResponse> {
-                override fun onResponse(
-                    call: Call<MessageResponse>,
-                    response: Response<MessageResponse>
-                ) {
-                    convertResponse(response, MessageResponse(), result)
-                }
-
-                override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
-                    convertResponse(MessageResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(MessageResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().adminDelete(Admin.jsonObject(admin)),
+            MessageResponse()
+        )
     }
 
-    override fun provinceByName(
+    override fun province(
         pageNo: String?,
-        name: String?
+        province: Province?
     ): LiveData<ApiResource<ProvinceResponse>> {
-        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
-        try {
-            val client = pageNo?.let {
-                name?.let { name ->
-                    NetworkApi.connectToApi().provinceByName(it, name)
-                }
-            }
-            client?.enqueue(object : Callback<ProvinceResponse> {
-                override fun onResponse(
-                    call: Call<ProvinceResponse>,
-                    response: Response<ProvinceResponse>
-                ) {
-                    convertResponse(response, ProvinceResponse(), result)
-                }
-
-                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
-                    convertResponse(ProvinceResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(ProvinceResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().province(
+                PARAM_NAME,
+                pageNo!!,
+                Province.jsonObject(province, READ, PARAM_NAME)
+            ),
+            ProvinceResponse()
+        )
     }
 
-    override fun provinceById(provinceId: String?): LiveData<ApiResource<ProvinceResponse>> {
-        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
-        try {
-            val client = provinceId?.let { NetworkApi.connectToApi().provinceById(it) }
-            client?.enqueue(object : Callback<ProvinceResponse> {
-                override fun onResponse(
-                    call: Call<ProvinceResponse>,
-                    response: Response<ProvinceResponse>
-                ) {
-                    convertResponse(response, ProvinceResponse(), result)
-                }
-
-                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
-                    convertResponse(ProvinceResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(ProvinceResponse(), result, e, EMPTY)
-        }
-        return result
+    override fun provinceDetail(province: Province?): LiveData<ApiResource<ProvinceResponse>> {
+        return response(
+            NetworkApi.connectToApi().provinceDetail(
+                Province.jsonObject(province, READ, ID)
+            ),
+            ProvinceResponse()
+        )
     }
 
     override fun provinceAdd(province: Province?): LiveData<ApiResource<ProvinceResponse>> {
-        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
-        try {
-            val client = NetworkApi.connectToApi()
-                .provinceAdd(
-                    jsonObject(
-                        province,
-                        CREATE
-                    )
-                )
-            client.enqueue(object : Callback<ProvinceResponse> {
-                override fun onResponse(
-                    call: Call<ProvinceResponse>,
-                    response: Response<ProvinceResponse>
-                ) {
-                    convertResponse(response, ProvinceResponse(), result)
-                }
-
-                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
-                    convertResponse(ProvinceResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(ProvinceResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().provinceAdd(
+                Province.jsonObject(province, CREATE)
+            ),
+            ProvinceResponse()
+        )
     }
 
     override fun provinceUpdate(province: Province?): LiveData<ApiResource<ProvinceResponse>> {
-        val result = MutableLiveData<ApiResource<ProvinceResponse>>()
-        try {
-            val client = NetworkApi.connectToApi()
-                .provinceUpdate(
-                    jsonObject(
-                        province,
-                        CRUD.UPDATE
-                    )
-                )
-            client.enqueue(object : Callback<ProvinceResponse> {
-                override fun onResponse(
-                    call: Call<ProvinceResponse>,
-                    response: Response<ProvinceResponse>
-                ) {
-                    convertResponse(response, ProvinceResponse(), result)
-                }
-
-                override fun onFailure(call: Call<ProvinceResponse>, t: Throwable) {
-                    convertResponse(ProvinceResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(ProvinceResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().provinceUpdate(
+                Province.jsonObject(province, CRUD.UPDATE)
+            ),
+            ProvinceResponse()
+        )
     }
 
     override fun provinceDelete(province: Province?): LiveData<ApiResource<MessageResponse>> {
-        val result = MutableLiveData<ApiResource<MessageResponse>>()
-        try {
-            val client = NetworkApi.connectToApi()
-                .provinceDelete(
-                    jsonObject(
-                        province,
-                        CRUD.DELETE
-                    )
-                )
-            client.enqueue(object : Callback<MessageResponse> {
-                override fun onResponse(
-                    call: Call<MessageResponse>,
-                    response: Response<MessageResponse>
-                ) {
-                    convertResponse(response, MessageResponse(), result)
-                }
-
-                override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
-                    convertResponse(MessageResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(MessageResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().provinceDelete(
+                Province.jsonObject(province, CRUD.DELETE)
+            ),
+            MessageResponse()
+        )
     }
 
-    override fun cityByName(pageNo: String?, name: String?): LiveData<ApiResource<CityResponse>> {
-        val result = MutableLiveData<ApiResource<CityResponse>>()
-        try {
-            val client = pageNo?.let {
-                name?.let { name ->
-                    NetworkApi.connectToApi().cityByName(it, name)
-                }
-            }
-            client?.enqueue(object : Callback<CityResponse> {
-                override fun onResponse(
-                    call: Call<CityResponse>,
-                    response: Response<CityResponse>
-                ) {
-                    convertResponse(response, CityResponse(), result)
-                }
-
-                override fun onFailure(call: Call<CityResponse>, t: Throwable) {
-                    convertResponse(CityResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(CityResponse(), result, e, EMPTY)
-        }
-        return result
+    override fun city(pageNo: String?, city: City?): LiveData<ApiResource<CityResponse>> {
+        return response(
+            NetworkApi.connectToApi().city(
+                PARAM_NAME,
+                pageNo!!,
+                City.jsonObject(city, READ, PARAM_NAME)
+            ),
+            CityResponse()
+        )
     }
 
-    override fun subDistrictByName(
+    override fun cityByProvince(pageNo: String?, city: City?): LiveData<ApiResource<CityResponse>> {
+        return response(
+            NetworkApi.connectToApi().city(
+                PARAM_PROVINCE_ID,
+                pageNo!!,
+                City.jsonObject(city, READ, PARAM_PROVINCE_ID)
+            ),
+            CityResponse()
+        )
+    }
+
+    override fun cityDetail(city: City?): LiveData<ApiResource<CityResponse>> {
+        return response(
+            NetworkApi.connectToApi().cityDetail(
+                City.jsonObject(city, READ, ID)
+            ),
+            CityResponse()
+        )
+    }
+
+    override fun cityAdd(city: City?): LiveData<ApiResource<CityResponse>> {
+        return response(
+            NetworkApi.connectToApi().cityAdd(
+                City.jsonObject(city, CREATE)
+            ),
+            CityResponse()
+        )
+    }
+
+    override fun cityUpdate(city: City?): LiveData<ApiResource<CityResponse>> {
+        return response(
+            NetworkApi.connectToApi().cityUpdate(
+                City.jsonObject(city, CRUD.UPDATE)
+            ),
+            CityResponse()
+        )
+    }
+
+    override fun cityDelete(city: City?): LiveData<ApiResource<MessageResponse>> {
+        return response(
+            NetworkApi.connectToApi().cityDelete(
+                City.jsonObject(city, CRUD.DELETE)
+            ),
+            MessageResponse()
+        )
+    }
+
+    override fun subDistrict(
         pageNo: String?,
-        name: String?
+        subDistrict: SubDistrict?
     ): LiveData<ApiResource<SubDistrictResponse>> {
-        val result = MutableLiveData<ApiResource<SubDistrictResponse>>()
-        try {
-            val client = pageNo?.let {
-                name?.let { name ->
-                    NetworkApi.connectToApi().subDistrictByName(it, name)
-                }
-            }
-            client?.enqueue(object : Callback<SubDistrictResponse> {
-                override fun onResponse(
-                    call: Call<SubDistrictResponse>,
-                    response: Response<SubDistrictResponse>
-                ) {
-                    convertResponse(response, SubDistrictResponse(), result)
-                }
-
-                override fun onFailure(call: Call<SubDistrictResponse>, t: Throwable) {
-                    convertResponse(SubDistrictResponse(), result, t, ERROR)
-                }
-            })
-        } catch (e: Exception) {
-            convertResponse(SubDistrictResponse(), result, e, EMPTY)
-        }
-        return result
+        return response(
+            NetworkApi.connectToApi().subDistrict(
+                PARAM_NAME,
+                pageNo!!,
+                SubDistrict.jsonObject(subDistrict, READ, PARAM_NAME)
+            ),
+            SubDistrictResponse()
+        )
     }
 
-    override fun urbanVillageByName(
+    override fun subDistrictByProvince(
         pageNo: String?,
-        name: String?
+        subDistrict: SubDistrict?
+    ): LiveData<ApiResource<SubDistrictResponse>> {
+        return response(
+            NetworkApi.connectToApi().subDistrict(
+                PARAM_PROVINCE_ID,
+                pageNo!!,
+                SubDistrict.jsonObject(subDistrict, READ, PARAM_PROVINCE_ID)
+            ),
+            SubDistrictResponse()
+        )
+    }
+
+    override fun subDistrictByCity(
+        pageNo: String?,
+        subDistrict: SubDistrict?
+    ): LiveData<ApiResource<SubDistrictResponse>> {
+        return response(
+            NetworkApi.connectToApi().subDistrict(
+                PARAM_CITY_ID,
+                pageNo!!,
+                SubDistrict.jsonObject(subDistrict, READ, PARAM_CITY_ID)
+            ),
+            SubDistrictResponse()
+        )
+    }
+
+    override fun subDistrictDetail(subDistrict: SubDistrict?): LiveData<ApiResource<SubDistrictResponse>> {
+        return response(
+            NetworkApi.connectToApi().subDistrictDetail(
+                SubDistrict.jsonObject(subDistrict, READ, ID)
+            ),
+            SubDistrictResponse()
+        )
+    }
+
+    override fun subDistrictAdd(subDistrict: SubDistrict?): LiveData<ApiResource<SubDistrictResponse>> {
+        return response(
+            NetworkApi.connectToApi().subDistrictAdd(
+                SubDistrict.jsonObject(subDistrict, CREATE)
+            ),
+            SubDistrictResponse()
+        )
+    }
+
+    override fun subDistrictUpdate(subDistrict: SubDistrict?): LiveData<ApiResource<SubDistrictResponse>> {
+        return response(
+            NetworkApi.connectToApi().subDistrictUpdate(
+                SubDistrict.jsonObject(subDistrict, CRUD.UPDATE)
+            ),
+            SubDistrictResponse()
+        )
+    }
+
+    override fun subDistrictDelete(subDistrict: SubDistrict?): LiveData<ApiResource<MessageResponse>> {
+        return response(
+            NetworkApi.connectToApi().subDistrictDelete(
+                SubDistrict.jsonObject(subDistrict, CRUD.DELETE)
+            ),
+            MessageResponse()
+        )
+    }
+
+    override fun urbanVillage(
+        pageNo: String?,
+        urbanVillage: UrbanVillage?
     ): LiveData<ApiResource<UrbanVillageResponse>> {
-        val result = MutableLiveData<ApiResource<UrbanVillageResponse>>()
+        return response(
+            NetworkApi.connectToApi().urbanVillage(
+                PARAM_NAME,
+                pageNo!!,
+                UrbanVillage.jsonObject(urbanVillage, READ, PARAM_NAME)
+            ),
+            UrbanVillageResponse()
+        )
+    }
+
+    override fun urbanVillageByProvince(
+        pageNo: String?,
+        urbanVillage: UrbanVillage?
+    ): LiveData<ApiResource<UrbanVillageResponse>> {
+        return response(
+            NetworkApi.connectToApi().urbanVillage(
+                PARAM_PROVINCE_ID,
+                pageNo!!,
+                UrbanVillage.jsonObject(urbanVillage, READ, PARAM_PROVINCE_ID)
+            ),
+            UrbanVillageResponse()
+        )
+    }
+
+    override fun urbanVillageByCity(
+        pageNo: String?,
+        urbanVillage: UrbanVillage?
+    ): LiveData<ApiResource<UrbanVillageResponse>> {
+        return response(
+            NetworkApi.connectToApi().urbanVillage(
+                PARAM_CITY_ID,
+                pageNo!!,
+                UrbanVillage.jsonObject(urbanVillage, READ, PARAM_CITY_ID)
+            ),
+            UrbanVillageResponse()
+        )
+    }
+
+    override fun urbanVillageBySubDistrict(
+        pageNo: String?,
+        urbanVillage: UrbanVillage?
+    ): LiveData<ApiResource<UrbanVillageResponse>> {
+        return response(
+            NetworkApi.connectToApi().urbanVillage(
+                PARAM_SUB_DISTRICT_ID,
+                pageNo!!,
+                UrbanVillage.jsonObject(urbanVillage, READ, PARAM_SUB_DISTRICT_ID)
+            ),
+            UrbanVillageResponse()
+        )
+    }
+
+    override fun urbanVillageDetail(urbanVillage: UrbanVillage?): LiveData<ApiResource<UrbanVillageResponse>> {
+        return response(
+            NetworkApi.connectToApi().urbanVillageDetail(
+                UrbanVillage.jsonObject(urbanVillage, READ, ID)
+            ),
+            UrbanVillageResponse()
+        )
+    }
+
+    override fun urbanVillageAdd(urbanVillage: UrbanVillage?): LiveData<ApiResource<UrbanVillageResponse>> {
+        return response(
+            NetworkApi.connectToApi().urbanVillageAdd(
+                UrbanVillage.jsonObject(urbanVillage, CREATE)
+            ),
+            UrbanVillageResponse()
+        )
+    }
+
+    override fun urbanVillageUpdate(urbanVillage: UrbanVillage?): LiveData<ApiResource<UrbanVillageResponse>> {
+        return response(
+            NetworkApi.connectToApi().urbanVillageUpdate(
+                UrbanVillage.jsonObject(urbanVillage, CRUD.UPDATE)
+            ),
+            UrbanVillageResponse()
+        )
+    }
+
+    override fun urbanVillageDelete(urbanVillage: UrbanVillage?): LiveData<ApiResource<MessageResponse>> {
+        return response(
+            NetworkApi.connectToApi().urbanVillageDelete(
+                UrbanVillage.jsonObject(urbanVillage, CRUD.DELETE)
+            ),
+            MessageResponse()
+        )
+    }
+
+    private fun <T> response(client: Call<T>, modelResponse: T):
+            MutableLiveData<ApiResource<T>> {
+        val result = MutableLiveData<ApiResource<T>>()
         try {
-            val client = pageNo?.let {
-                name?.let { name ->
-                    NetworkApi.connectToApi().urbanVillageByName(it, name)
-                }
-            }
-            client?.enqueue(object : Callback<UrbanVillageResponse> {
-                override fun onResponse(
-                    call: Call<UrbanVillageResponse>,
-                    response: Response<UrbanVillageResponse>
-                ) {
-                    convertResponse(response, UrbanVillageResponse(), result)
+            client.enqueue(object : Callback<T> {
+                override fun onResponse(call: Call<T>, response: Response<T>) {
+                    convertResponse(response, modelResponse, result)
                 }
 
-                override fun onFailure(call: Call<UrbanVillageResponse>, t: Throwable) {
-                    convertResponse(UrbanVillageResponse(), result, t, ERROR)
+                override fun onFailure(call: Call<T>, t: Throwable) {
+                    convertResponse(modelResponse, result, t, ERROR)
                 }
             })
         } catch (e: Exception) {
-            convertResponse(UrbanVillageResponse(), result, e, EMPTY)
+            convertResponse(modelResponse, result, e, EMPTY)
         }
         return result
     }

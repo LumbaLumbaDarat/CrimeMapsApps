@@ -3,8 +3,7 @@ package com.harifrizki.crimemapsapps.data
 import androidx.lifecycle.LiveData
 import com.harifrizki.crimemapsapps.data.remote.*
 import com.harifrizki.crimemapsapps.data.remote.response.*
-import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.model.Province
+import com.harifrizki.crimemapsapps.model.*
 import com.harifrizki.crimemapsapps.utils.ApiResource
 import com.harifrizki.crimemapsapps.utils.AppExecutor
 import com.harifrizki.crimemapsapps.utils.DataResource
@@ -54,20 +53,17 @@ class CrimeMapsRepository(
         }.asLiveData()
     }
 
-    override fun adminByName(
-        pageNo: String?,
-        name: String?
-    ): LiveData<DataResource<AdminResponse>> {
+    override fun admin(pageNo: String?, admin: Admin?): LiveData<DataResource<AdminResponse>> {
         return object : NetworkResource<AdminResponse>() {
             override fun createCall(): LiveData<ApiResource<AdminResponse>> =
-                remote.adminByName(pageNo, name)
+                remote.admin(pageNo, admin)
         }.asLiveData()
     }
 
-    override fun adminById(adminId: String?): LiveData<DataResource<AdminResponse>> {
+    override fun adminDetail(adminId: String?): LiveData<DataResource<AdminResponse>> {
         return object : NetworkResource<AdminResponse>() {
             override fun createCall(): LiveData<ApiResource<AdminResponse>> =
-                remote.adminById(adminId)
+                remote.adminDetail(adminId)
         }.asLiveData()
     }
 
@@ -130,20 +126,20 @@ class CrimeMapsRepository(
         }.asLiveData()
     }
 
-    override fun provinceByName(
+    override fun province(
         pageNo: String?,
-        name: String?
+        province: Province?
     ): LiveData<DataResource<ProvinceResponse>> {
         return object : NetworkResource<ProvinceResponse>() {
             override fun createCall(): LiveData<ApiResource<ProvinceResponse>> =
-                remote.provinceByName(pageNo, name)
+                remote.province(pageNo, province)
         }.asLiveData()
     }
 
-    override fun provinceById(provinceId: String?): LiveData<DataResource<ProvinceResponse>> {
+    override fun provinceDetail(province: Province?): LiveData<DataResource<ProvinceResponse>> {
         return object : NetworkResource<ProvinceResponse>() {
             override fun createCall(): LiveData<ApiResource<ProvinceResponse>> =
-                remote.provinceById(provinceId)
+                remote.provinceDetail(province)
         }.asLiveData()
     }
 
@@ -168,30 +164,174 @@ class CrimeMapsRepository(
         }.asLiveData()
     }
 
-    override fun cityByName(pageNo: String?, name: String?): LiveData<DataResource<CityResponse>> {
+    override fun city(pageNo: String?, city: City?): LiveData<DataResource<CityResponse>> {
         return object : NetworkResource<CityResponse>() {
             override fun createCall(): LiveData<ApiResource<CityResponse>> =
-                remote.cityByName(pageNo, name)
+                remote.city(pageNo, city)
         }.asLiveData()
     }
 
-    override fun subDistrictByName(
+    override fun cityByProvince(
         pageNo: String?,
-        name: String?
+        city: City?
+    ): LiveData<DataResource<CityResponse>> {
+        return object : NetworkResource<CityResponse>() {
+            override fun createCall(): LiveData<ApiResource<CityResponse>> =
+                remote.cityByProvince(pageNo, city)
+        }.asLiveData()
+    }
+
+    override fun cityDetail(city: City?): LiveData<DataResource<CityResponse>> {
+        return object : NetworkResource<CityResponse>() {
+            override fun createCall(): LiveData<ApiResource<CityResponse>> =
+                remote.cityDetail(city)
+        }.asLiveData()
+    }
+
+    override fun cityAdd(city: City?): LiveData<DataResource<CityResponse>> {
+        return object : NetworkResource<CityResponse>() {
+            override fun createCall(): LiveData<ApiResource<CityResponse>> =
+                remote.cityAdd(city)
+        }.asLiveData()
+    }
+
+    override fun cityUpdate(city: City?): LiveData<DataResource<CityResponse>> {
+        return object : NetworkResource<CityResponse>() {
+            override fun createCall(): LiveData<ApiResource<CityResponse>> =
+                remote.cityUpdate(city)
+        }.asLiveData()
+    }
+
+    override fun cityDelete(city: City?): LiveData<DataResource<MessageResponse>> {
+        return object : NetworkResource<MessageResponse>() {
+            override fun createCall(): LiveData<ApiResource<MessageResponse>> =
+                remote.cityDelete(city)
+        }.asLiveData()
+    }
+
+    override fun subDistrict(
+        pageNo: String?,
+        subDistrict: SubDistrict?
     ): LiveData<DataResource<SubDistrictResponse>> {
         return object : NetworkResource<SubDistrictResponse>() {
             override fun createCall(): LiveData<ApiResource<SubDistrictResponse>> =
-                remote.subDistrictByName(pageNo, name)
+                remote.subDistrict(pageNo, subDistrict)
         }.asLiveData()
     }
 
-    override fun urbanVillageByName(
+    override fun subDistrictByProvince(
         pageNo: String?,
-        name: String?
+        subDistrict: SubDistrict?
+    ): LiveData<DataResource<SubDistrictResponse>> {
+        return object : NetworkResource<SubDistrictResponse>() {
+            override fun createCall(): LiveData<ApiResource<SubDistrictResponse>> =
+                remote.subDistrictByProvince(pageNo, subDistrict)
+        }.asLiveData()
+    }
+
+    override fun subDistrictByCity(
+        pageNo: String?,
+        subDistrict: SubDistrict?
+    ): LiveData<DataResource<SubDistrictResponse>> {
+        return object : NetworkResource<SubDistrictResponse>() {
+            override fun createCall(): LiveData<ApiResource<SubDistrictResponse>> =
+                remote.subDistrictByCity(pageNo, subDistrict)
+        }.asLiveData()
+    }
+
+    override fun subDistrictDetail(subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>> {
+        return object : NetworkResource<SubDistrictResponse>() {
+            override fun createCall(): LiveData<ApiResource<SubDistrictResponse>> =
+                remote.subDistrictDetail(subDistrict)
+        }.asLiveData()
+    }
+
+    override fun subDistrictAdd(subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>> {
+        return object : NetworkResource<SubDistrictResponse>() {
+            override fun createCall(): LiveData<ApiResource<SubDistrictResponse>> =
+                remote.subDistrictAdd(subDistrict)
+        }.asLiveData()
+    }
+
+    override fun subDistrictUpdate(subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>> {
+        return object : NetworkResource<SubDistrictResponse>() {
+            override fun createCall(): LiveData<ApiResource<SubDistrictResponse>> =
+                remote.subDistrictUpdate(subDistrict)
+        }.asLiveData()
+    }
+
+    override fun subDistrictDelete(subDistrict: SubDistrict?): LiveData<DataResource<MessageResponse>> {
+        return object : NetworkResource<MessageResponse>() {
+            override fun createCall(): LiveData<ApiResource<MessageResponse>> =
+                remote.subDistrictDelete(subDistrict)
+        }.asLiveData()
+    }
+
+    override fun urbanVillage(
+        pageNo: String?,
+        urbanVillage: UrbanVillage?
     ): LiveData<DataResource<UrbanVillageResponse>> {
         return object : NetworkResource<UrbanVillageResponse>() {
             override fun createCall(): LiveData<ApiResource<UrbanVillageResponse>> =
-                remote.urbanVillageByName(pageNo, name)
+                remote.urbanVillage(pageNo, urbanVillage)
+        }.asLiveData()
+    }
+
+    override fun urbanVillageByProvince(
+        pageNo: String?,
+        urbanVillage: UrbanVillage?
+    ): LiveData<DataResource<UrbanVillageResponse>> {
+        return object : NetworkResource<UrbanVillageResponse>() {
+            override fun createCall(): LiveData<ApiResource<UrbanVillageResponse>> =
+                remote.urbanVillageByProvince(pageNo, urbanVillage)
+        }.asLiveData()
+    }
+
+    override fun urbanVillageByCity(
+        pageNo: String?,
+        urbanVillage: UrbanVillage?
+    ): LiveData<DataResource<UrbanVillageResponse>> {
+        return object : NetworkResource<UrbanVillageResponse>() {
+            override fun createCall(): LiveData<ApiResource<UrbanVillageResponse>> =
+                remote.urbanVillageByCity(pageNo, urbanVillage)
+        }.asLiveData()
+    }
+
+    override fun urbanVillageBySubDistrict(
+        pageNo: String?,
+        urbanVillage: UrbanVillage?
+    ): LiveData<DataResource<UrbanVillageResponse>> {
+        return object : NetworkResource<UrbanVillageResponse>() {
+            override fun createCall(): LiveData<ApiResource<UrbanVillageResponse>> =
+                remote.urbanVillageBySubDistrict(pageNo, urbanVillage)
+        }.asLiveData()
+    }
+
+    override fun urbanVillageDetail(urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>> {
+        return object : NetworkResource<UrbanVillageResponse>() {
+            override fun createCall(): LiveData<ApiResource<UrbanVillageResponse>> =
+                remote.urbanVillageDetail(urbanVillage)
+        }.asLiveData()
+    }
+
+    override fun urbanVillageAdd(urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>> {
+        return object : NetworkResource<UrbanVillageResponse>() {
+            override fun createCall(): LiveData<ApiResource<UrbanVillageResponse>> =
+                remote.urbanVillageAdd(urbanVillage)
+        }.asLiveData()
+    }
+
+    override fun urbanVillageUpdate(urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>> {
+        return object : NetworkResource<UrbanVillageResponse>() {
+            override fun createCall(): LiveData<ApiResource<UrbanVillageResponse>> =
+                remote.urbanVillageUpdate(urbanVillage)
+        }.asLiveData()
+    }
+
+    override fun urbanVillageDelete(urbanVillage: UrbanVillage?): LiveData<DataResource<MessageResponse>> {
+        return object : NetworkResource<MessageResponse>() {
+            override fun createCall(): LiveData<ApiResource<MessageResponse>> =
+                remote.urbanVillageDelete(urbanVillage)
         }.asLiveData()
     }
 }

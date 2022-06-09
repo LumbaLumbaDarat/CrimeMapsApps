@@ -83,7 +83,7 @@ class ProfileActivity : BaseActivity() {
                         appBarIcon = R.drawable.ic_round_admin_panel_settings_24
                         initializeDetailProfile()
                         initializeCreatedAndUpdated()
-                        adminById(admin)
+                        adminDetail(admin)
                     }
                     LIST_OF_ADMIN -> {
                         appBarTitle = getString(
@@ -93,7 +93,7 @@ class ProfileActivity : BaseActivity() {
                         appBarIcon = R.drawable.ic_round_account_circle_24
                         initializeUpdateProfile()
                         initializeCreatedAndUpdated()
-                        adminById(map!![ADMIN_MODEL] as Admin)
+                        adminDetail(map!![ADMIN_MODEL] as Admin)
                     }
                     else -> {}
                 }
@@ -143,7 +143,7 @@ class ProfileActivity : BaseActivity() {
                     READ -> {
                         when (fromActivity) {
                             DASHBOARD -> {
-                                adminById(admin)
+                                adminDetail(admin)
                             }
                             else -> {}
                         }
@@ -262,7 +262,7 @@ class ProfileActivity : BaseActivity() {
     override fun onRefresh() {
         super.onRefresh()
         binding.srlProfile.isRefreshing = false
-        if (crud == READ) adminById(admin)
+        if (crud == READ) adminDetail(admin)
     }
 
     override fun onBackPressed() {
@@ -350,7 +350,7 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
-    private val adminById = Observer<DataResource<AdminResponse>> {
+    private val adminDetail = Observer<DataResource<AdminResponse>> {
         when (it.responseStatus) {
             LOADING -> {
                 loadingProfile(true)
@@ -375,9 +375,9 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
-    private fun adminById(admin: Admin?) {
+    private fun adminDetail(admin: Admin?) {
         if (networkConnected()) {
-            viewModel.adminById(admin?.adminId).observe(this, adminById)
+            viewModel.adminDetail(admin?.adminId).observe(this, adminDetail)
         }
     }
 
@@ -551,7 +551,7 @@ class ProfileActivity : BaseActivity() {
                         message = it.data?.message?.message,
                         onClick = {
                             dismissNotification()
-                            adminById(it.data?.admin)
+                            adminDetail(it.data?.admin)
                         }
                     )
                 }
@@ -604,7 +604,7 @@ class ProfileActivity : BaseActivity() {
                         message = it.data?.message?.message,
                         onClick = {
                             dismissNotification()
-                            adminById(it.data?.admin)
+                            adminDetail(it.data?.admin)
                         }
                     )
                 }

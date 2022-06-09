@@ -2,8 +2,8 @@ package com.harifrizki.crimemapsapps.data
 
 import androidx.lifecycle.LiveData
 import com.harifrizki.crimemapsapps.data.remote.response.*
-import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.model.Province
+import com.harifrizki.crimemapsapps.model.*
+import com.harifrizki.crimemapsapps.utils.ApiResource
 import com.harifrizki.crimemapsapps.utils.DataResource
 import java.io.File
 
@@ -13,8 +13,8 @@ interface CrimeMapsDataSource {
     fun logout(admin: Admin?): LiveData<DataResource<MessageResponse>>
     fun utilization(): LiveData<DataResource<UtilizationResponse>>
 
-    fun adminByName(pageNo: String?, name: String?): LiveData<DataResource<AdminResponse>>
-    fun adminById(adminId: String?): LiveData<DataResource<AdminResponse>>
+    fun admin(pageNo: String?, admin: Admin?): LiveData<DataResource<AdminResponse>>
+    fun adminDetail(adminId: String?): LiveData<DataResource<AdminResponse>>
     fun adminAdd(admin: Admin?, photoProfile: File?): LiveData<DataResource<AdminResponse>>
     fun adminUpdate(admin: Admin?): LiveData<DataResource<AdminResponse>>
     fun adminUpdatePhotoProfile(admin: Admin?, photoProfile: File?): LiveData<DataResource<AdminResponse>>
@@ -23,15 +23,33 @@ interface CrimeMapsDataSource {
     fun adminUpdateActive(admin: Admin?): LiveData<DataResource<AdminResponse>>
     fun adminDelete(admin: Admin?): LiveData<DataResource<MessageResponse>>
 
-    fun provinceByName(pageNo: String?, name: String?): LiveData<DataResource<ProvinceResponse>>
-    fun provinceById(provinceId: String?): LiveData<DataResource<ProvinceResponse>>
+    fun province(pageNo: String?, province: Province?): LiveData<DataResource<ProvinceResponse>>
+    fun provinceDetail(province: Province?): LiveData<DataResource<ProvinceResponse>>
     fun provinceAdd(province: Province?): LiveData<DataResource<ProvinceResponse>>
     fun provinceUpdate(province: Province?): LiveData<DataResource<ProvinceResponse>>
     fun provinceDelete(province: Province?): LiveData<DataResource<MessageResponse>>
 
-    fun cityByName(pageNo: String?, name: String?): LiveData<DataResource<CityResponse>>
+    fun city(pageNo: String?, city: City?): LiveData<DataResource<CityResponse>>
+    fun cityByProvince(pageNo: String?, city: City?): LiveData<DataResource<CityResponse>>
+    fun cityDetail(city: City?): LiveData<DataResource<CityResponse>>
+    fun cityAdd(city: City?): LiveData<DataResource<CityResponse>>
+    fun cityUpdate(city: City?): LiveData<DataResource<CityResponse>>
+    fun cityDelete(city: City?): LiveData<DataResource<MessageResponse>>
 
-    fun subDistrictByName(pageNo: String?, name: String?): LiveData<DataResource<SubDistrictResponse>>
+    fun subDistrict(pageNo: String?, subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>>
+    fun subDistrictByProvince(pageNo: String?, subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>>
+    fun subDistrictByCity(pageNo: String?, subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>>
+    fun subDistrictDetail(subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>>
+    fun subDistrictAdd(subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>>
+    fun subDistrictUpdate(subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>>
+    fun subDistrictDelete(subDistrict: SubDistrict?): LiveData<DataResource<MessageResponse>>
 
-    fun urbanVillageByName(pageNo: String?, name: String?): LiveData<DataResource<UrbanVillageResponse>>
+    fun urbanVillage(pageNo: String?, urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>>
+    fun urbanVillageByProvince(pageNo: String?, urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>>
+    fun urbanVillageByCity(pageNo: String?, urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>>
+    fun urbanVillageBySubDistrict(pageNo: String?, urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>>
+    fun urbanVillageDetail(urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>>
+    fun urbanVillageAdd(urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>>
+    fun urbanVillageUpdate(urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>>
+    fun urbanVillageDelete(urbanVillage: UrbanVillage?): LiveData<DataResource<MessageResponse>>
 }

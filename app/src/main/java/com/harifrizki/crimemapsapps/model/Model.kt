@@ -4,12 +4,15 @@ import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
+import com.harifrizki.crimemapsapps.data.remote.ID
+import com.harifrizki.crimemapsapps.data.remote.PARAM_NAME
 import com.harifrizki.crimemapsapps.utils.CRUD
 import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.EMPTY_STRING
 import com.harifrizki.crimemapsapps.utils.MenuSetting
 import com.harifrizki.crimemapsapps.utils.MenuSetting.MENU_NONE
 import com.harifrizki.crimemapsapps.utils.ZERO
+import com.orhanobut.logger.Logger
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -59,19 +62,12 @@ data class Province(
     @field:SerializedName("updatedDate") var updatedDate: String? = null,
 ) : Parcelable {
     companion object {
-        fun jsonObject(province: Province?, jsonForCRUD: CRUD?): JsonObject {
-            return when (jsonForCRUD) {
-                CREATE,
-                UPDATE -> {
-                    Gson().fromJson(Gson().toJson(province), JsonObject::class.java)
-                }
-                DELETE -> {
-                    JsonObject().apply {
-                        addProperty("provinceId", province?.provinceId)
-                    }
-                }
-                else -> { JsonObject() }
-            }
+        fun jsonObject(
+            province: Province?,
+            jsonForCRUD: CRUD?,
+            searchBy: String? = EMPTY_STRING
+        ): JsonObject {
+            return createJson(province, jsonForCRUD, searchBy)
         }
     }
 }
@@ -87,8 +83,12 @@ data class City(
     @field:SerializedName("updatedDate") var updatedDate: String? = null,
 ) : Parcelable {
     companion object {
-        fun jsonObject(city: City?): JsonObject {
-            return Gson().fromJson(Gson().toJson(city), JsonObject::class.java)
+        fun jsonObject(
+            city: City?,
+            jsonForCRUD: CRUD?,
+            searchBy: String? = EMPTY_STRING
+        ): JsonObject {
+            return createJson(city, jsonForCRUD, searchBy)
         }
     }
 }
@@ -104,8 +104,12 @@ data class SubDistrict(
     @field:SerializedName("updatedDate") var updatedDate: String? = null,
 ) : Parcelable {
     companion object {
-        fun jsonObject(subDistrict: SubDistrict?): JsonObject {
-            return Gson().fromJson(Gson().toJson(subDistrict), JsonObject::class.java)
+        fun jsonObject(
+            subDistrict: SubDistrict?,
+            jsonForCRUD: CRUD?,
+            searchBy: String? = EMPTY_STRING
+        ): JsonObject {
+            return createJson(subDistrict, jsonForCRUD, searchBy)
         }
     }
 }
@@ -121,8 +125,12 @@ data class UrbanVillage(
     @field:SerializedName("updatedDate") var updatedDate: String? = null,
 ) : Parcelable {
     companion object {
-        fun jsonObject(urbanVillage: UrbanVillage?): JsonObject {
-            return Gson().fromJson(Gson().toJson(urbanVillage), JsonObject::class.java)
+        fun jsonObject(
+            urbanVillage: UrbanVillage?,
+            jsonForCRUD: CRUD?,
+            searchBy: String? = EMPTY_STRING
+        ): JsonObject {
+            return createJson(urbanVillage, jsonForCRUD, searchBy)
         }
     }
 }
@@ -147,6 +155,9 @@ data class Handshake(
     @field:SerializedName("roleAdmin") var roleAdmin: String? = null,
     @field:SerializedName("defaultImageAdmin") var defaultImageAdmin: String? = null,
     @field:SerializedName("firstRootAdmin") var firstRootAdmin: String? = null,
+    @field:SerializedName("distanceUnit") var distanceUnit: String? = null,
+    @field:SerializedName("maxDistance") var maxDistance: Int? = null,
+    @field:SerializedName("maxUploadImageCrimeLocation") var maxUploadImageCrimeLocation: Int? = null,
     @field:SerializedName("urlImageStorageApi") var urlImageStorageApi: List<String> = arrayListOf()
 ) : Parcelable
 
@@ -198,4 +209,127 @@ data class Menu(
     constructor() : this(
         MENU_NONE, EMPTY_STRING, ZERO, EMPTY_STRING, false, ZERO, ZERO, ZERO
     )
+}
+
+fun createJson(
+    any: Any?,
+    jsonForCRUD: CRUD?,
+    searchBy: String? = EMPTY_STRING
+): JsonObject {
+    return when (jsonForCRUD) {
+        READ -> {
+            when (searchBy) {
+                PARAM_NAME -> {
+                    when (any) {
+                        is Province -> {
+                            JsonObject().apply {
+                                addProperty(any::provinceName.name, any.provinceName)
+                            }
+                        }
+                        is City -> {
+                            JsonObject().apply {
+                                addProperty(
+                                    any::cityName.name, any.cityName
+                                )
+                            }
+                        }
+                        is SubDistrict -> {
+                            JsonObject().apply {
+                                addProperty(
+                                    any::subDistrictName.name, any.subDistrictName
+                                )
+                            }
+                        }
+                        is UrbanVillage -> {
+                            JsonObject().apply {
+                                addProperty(
+                                    any::urbanVillageName.name,
+                                    any.urbanVillageName
+                                )
+                            }
+                        }
+                        else -> {
+                            JsonObject()
+                        }
+                    }
+                }
+                ID -> {
+                    when (any) {
+                        is Province -> {
+                            JsonObject().apply {
+                                addProperty(any::provinceId.name, any.provinceId)
+                            }
+                        }
+                        is City -> {
+                            JsonObject().apply {
+                                addProperty(
+                                    any::cityId.name, any.cityId
+                                )
+                            }
+                        }
+                        is SubDistrict -> {
+                            JsonObject().apply {
+                                addProperty(
+                                    any::subDistrictId.name, any.subDistrictId
+                                )
+                            }
+                        }
+                        is UrbanVillage -> {
+                            JsonObject().apply {
+                                addProperty(
+                                    any::urbanVillageId.name, any.urbanVillageId
+                                )
+                            }
+                        }
+                        else -> {
+                            JsonObject()
+                        }
+                    }
+                }
+                else -> {
+                    Gson().fromJson(Gson().toJson(any), JsonObject::class.java)
+                }
+            }
+        }
+        CREATE,
+        UPDATE -> {
+            Gson().fromJson(Gson().toJson(any), JsonObject::class.java)
+        }
+        DELETE -> {
+            when (any) {
+                is Province -> {
+                    JsonObject().apply {
+                        addProperty(any::provinceId.name, any.provinceId)
+                    }
+                }
+                is City -> {
+                    JsonObject().apply {
+                        addProperty(
+                            any::cityId.name, any.cityId
+                        )
+                    }
+                }
+                is SubDistrict -> {
+                    JsonObject().apply {
+                        addProperty(
+                            any::subDistrictId.name, any.subDistrictId
+                        )
+                    }
+                }
+                is UrbanVillage -> {
+                    JsonObject().apply {
+                        addProperty(
+                            (any as UrbanVillage)::urbanVillageId.name, any.urbanVillageId
+                        )
+                    }
+                }
+                else -> {
+                    JsonObject()
+                }
+            }
+        }
+        else -> {
+            JsonObject()
+        }
+    }
 }

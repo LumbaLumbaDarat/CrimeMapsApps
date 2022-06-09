@@ -9,8 +9,8 @@ import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.utils.DataResource
 
 class ListOfAdminViewModel(private val crimeMapsRepository: CrimeMapsRepository) : ViewModel() {
-    fun admin(pageNo: String?, name: String?): LiveData<DataResource<AdminResponse>> =
-        crimeMapsRepository.adminByName(pageNo, name)
+    fun admin(pageNo: String?, admin: Admin?): LiveData<DataResource<AdminResponse>> =
+        crimeMapsRepository.admin(pageNo, admin)
     fun adminResetPassword(admin: Admin?): LiveData<DataResource<AdminResponse>> =
         crimeMapsRepository.adminResetPassword(admin)
     fun adminUpdateActive(admin: Admin?): LiveData<DataResource<AdminResponse>> =

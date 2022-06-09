@@ -223,7 +223,7 @@ class ListOfAdminActivity : BaseActivity() {
                     )
                 else pageNo = page?.nextPage!!
             }
-            viewModel.admin(pageNo, searchName).observe(this, admin)
+            viewModel.admin(pageNo, Admin().apply { adminName = searchName }).observe(this, admin)
         }
     }
 

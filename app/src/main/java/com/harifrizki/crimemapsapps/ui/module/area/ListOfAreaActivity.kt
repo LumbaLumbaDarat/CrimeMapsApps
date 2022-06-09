@@ -11,9 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.databinding.ActivityListOfAreaBinding
-import com.harifrizki.crimemapsapps.model.Message
-import com.harifrizki.crimemapsapps.model.Page
-import com.harifrizki.crimemapsapps.model.Province
+import com.harifrizki.crimemapsapps.model.*
 import com.harifrizki.crimemapsapps.ui.adapter.AreaAdapter
 import com.harifrizki.crimemapsapps.ui.component.BaseActivity
 import com.harifrizki.crimemapsapps.ui.module.formarea.FormAreaActivity
@@ -78,24 +76,36 @@ class ListOfAreaActivity : BaseActivity() {
         }
 
         binding.apply {
-            appBar(iAppBarListOfArea,
-                appBarTitle,
-                R.drawable.ic_round_location_city_24,
-                R.color.primary,
-                R.drawable.frame_background_secondary,
-                R.drawable.ic_round_add_24,
-                R.color.white,
-                R.drawable.button_primary_ripple_white,
-                onClick = {
-                    goTo(
-                        FormAreaActivity(),
-                        hashMapOf(
-                            FROM_ACTIVITY to getNameOfActivity(LIST_OF_AREA),
-                            AREA to menuAreaType!!,
-                            OPERATION_CRUD to CREATE
-                        )
-                    )
-                })
+            when (fromActivity) {
+                DASHBOARD -> {
+                    appBar(iAppBarListOfArea,
+                        appBarTitle,
+                        R.drawable.ic_round_location_city_24,
+                        R.color.primary,
+                        R.drawable.frame_background_secondary,
+                        R.drawable.ic_round_add_24,
+                        R.color.white,
+                        R.drawable.button_primary_ripple_white,
+                        onClick = {
+                            goTo(
+                                FormAreaActivity(),
+                                hashMapOf(
+                                    FROM_ACTIVITY to getNameOfActivity(LIST_OF_AREA),
+                                    AREA to menuAreaType!!,
+                                    OPERATION_CRUD to CREATE
+                                )
+                            )
+                        })
+                }
+                LIST_OF_AREA -> {
+                    appBar(iAppBarListOfArea,
+                        appBarTitle,
+                        R.drawable.ic_round_location_city_24,
+                        R.color.primary,
+                        R.drawable.frame_background_secondary)
+                }
+                else -> {}
+            }
             createSearch(iSearchListOfArea)
             createRootView(rvListOfArea, sflListOfArea)
             createEmpty(iEmptyListOfArea)
@@ -302,19 +312,19 @@ class ListOfAreaActivity : BaseActivity() {
             }
             when (menuAreaType) {
                 MENU_AREA_PROVINCE_ID -> {
-                    viewModel.province(pageNo, searchName)
+                    viewModel.province(pageNo, Province().apply { provinceName = searchName })
                         .observe(this, province)
                 }
                 MENU_AREA_CITY_ID -> {
-                    viewModel.city(pageNo, searchName)
+                    viewModel.city(pageNo, City().apply { cityName = searchName })
                         .observe(this, city)
                 }
                 MENU_AREA_SUB_DISTRICT_ID -> {
-                    viewModel.subDistrict(pageNo, searchName)
+                    viewModel.subDistrict(pageNo, SubDistrict().apply { subDistrictName = searchName })
                         .observe(this, subDistrict)
                 }
                 MENU_AREA_URBAN_VILLAGE_ID -> {
-                    viewModel.urbanVillage(pageNo, searchName)
+                    viewModel.urbanVillage(pageNo, UrbanVillage().apply { urbanVillageName = searchName })
                         .observe(this, urbanVillage)
                 }
                 else -> {}
@@ -323,6 +333,18 @@ class ListOfAreaActivity : BaseActivity() {
     }
 
     private val provinceDelete = Observer<DataResource<MessageResponse>> {
+        areaDelete(it as DataResource<Any?>)
+    }
+
+    private val cityDelete = Observer<DataResource<MessageResponse>> {
+        areaDelete(it as DataResource<Any?>)
+    }
+
+    private val subDistrictDelete = Observer<DataResource<MessageResponse>> {
+        areaDelete(it as DataResource<Any?>)
+    }
+
+    private val urbanVillageDelete = Observer<DataResource<MessageResponse>> {
         areaDelete(it as DataResource<Any?>)
     }
 
@@ -375,9 +397,18 @@ class ListOfAreaActivity : BaseActivity() {
                     viewModel.provinceDelete(getModel(any, Province::class.java))
                         .observe(this, provinceDelete)
                 }
-                MENU_AREA_CITY_ID -> {}
-                MENU_AREA_SUB_DISTRICT_ID -> {}
-                MENU_AREA_URBAN_VILLAGE_ID -> {}
+                MENU_AREA_CITY_ID -> {
+                    viewModel.cityDelete(getModel(any, City::class.java))
+                        .observe(this, provinceDelete)
+                }
+                MENU_AREA_SUB_DISTRICT_ID -> {
+                    viewModel.subDistrictDelete(getModel(any, SubDistrict::class.java))
+                        .observe(this, provinceDelete)
+                }
+                MENU_AREA_URBAN_VILLAGE_ID -> {
+                    viewModel.urbanVillageDelete(getModel(any, UrbanVillage::class.java))
+                        .observe(this, provinceDelete)
+                }
                 else -> {}
             }
         }

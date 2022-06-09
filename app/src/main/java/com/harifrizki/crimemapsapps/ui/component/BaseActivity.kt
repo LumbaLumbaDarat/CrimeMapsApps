@@ -17,6 +17,8 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.harifrizki.crimemapsapps.BuildConfig
 import com.harifrizki.crimemapsapps.R
+import com.harifrizki.crimemapsapps.data.remote.ERROR_CODE_200_SUCCESS
+import com.harifrizki.crimemapsapps.data.remote.ERROR_CODE_404_PAGE_NOT_FOUND
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
 import com.harifrizki.crimemapsapps.databinding.*
 import com.harifrizki.crimemapsapps.model.*
@@ -1353,17 +1355,22 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
             hashMapOf(
                 ERROR_STATE to IS_API_RESPONSE,
                 ERROR_RESPONSE to errorResponse!!
-            )
+            ),
+            errorCode = errorResponse.errorCode
         )
     }
 
     @Override
-    fun goTo(appCompatActivity: AppCompatActivity?, map: HashMap<String, Any>?) {
+    fun goTo(appCompatActivity: AppCompatActivity?,
+             map: HashMap<String, Any>?,
+             errorCode: String? = ERROR_CODE_200_SUCCESS) {
         Intent(
             this,
             appCompatActivity!!::class.java
         ).apply {
             putExtra(INTENT_DATA, map)
+            if (errorCode.equals(ERROR_CODE_404_PAGE_NOT_FOUND))
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             resultLauncher?.launch(this)
         }
     }
