@@ -121,6 +121,13 @@ class ParentArea(
         }
     }
 
+    @JvmName("setNewContent")
+    fun setContent(content: String?) {
+        binding?.apply {
+            tvParentArea.text = makeSpannable(isSpanBold = true, content)
+        }
+    }
+
     private fun whoIsVisible(right: Int?, left: Int?) {
         binding?.apply {
             ivActionRightParentArea.visibility = right!!

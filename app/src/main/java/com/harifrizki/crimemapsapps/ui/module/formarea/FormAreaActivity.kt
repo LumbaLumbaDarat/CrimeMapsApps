@@ -45,10 +45,10 @@ class FormAreaActivity : BaseActivity() {
     private var buttonSeeChildTitle: String? = null
     private var areaId: String? = null
 
-    private var parentAreaOne: ParentArea? = null
-    private var parentAreaTwo: ParentArea? = null
-    private var parentAreaThree: ParentArea? = null
-    private var parentAreaFour: ParentArea? = null
+    private var parentAreaProvince: ParentArea? = null
+    private var parentAreaCity: ParentArea? = null
+    private var parentAreaSubDistrict: ParentArea? = null
+    private var parentAreaUrbanVillage: ParentArea? = null
 
     private var map: HashMap<String, Any>? = null
     private var fromActivity: ActivityName? = null
@@ -99,6 +99,11 @@ class FormAreaActivity : BaseActivity() {
                 appBarTitle = getString(R.string.sub_district_menu)
                 parent = getString(R.string.city_menu)
                 child = getString(R.string.urban_village_menu)
+                buttonSeeChildTitle = getString(
+                    R.string.label_see_child,
+                    child,
+                    appBarTitle
+                )
                 initializeForm()
                 initializeSubDistrict(null)
             }
@@ -141,6 +146,62 @@ class FormAreaActivity : BaseActivity() {
                             }
                             CREATE -> {
                                 resetTextInputEditText()
+                            }
+                            else -> {}
+                        }
+                    }
+                    else -> {}
+                }
+            } else {
+                val map = getMap(it.data)
+                when (getEnumActivityName(map[FROM_ACTIVITY].toString())) {
+                    LIST_OF_AREA -> {
+                        when (map[AREA] as MenuAreaType) {
+                            MENU_AREA_PROVINCE_ID -> {
+                                provinceAsParent = getModel(map[AREA_MODEL], Province::class.java)
+                                parentAreaProvince?.apply {
+                                    setContent(provinceAsParent?.provinceName)
+                                }
+                                cityAsParent = null
+                                parentAreaCity?.apply {
+                                    setContent(
+                                        getString(
+                                            R.string.label_not_yet,
+                                            getString(R.string.city_menu)
+                                        )
+                                    )
+                                }
+                                subDistrictAsParent = null
+                                parentAreaSubDistrict?.apply {
+                                    setContent(
+                                        getString(
+                                            R.string.label_not_yet,
+                                            getString(R.string.sub_district_menu)
+                                        )
+                                    )
+                                }
+                            }
+                            MENU_AREA_CITY_ID -> {
+                                cityAsParent = getModel(map[AREA_MODEL], City::class.java)
+                                parentAreaCity?.apply {
+                                    setContent(cityAsParent?.cityName)
+                                }
+                                subDistrictAsParent = null
+                                parentAreaSubDistrict?.apply {
+                                    setContent(
+                                        getString(
+                                            R.string.label_not_yet,
+                                            getString(R.string.sub_district_menu)
+                                        )
+                                    )
+                                }
+                            }
+                            MENU_AREA_SUB_DISTRICT_ID -> {
+                                subDistrictAsParent =
+                                    getModel(map[AREA_MODEL], SubDistrict::class.java)
+                                parentAreaSubDistrict?.apply {
+                                    setContent(subDistrictAsParent?.subDistrictName)
+                                }
                             }
                             else -> {}
                         }
@@ -300,6 +361,35 @@ class FormAreaActivity : BaseActivity() {
                         message = message?.message,
                         onClick = {
                             binding.tieNameArea.text?.clear()
+                            provinceAsParent = null
+                            cityAsParent = null
+                            subDistrictAsParent = null
+
+                            parentAreaProvince?.apply {
+                                setContent(
+                                    getString(
+                                        R.string.label_not_yet,
+                                        getString(R.string.province_menu)
+                                    )
+                                )
+                            }
+                            parentAreaCity?.apply {
+                                setContent(
+                                    getString(
+                                        R.string.label_not_yet,
+                                        getString(R.string.city_menu)
+                                    )
+                                )
+                            }
+                            parentAreaSubDistrict?.apply {
+                                setContent(
+                                    getString(
+                                        R.string.label_not_yet,
+                                        getString(R.string.sub_district_menu)
+                                    )
+                                )
+                            }
+
                             dismissNotification()
                         })
                 }
@@ -381,16 +471,16 @@ class FormAreaActivity : BaseActivity() {
             ), this
         )
 
-        parentAreaOne = ParentArea().apply {
+        parentAreaProvince = ParentArea().apply {
             init(this@FormAreaActivity, binding.iParentAreaOne)
         };
-        parentAreaTwo = ParentArea().apply {
+        parentAreaCity = ParentArea().apply {
             init(this@FormAreaActivity, binding.iParentAreaTwo)
         }
-        parentAreaThree = ParentArea().apply {
+        parentAreaSubDistrict = ParentArea().apply {
             init(this@FormAreaActivity, binding.iParentAreaThird)
         }
-        parentAreaFour = ParentArea().apply {
+        parentAreaUrbanVillage = ParentArea().apply {
             init(this@FormAreaActivity, binding.iParentAreaFourth)
         }
 
@@ -447,7 +537,7 @@ class FormAreaActivity : BaseActivity() {
         initializeCreatedAndUpdated()
         when (crud) {
             READ -> {
-                parentAreaOne?.apply {
+                parentAreaProvince?.apply {
                     title = getString(
                         R.string.label_plus_two_string,
                         getString(R.string.label_id),
@@ -559,22 +649,23 @@ class FormAreaActivity : BaseActivity() {
         initializeCreatedAndUpdated()
         when (crud) {
             READ -> {
-                parentAreaOne?.apply {
+                parentAreaProvince?.apply {
                     title = getString(
                         R.string.message_area_registration,
                         appBarTitle,
                         parent
                     )
-                    content = getString(R.string.label_plus_two_string_enter,
-                        getString(R.string.label_plus_two_string,
-                            getString(R.string.label_id),
-                            cityResponse?.city?.province?.provinceId?.uppercase()),
-                        cityResponse?.city?.province?.provinceName)
+                    content = getContentArea(
+                        this@FormAreaActivity,
+                        MENU_AREA_PROVINCE_ID,
+                        cityResponse?.city?.province,
+                        getString(R.string.province_menu)
+                    )
                     iconLeftAction = R.drawable.ic_round_location_city_24
                     parentAreaAction = PARENT_AREA_ICON_LEFT
                     create()
                 }
-                parentAreaTwo?.apply {
+                parentAreaCity?.apply {
                     title = getString(
                         R.string.label_plus_two_string,
                         getString(R.string.label_id),
@@ -600,8 +691,8 @@ class FormAreaActivity : BaseActivity() {
 
                 imageViewVisibility(
                     arrayOf(
-                        binding.iParentAreaOneShimmer.ivActionLeftParentArea,
-                        binding.iParentAreaTwoShimmer.ivActionRightParentArea
+                        binding.iParentAreaOneShimmer.ivActionRightParentArea,
+                        binding.iParentAreaTwoShimmer.ivActionLeftParentArea
                     ), View.GONE
                 )
                 parentAreaVisibility(
@@ -643,7 +734,7 @@ class FormAreaActivity : BaseActivity() {
                 )
             }
             CREATE -> {
-                parentAreaOne?.apply {
+                parentAreaProvince?.apply {
                     init(this@FormAreaActivity, binding.iParentAreaOne)
                     title = getString(
                         R.string.message_choose_parent_for_this_area,
@@ -658,7 +749,9 @@ class FormAreaActivity : BaseActivity() {
                             ListOfAreaActivity(),
                             hashMapOf(
                                 FROM_ACTIVITY to getNameOfActivity(FORM_AREA),
-                                AREA to MENU_AREA_PROVINCE_ID))
+                                AREA to MENU_AREA_PROVINCE_ID
+                            )
+                        )
                     }
                     create()
                 }
@@ -699,7 +792,9 @@ class FormAreaActivity : BaseActivity() {
                         )
                     } else showWarning(
                         message = getString(
-                            R.string.message_error_empty, parent))
+                            R.string.message_error_empty, parent
+                        )
+                    )
                 }
             }
             else -> {}
@@ -707,13 +802,463 @@ class FormAreaActivity : BaseActivity() {
     }
 
     private fun initializeSubDistrict(subDistrictResponse: SubDistrictResponse?) {
-        initializeForm()
         initializeCreatedAndUpdated()
+        when (crud) {
+            READ -> {
+                parentAreaProvince?.apply {
+                    title = getString(
+                        R.string.message_area_registration,
+                        appBarTitle,
+                        getString(R.string.province_menu)
+                    )
+                    content = getContentArea(
+                        this@FormAreaActivity,
+                        MENU_AREA_PROVINCE_ID,
+                        subDistrictResponse?.subDistrict?.province,
+                        getString(R.string.province_menu)
+                    )
+                    iconLeftAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ICON_LEFT
+                    create()
+                }
+                parentAreaCity?.apply {
+                    title = getString(
+                        R.string.message_area_registration,
+                        appBarTitle,
+                        parent
+                    )
+                    content = getContentArea(
+                        this@FormAreaActivity,
+                        MENU_AREA_CITY_ID,
+                        subDistrictResponse?.subDistrict?.city,
+                        getString(R.string.city_menu)
+                    )
+                    iconRightAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ICON_RIGHT
+                    create()
+                }
+                parentAreaSubDistrict?.apply {
+                    title = getString(
+                        R.string.label_plus_two_string,
+                        getString(R.string.label_id),
+                        appBarTitle
+                    )
+                    content = subDistrictResponse?.subDistrict?.subDistrictId?.uppercase()
+                    iconLeftAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ICON_LEFT
+                    create()
+                }
+                parentAreaVisibility(
+                    arrayOf(
+                        binding.iParentAreaOne,
+                        binding.iParentAreaTwo,
+                        binding.iParentAreaThird,
+                    ), View.VISIBLE
+                )
+                parentAreaVisibility(
+                    arrayOf(
+                        binding.iParentAreaFourth,
+                    ), View.GONE
+                )
+
+                imageViewVisibility(
+                    arrayOf(
+                        binding.iParentAreaOneShimmer.ivActionRightParentArea,
+                        binding.iParentAreaTwoShimmer.ivActionLeftParentArea,
+                        binding.iParentAreaThirdShimmer.ivActionRightParentArea,
+                    ), View.GONE
+                )
+                parentAreaVisibility(
+                    arrayOf(
+                        binding.iParentAreaFourthShimmer,
+                    ), View.GONE
+                )
+                binding.apply {
+                    tieNameArea.apply {
+                        setText(subDistrictResponse?.subDistrict?.subDistrictName)
+                        isEnabled = false
+                    }
+                    iCreatedAndUpdateArea.apply {
+                        tvCreated.text = makeSpannable(
+                            isSpanBold = true,
+                            getCreated(
+                                subDistrictResponse?.subDistrict?.createdBy,
+                                subDistrictResponse?.subDistrict?.createdDate
+                            ),
+                            color = Color.BLACK
+                        )
+                        tvUpdated.text = makeSpannable(
+                            isSpanBold = true,
+                            getUpdated(
+                                subDistrictResponse?.subDistrict?.updatedBy,
+                                subDistrictResponse?.subDistrict?.updatedDate
+                            ),
+                            color = Color.BLACK
+                        )
+                    }
+                }
+                if (subDistrictResponse?.subDistrict == null) areaDetail()
+                else buttonVisibility(
+                    arrayOf(
+                        binding.btnChildArea,
+                        binding.btnBackArea
+                    ), View.VISIBLE
+                )
+            }
+            CREATE -> {
+                parentAreaProvince?.apply {
+                    init(this@FormAreaActivity, binding.iParentAreaOne)
+                    title = getString(
+                        R.string.message_choose_parent_for_this_area,
+                        getString(R.string.province_menu),
+                        appBarTitle
+                    )
+                    content = getString(R.string.label_not_yet, getString(R.string.province_menu))
+                    iconLeftAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ACTION_LEFT
+                    onActionLeft = {
+                        goTo(
+                            ListOfAreaActivity(),
+                            hashMapOf(
+                                FROM_ACTIVITY to getNameOfActivity(FORM_AREA),
+                                AREA to MENU_AREA_PROVINCE_ID
+                            )
+                        )
+                    }
+                    create()
+                }
+                parentAreaCity?.apply {
+                    init(this@FormAreaActivity, binding.iParentAreaTwo)
+                    title = getString(
+                        R.string.message_choose_parent_for_this_area,
+                        parent,
+                        appBarTitle
+                    )
+                    content = getString(R.string.label_not_yet, parent)
+                    iconRightAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ACTION_RIGHT
+                    onActionRight = {
+                        if (provinceAsParent != null)
+                            goTo(
+                                ListOfAreaActivity(),
+                                hashMapOf(
+                                    FROM_ACTIVITY to getNameOfActivity(FORM_AREA),
+                                    AREA to MENU_AREA_CITY_ID,
+                                    PARENT_AREA to provinceAsParent?.provinceId!!
+                                )
+                            )
+                        else showWarning(
+                            message = getString(
+                                R.string.message_error_empty, getString(R.string.province_menu)
+                            )
+                        )
+                    }
+                    create()
+                }
+                parentAreaVisibility(
+                    arrayOf(
+                        binding.iParentAreaThird,
+                        binding.iParentAreaFourth,
+                    ), View.GONE
+                )
+                binding.btnSubmitArea.setOnClickListener {
+                    if (provinceAsParent != null) {
+                        if (cityAsParent != null) {
+                            if (!textInputEditTextIsEmpty(binding.tieNameArea))
+                                areaAdd(
+                                    SubDistrict().apply {
+                                        province = Province().apply {
+                                            provinceId = provinceAsParent?.provinceId
+                                        }
+                                        city = City().apply {
+                                            cityId = cityAsParent?.cityId
+                                        }
+                                        subDistrictName = binding.tieNameArea.text.toString().trim()
+                                        createdBy = Admin().apply {
+                                            adminId = PreferencesManager
+                                                .getInstance(this@FormAreaActivity)
+                                                .getPreferences(
+                                                    LOGIN_MODEL,
+                                                    Admin::class.java
+                                                ).adminId
+                                        }
+                                    })
+                            else showWarning(
+                                message = getString(
+                                    R.string.message_error_empty,
+                                    getString(
+                                        R.string.label_plus_two_string,
+                                        getString(R.string.label_name),
+                                        appBarTitle
+                                    )
+                                )
+                            )
+                        } else showWarning(
+                            message = getString(
+                                R.string.message_error_empty, parent
+                            )
+                        )
+                    } else showWarning(
+                        message = getString(
+                            R.string.message_error_empty, getString(R.string.province_menu)
+                        )
+                    )
+                }
+            }
+            else -> {}
+        }
     }
 
     private fun initializeUrbanVillage(urbanVillageResponse: UrbanVillageResponse?) {
-        initializeForm()
         initializeCreatedAndUpdated()
+        when (crud) {
+            READ -> {
+                parentAreaProvince?.apply {
+                    title = getString(
+                        R.string.message_area_registration,
+                        appBarTitle,
+                        getString(R.string.province_menu)
+                    )
+                    content = getContentArea(
+                        this@FormAreaActivity,
+                        MENU_AREA_PROVINCE_ID,
+                        urbanVillageResponse?.urbanVillage?.province,
+                        getString(R.string.province_menu)
+                    )
+                    iconLeftAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ICON_LEFT
+                    create()
+                }
+                parentAreaCity?.apply {
+                    title = getString(
+                        R.string.message_area_registration,
+                        appBarTitle,
+                        getString(R.string.city_menu)
+                    )
+                    content = getContentArea(
+                        this@FormAreaActivity,
+                        MENU_AREA_CITY_ID,
+                        urbanVillageResponse?.urbanVillage?.city,
+                        getString(R.string.city_menu)
+                    )
+                    iconRightAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ICON_RIGHT
+                    create()
+                }
+                parentAreaSubDistrict?.apply {
+                    title = getString(
+                        R.string.label_plus_two_string,
+                        appBarTitle,
+                        parent
+                    )
+                    content = getContentArea(
+                        this@FormAreaActivity,
+                        MENU_AREA_SUB_DISTRICT_ID,
+                        urbanVillageResponse?.urbanVillage?.subDistrict,
+                        getString(R.string.sub_district_menu)
+                    )
+                    iconLeftAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ICON_LEFT
+                    create()
+                }
+                parentAreaUrbanVillage?.apply {
+                    title = getString(
+                        R.string.label_plus_two_string,
+                        getString(R.string.label_id),
+                        appBarTitle
+                    )
+                    content = urbanVillageResponse?.urbanVillage?.urbanVillageId?.uppercase()
+                    iconRightAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ICON_RIGHT
+                    create()
+                }
+                parentAreaVisibility(
+                    arrayOf(
+                        binding.iParentAreaOne,
+                        binding.iParentAreaTwo,
+                        binding.iParentAreaThird,
+                        binding.iParentAreaFourth,
+                    ), View.VISIBLE
+                )
+
+                imageViewVisibility(
+                    arrayOf(
+                        binding.iParentAreaOneShimmer.ivActionRightParentArea,
+                        binding.iParentAreaTwoShimmer.ivActionLeftParentArea,
+                        binding.iParentAreaThirdShimmer.ivActionRightParentArea,
+                        binding.iParentAreaFourthShimmer.ivActionLeftParentArea,
+                    ), View.GONE
+                )
+                binding.apply {
+                    tieNameArea.apply {
+                        setText(urbanVillageResponse?.urbanVillage?.urbanVillageName)
+                        isEnabled = false
+                    }
+                    iCreatedAndUpdateArea.apply {
+                        tvCreated.text = makeSpannable(
+                            isSpanBold = true,
+                            getCreated(
+                                urbanVillageResponse?.urbanVillage?.createdBy,
+                                urbanVillageResponse?.urbanVillage?.createdDate
+                            ),
+                            color = Color.BLACK
+                        )
+                        tvUpdated.text = makeSpannable(
+                            isSpanBold = true,
+                            getUpdated(
+                                urbanVillageResponse?.urbanVillage?.updatedBy,
+                                urbanVillageResponse?.urbanVillage?.updatedDate
+                            ),
+                            color = Color.BLACK
+                        )
+                    }
+                }
+                if (urbanVillageResponse?.urbanVillage == null) areaDetail()
+                else buttonVisibility(
+                    arrayOf(
+                        binding.btnBackArea
+                    ), View.VISIBLE
+                )
+            }
+            CREATE -> {
+                parentAreaProvince?.apply {
+                    init(this@FormAreaActivity, binding.iParentAreaOne)
+                    title = getString(
+                        R.string.message_choose_parent_for_this_area,
+                        getString(R.string.province_menu),
+                        appBarTitle
+                    )
+                    content = getString(R.string.label_not_yet, getString(R.string.province_menu))
+                    iconLeftAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ACTION_LEFT
+                    onActionLeft = {
+                        goTo(
+                            ListOfAreaActivity(),
+                            hashMapOf(
+                                FROM_ACTIVITY to getNameOfActivity(FORM_AREA),
+                                AREA to MENU_AREA_PROVINCE_ID
+                            )
+                        )
+                    }
+                    create()
+                }
+                parentAreaCity?.apply {
+                    init(this@FormAreaActivity, binding.iParentAreaTwo)
+                    title = getString(
+                        R.string.message_choose_parent_for_this_area,
+                        getString(R.string.city_menu),
+                        appBarTitle
+                    )
+                    content = getString(R.string.label_not_yet, getString(R.string.city_menu))
+                    iconRightAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ACTION_RIGHT
+                    onActionRight = {
+                        if (provinceAsParent != null)
+                            goTo(
+                                ListOfAreaActivity(),
+                                hashMapOf(
+                                    FROM_ACTIVITY to getNameOfActivity(FORM_AREA),
+                                    AREA to MENU_AREA_CITY_ID,
+                                    PARENT_AREA to provinceAsParent?.provinceId!!
+                                )
+                            )
+                        else showWarning(
+                            message = getString(
+                                R.string.message_error_empty, getString(R.string.province_menu)
+                            )
+                        )
+                    }
+                    create()
+                }
+                parentAreaSubDistrict?.apply {
+                    init(this@FormAreaActivity, binding.iParentAreaThird)
+                    title = getString(
+                        R.string.message_choose_parent_for_this_area,
+                        parent,
+                        appBarTitle
+                    )
+                    content = getString(R.string.label_not_yet, parent)
+                    iconLeftAction = R.drawable.ic_round_location_city_24
+                    parentAreaAction = PARENT_AREA_ACTION_LEFT
+                    onActionLeft = {
+                        if (cityAsParent != null)
+                            goTo(
+                                ListOfAreaActivity(),
+                                hashMapOf(
+                                    FROM_ACTIVITY to getNameOfActivity(FORM_AREA),
+                                    AREA to MENU_AREA_SUB_DISTRICT_ID,
+                                    PARENT_AREA to cityAsParent?.cityId!!
+                                )
+                            )
+                        else showWarning(
+                            message = getString(
+                                R.string.message_error_empty, getString(R.string.city_menu)
+                            )
+                        )
+                    }
+                    create()
+                }
+                parentAreaVisibility(
+                    arrayOf(
+                        binding.iParentAreaFourth,
+                    ), View.GONE
+                )
+                binding.btnSubmitArea.setOnClickListener {
+                    if (provinceAsParent != null) {
+                        if (cityAsParent != null) {
+                            if (subDistrictAsParent != null) {
+                                if (!textInputEditTextIsEmpty(binding.tieNameArea))
+                                    areaAdd(
+                                        UrbanVillage().apply {
+                                            province = Province().apply {
+                                                provinceId = provinceAsParent?.provinceId
+                                            }
+                                            city = City().apply {
+                                                cityId = cityAsParent?.cityId
+                                            }
+                                            subDistrict = SubDistrict().apply {
+                                                subDistrictId = subDistrictAsParent?.subDistrictId
+                                            }
+                                            urbanVillageName =
+                                                binding.tieNameArea.text.toString().trim()
+                                            createdBy = Admin().apply {
+                                                adminId = PreferencesManager
+                                                    .getInstance(this@FormAreaActivity)
+                                                    .getPreferences(
+                                                        LOGIN_MODEL,
+                                                        Admin::class.java
+                                                    ).adminId
+                                            }
+                                        })
+                                else showWarning(
+                                    message = getString(
+                                        R.string.message_error_empty,
+                                        getString(
+                                            R.string.label_plus_two_string,
+                                            getString(R.string.label_name),
+                                            appBarTitle
+                                        )
+                                    )
+                                )
+                            } else showWarning(
+                                message = getString(
+                                    R.string.message_error_empty, parent
+                                )
+                            )
+                        } else showWarning(
+                            message = getString(
+                                R.string.message_error_empty, getString(R.string.city_menu)
+                            )
+                        )
+                    } else showWarning(
+                        message = getString(
+                            R.string.message_error_empty, getString(R.string.province_menu)
+                        )
+                    )
+                }
+            }
+            else -> {}
+        }
     }
 
     private fun initializeCreatedAndUpdated() {
@@ -754,22 +1299,26 @@ class FormAreaActivity : BaseActivity() {
             when (menuAreaType) {
                 MENU_AREA_PROVINCE_ID -> {
                     if (any != null) initializeProvince(
-                        getModel(any, ProvinceResponse::class.java))
+                        getModel(any, ProvinceResponse::class.java)
+                    )
                     else initializeProvince(null)
                 }
                 MENU_AREA_CITY_ID -> {
                     if (any != null) initializeCity(
-                        getModel(any, CityResponse::class.java))
+                        getModel(any, CityResponse::class.java)
+                    )
                     else initializeCity(null)
                 }
                 MENU_AREA_SUB_DISTRICT_ID -> {
                     if (any != null) initializeSubDistrict(
-                        getModel(any, SubDistrictResponse::class.java))
+                        getModel(any, SubDistrictResponse::class.java)
+                    )
                     else initializeSubDistrict(null)
                 }
                 MENU_AREA_URBAN_VILLAGE_ID -> {
                     if (any != null) initializeUrbanVillage(
-                        getModel(any, UrbanVillageResponse::class.java))
+                        getModel(any, UrbanVillageResponse::class.java)
+                    )
                     else initializeUrbanVillage(null)
                 }
                 else -> {}

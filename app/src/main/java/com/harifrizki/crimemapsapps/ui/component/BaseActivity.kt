@@ -816,6 +816,61 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                         )
                         true
                     }
+                    FORM_AREA -> {
+                        when (map[AREA] as MenuAreaType) {
+                            MENU_AREA_PROVINCE_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_update,
+                                        getString(R.string.province_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_CITY_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_update,
+                                        getString(R.string.city_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_SUB_DISTRICT_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_update,
+                                        getString(R.string.sub_district_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_URBAN_VILLAGE_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_update,
+                                        getString(R.string.urban_village_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            else -> {
+                                false
+                            }
+                        }
+                    }
                     else -> {
                         false
                     }
@@ -835,6 +890,61 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                             Toast.LENGTH_LONG
                         )
                         true
+                    }
+                    LIST_OF_AREA -> {
+                        when (map[AREA] as MenuAreaType) {
+                            MENU_AREA_PROVINCE_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_delete,
+                                        getString(R.string.province_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_CITY_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_delete,
+                                        getString(R.string.city_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_SUB_DISTRICT_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_delete,
+                                        getString(R.string.sub_district_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            MENU_AREA_URBAN_VILLAGE_ID -> {
+                                ColorToast.roundLineSuccess(
+                                    this,
+                                    getString(R.string.app_name),
+                                    getString(
+                                        R.string.message_success_delete,
+                                        getString(R.string.urban_village_menu)
+                                    ),
+                                    Toast.LENGTH_LONG
+                                )
+                                true
+                            }
+                            else -> {
+                                false
+                            }
+                        }
                     }
                     else -> {
                         false
@@ -1286,35 +1396,6 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     fun getColorActivate(admin: Admin?): Int {
         return if (admin?.isActive!!) R.color.red
         else R.color.dark_green
-    }
-
-    @Override
-    fun getParamArea(menuAreaType: MenuAreaType?, area: Any?, paramArea: ParamArea?): String? {
-        return when (menuAreaType) {
-            MENU_AREA_PROVINCE_ID -> {
-                val province = getModel(area, Province::class.java)
-                if (paramArea == NAME) province.provinceName
-                else province.provinceId
-            }
-            MENU_AREA_CITY_ID -> {
-                val city = getModel(area, City::class.java)
-                if (paramArea == NAME) city.cityName
-                else city.cityId
-            }
-            MENU_AREA_SUB_DISTRICT_ID -> {
-                val subDistrict = getModel(area, SubDistrict::class.java)
-                if (paramArea == NAME) subDistrict.subDistrictName
-                else subDistrict.subDistrictId
-            }
-            MENU_AREA_URBAN_VILLAGE_ID -> {
-                val urbanVillage = getModel(area, UrbanVillage::class.java)
-                if (paramArea == NAME) urbanVillage.urbanVillageName
-                else urbanVillage.urbanVillageId
-            }
-            else -> {
-                EMPTY_STRING
-            }
-        }
     }
 
     @Override

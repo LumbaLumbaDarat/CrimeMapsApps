@@ -96,6 +96,7 @@ data class City(
 @Parcelize
 data class SubDistrict(
     @field:SerializedName("subDistrictId") var subDistrictId: String? = null,
+    @field:SerializedName("province") var province: Province? = null,
     @field:SerializedName("city") var city: City? = null,
     @field:SerializedName("subDistrictName") var subDistrictName: String? = null,
     @field:SerializedName("createdBy") var createdBy: Admin? = null,
@@ -117,6 +118,8 @@ data class SubDistrict(
 @Parcelize
 data class UrbanVillage(
     @field:SerializedName("urbanVillageId") var urbanVillageId: String? = null,
+    @field:SerializedName("province") var province: Province? = null,
+    @field:SerializedName("city") var city: City? = null,
     @field:SerializedName("subDistrict") var subDistrict: SubDistrict? = null,
     @field:SerializedName("urbanVillageName") var urbanVillageName: String? = null,
     @field:SerializedName("createdBy") var createdBy: Admin? = null,

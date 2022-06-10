@@ -17,14 +17,20 @@ class ListOfAreaViewModel(private val crimeMapsRepository: CrimeMapsRepository) 
         crimeMapsRepository.provinceDelete(province)
     fun city(pageNo: String?, city: City?): LiveData<DataResource<CityResponse>> =
         crimeMapsRepository.city(pageNo, city)
+    fun cityByProvince(pageNo: String?, city: City?): LiveData<DataResource<CityResponse>> =
+        crimeMapsRepository.cityByProvince(pageNo, city)
     fun cityDelete(city: City?): LiveData<DataResource<MessageResponse>> =
         crimeMapsRepository.cityDelete(city)
     fun subDistrict(pageNo: String?, subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>> =
         crimeMapsRepository.subDistrict(pageNo, subDistrict)
+    fun subDistrictByCity(pageNo: String?, subDistrict: SubDistrict?): LiveData<DataResource<SubDistrictResponse>> =
+        crimeMapsRepository.subDistrictByCity(pageNo, subDistrict)
     fun subDistrictDelete(subDistrict: SubDistrict?): LiveData<DataResource<MessageResponse>> =
         crimeMapsRepository.subDistrictDelete(subDistrict)
     fun urbanVillage(pageNo: String?, urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>> =
         crimeMapsRepository.urbanVillage(pageNo, urbanVillage)
+    fun urbanVillageBySubDistrict(pageNo: String?, urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>> =
+        crimeMapsRepository.urbanVillageBySubDistrict(pageNo, urbanVillage)
     fun urbanVillageDelete(urbanVillage: UrbanVillage?): LiveData<DataResource<MessageResponse>> =
         crimeMapsRepository.urbanVillageDelete(urbanVillage)
 }

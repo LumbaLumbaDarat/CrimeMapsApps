@@ -28,6 +28,8 @@ import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.model.*
+import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
+import com.harifrizki.crimemapsapps.utils.ParamArea.*
 import com.orhanobut.logger.Logger
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -113,6 +115,53 @@ fun <T> getModel(any: Any?, modelClass: Class<T>): T {
         }
     }
 }
+
+fun getParamArea(menuAreaType: MenuAreaType?, area: Any?, paramArea: ParamArea?): String? {
+    return when (menuAreaType) {
+        MENU_AREA_PROVINCE_ID -> {
+            val province = getModel(area, Province::class.java)
+            if (paramArea == NAME) province.provinceName
+            else province.provinceId
+        }
+        MENU_AREA_CITY_ID -> {
+            val city = getModel(area, City::class.java)
+            if (paramArea == NAME) city.cityName
+            else city.cityId
+        }
+        MENU_AREA_SUB_DISTRICT_ID -> {
+            val subDistrict = getModel(area, SubDistrict::class.java)
+            if (paramArea == NAME) subDistrict.subDistrictName
+            else subDistrict.subDistrictId
+        }
+        MENU_AREA_URBAN_VILLAGE_ID -> {
+            val urbanVillage = getModel(area, UrbanVillage::class.java)
+            if (paramArea == NAME) urbanVillage.urbanVillageName
+            else urbanVillage.urbanVillageId
+        }
+        else -> {
+            EMPTY_STRING
+        }
+    }
+}
+
+fun getContentArea(
+    context: Context?,
+    menuAreaType: MenuAreaType?,
+    any: Any?,
+    areaName: String?
+): String? {
+    return if (any == null) context?.getString(R.string.label_not_yet, areaName)
+    else context?.getString(
+        R.string.label_plus_two_string_enter,
+        context.getString(
+            R.string.label_plus_two_string,
+            context.getString(R.string.label_id),
+            getParamArea(menuAreaType, any, ID)?.uppercase()
+        ),
+        getParamArea(menuAreaType, any, NAME)
+    )
+}
+
 
 fun getCreateBy(context: Context?, createdBy: String?): String? {
     return if (createdBy == null)

@@ -24,6 +24,7 @@ import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.ParamArea.*
 import com.lumbalumbadrt.colortoast.ColorToast
+import com.orhanobut.logger.Logger
 
 class ListOfAreaActivity : BaseActivity() {
     private val binding by lazy {
@@ -50,6 +51,7 @@ class ListOfAreaActivity : BaseActivity() {
     private var isAfterCRUD: CRUD? = NONE
     private var doNotLoadData: Boolean? = true
     private var searchName: String? = EMPTY_STRING
+    private var parentId: String? = EMPTY_STRING
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,12 +99,15 @@ class ListOfAreaActivity : BaseActivity() {
                             )
                         })
                 }
-                LIST_OF_AREA -> {
-                    appBar(iAppBarListOfArea,
+                FORM_AREA -> {
+                    appBar(
+                        iAppBarListOfArea,
                         appBarTitle,
                         R.drawable.ic_round_location_city_24,
                         R.color.primary,
-                        R.drawable.frame_background_secondary)
+                        R.drawable.frame_background_secondary
+                    )
+                    parentId = map!![PARENT_AREA].toString()
                 }
                 else -> {}
             }
@@ -156,11 +161,12 @@ class ListOfAreaActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        onBackPressed(
-            getNameOfActivity(LIST_OF_AREA),
-            isAfterCRUD,
-            menuAreaType
-        )
+        if (fromActivity != FORM_AREA)
+            onBackPressed(
+                getNameOfActivity(LIST_OF_AREA),
+                isAfterCRUD,
+                menuAreaType
+            )
         super.onBackPressed()
     }
 
@@ -183,6 +189,7 @@ class ListOfAreaActivity : BaseActivity() {
     private fun area(it: DataResource<Any?>) {
         when (it.responseStatus) {
             LOADING -> {
+                disableAccess()
                 loadingList(true)
             }
             SUCCESS -> {
@@ -277,8 +284,10 @@ class ListOfAreaActivity : BaseActivity() {
                         )
                     }
                 }
+                enableAccess()
             }
             ERROR -> {
+                enableAccess()
                 loadingList(
                     isOn = false,
                     isGetData = false,
@@ -316,15 +325,40 @@ class ListOfAreaActivity : BaseActivity() {
                         .observe(this, province)
                 }
                 MENU_AREA_CITY_ID -> {
-                    viewModel.city(pageNo, City().apply { cityName = searchName })
+                    if (!parentId.isNullOrEmpty())
+                        viewModel.cityByProvince(pageNo, City()
+                            .apply {
+                                province = Province().apply { provinceId = parentId }
+                                cityName = searchName
+                            })
+                            .observe(this, city)
+                    else viewModel.city(pageNo, City()
+                        .apply { cityName = searchName })
                         .observe(this, city)
                 }
                 MENU_AREA_SUB_DISTRICT_ID -> {
-                    viewModel.subDistrict(pageNo, SubDistrict().apply { subDistrictName = searchName })
+                    if (!parentId.isNullOrEmpty())
+                        viewModel.subDistrictByCity(pageNo, SubDistrict()
+                            .apply {
+                                city = City().apply { cityId = parentId }
+                                subDistrictName = searchName
+                            })
+                            .observe(this, subDistrict)
+                    else viewModel.subDistrict(pageNo, SubDistrict()
+                        .apply { subDistrictName = searchName })
                         .observe(this, subDistrict)
                 }
                 MENU_AREA_URBAN_VILLAGE_ID -> {
-                    viewModel.urbanVillage(pageNo, UrbanVillage().apply { urbanVillageName = searchName })
+                    if (!parentId.isNullOrEmpty())
+                        viewModel.urbanVillageBySubDistrict(pageNo, UrbanVillage()
+                            .apply {
+                                subDistrict = SubDistrict().apply { subDistrictId = parentId }
+                                urbanVillageName = searchName
+                            })
+                            .observe(this, urbanVillage)
+                    viewModel.urbanVillage(
+                        pageNo,
+                        UrbanVillage().apply { urbanVillageName = searchName })
                         .observe(this, urbanVillage)
                 }
                 else -> {}
@@ -399,15 +433,15 @@ class ListOfAreaActivity : BaseActivity() {
                 }
                 MENU_AREA_CITY_ID -> {
                     viewModel.cityDelete(getModel(any, City::class.java))
-                        .observe(this, provinceDelete)
+                        .observe(this, cityDelete)
                 }
                 MENU_AREA_SUB_DISTRICT_ID -> {
                     viewModel.subDistrictDelete(getModel(any, SubDistrict::class.java))
-                        .observe(this, provinceDelete)
+                        .observe(this, subDistrictDelete)
                 }
                 MENU_AREA_URBAN_VILLAGE_ID -> {
                     viewModel.urbanVillageDelete(getModel(any, UrbanVillage::class.java))
-                        .observe(this, provinceDelete)
+                        .observe(this, urbanVillageDelete)
                 }
                 else -> {}
             }
@@ -421,15 +455,30 @@ class ListOfAreaActivity : BaseActivity() {
             isShimmer = false
         ).apply {
             onClickArea = {
-                goTo(
-                    FormAreaActivity(),
-                    hashMapOf(
-                        FROM_ACTIVITY to getNameOfActivity(LIST_OF_AREA),
-                        AREA to menuAreaType!!,
-                        OPERATION_CRUD to READ,
-                        AREA_MODEL to getParamArea(menuAreaType!!, it, ID)!!,
-                    )
-                )
+                when (fromActivity) {
+                    DASHBOARD -> {
+                        goTo(
+                            FormAreaActivity(),
+                            hashMapOf(
+                                FROM_ACTIVITY to getNameOfActivity(LIST_OF_AREA),
+                                AREA to menuAreaType!!,
+                                OPERATION_CRUD to READ,
+                                AREA_MODEL to getParamArea(menuAreaType!!, it, ID)!!,
+                            )
+                        )
+                    }
+                    FORM_AREA -> {
+                        onBackPressed(
+                            hashMapOf(
+                                FROM_ACTIVITY to getNameOfActivity(LIST_OF_AREA),
+                                AREA to menuAreaType!!,
+                                AREA_MODEL to it!!
+                            ),
+                            directOnBackPressed = true
+                        )
+                    }
+                    else -> {}
+                }
             }
             onClickDelete = {
                 showOption(
@@ -533,5 +582,25 @@ class ListOfAreaActivity : BaseActivity() {
             }
             else -> {}
         }
+    }
+
+    private fun disableAccess() {
+        disableAccess(
+            arrayOf(
+                binding.iAppBarListOfArea.ivBtnRightAppBar,
+                binding.iSearchListOfArea.ibSearch
+            )
+        )
+        disableAccess(arrayOf(binding.btnBackListOfArea))
+    }
+
+    private fun enableAccess() {
+        enableAccess(
+            arrayOf(
+                binding.iAppBarListOfArea.ivBtnRightAppBar,
+                binding.iSearchListOfArea.ibSearch
+            )
+        )
+        enableAccess(arrayOf(binding.btnBackListOfArea))
     }
 }
