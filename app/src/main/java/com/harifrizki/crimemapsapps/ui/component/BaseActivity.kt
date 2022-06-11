@@ -238,6 +238,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
             }
             tvTitleAppBar.text = title
             ivBtnRightAppBar.apply {
+                visibility = View.VISIBLE
                 iconBarRight?.let { setImageResource(it) }
                 iconBarRightColor?.let {
                     ContextCompat.getColor(

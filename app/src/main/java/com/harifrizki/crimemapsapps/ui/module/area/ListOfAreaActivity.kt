@@ -25,6 +25,7 @@ import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.ParamArea.*
 import com.lumbalumbadrt.colortoast.ColorToast
 import com.orhanobut.logger.Logger
+import org.jetbrains.annotations.NotNull
 
 class ListOfAreaActivity : BaseActivity() {
     private val binding by lazy {
@@ -53,6 +54,8 @@ class ListOfAreaActivity : BaseActivity() {
     private var searchName: String? = EMPTY_STRING
     private var parentId: String? = EMPTY_STRING
 
+    private var isReadOnly: Boolean? = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -60,6 +63,7 @@ class ListOfAreaActivity : BaseActivity() {
 
         map = getMap(intent)
         menuAreaType = map!![AREA] as MenuAreaType
+        isReadOnly = map?.getOrElse(IS_READ_ONLY) { false } as Boolean?
         fromActivity = getEnumActivityName(map!![FROM_ACTIVITY].toString())
         when (menuAreaType) {
             MENU_AREA_PROVINCE_ID -> {
@@ -161,7 +165,7 @@ class ListOfAreaActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (fromActivity != FORM_AREA)
+        if (fromActivity != FORM_AREA && isReadOnly == false)
             onBackPressed(
                 getNameOfActivity(LIST_OF_AREA),
                 isAfterCRUD,
@@ -468,7 +472,18 @@ class ListOfAreaActivity : BaseActivity() {
                         )
                     }
                     FORM_AREA -> {
-                        onBackPressed(
+                        if (isReadOnly!!)
+                            goTo(
+                                FormAreaActivity(),
+                                hashMapOf(
+                                    FROM_ACTIVITY to getNameOfActivity(LIST_OF_AREA),
+                                    AREA to menuAreaType!!,
+                                    OPERATION_CRUD to READ,
+                                    AREA_MODEL to getParamArea(menuAreaType!!, it, ID)!!,
+                                    IS_READ_ONLY to true
+                                )
+                            )
+                        else onBackPressed(
                             hashMapOf(
                                 FROM_ACTIVITY to getNameOfActivity(LIST_OF_AREA),
                                 AREA to menuAreaType!!,

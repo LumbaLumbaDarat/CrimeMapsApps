@@ -1,6 +1,7 @@
 package com.harifrizki.crimemapsapps.ui.module.formarea
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.harifrizki.crimemapsapps.data.CrimeMapsRepository
 import com.harifrizki.crimemapsapps.data.remote.response.*
@@ -8,6 +9,7 @@ import com.harifrizki.crimemapsapps.model.City
 import com.harifrizki.crimemapsapps.model.Province
 import com.harifrizki.crimemapsapps.model.SubDistrict
 import com.harifrizki.crimemapsapps.model.UrbanVillage
+import com.harifrizki.crimemapsapps.utils.CRUD
 import com.harifrizki.crimemapsapps.utils.DataResource
 
 class FormAreaViewModel(private val crimeMapsRepository: CrimeMapsRepository) : ViewModel() {
@@ -43,4 +45,6 @@ class FormAreaViewModel(private val crimeMapsRepository: CrimeMapsRepository) : 
         crimeMapsRepository.urbanVillageUpdate(urbanVillage)
     fun urbanVillageDelete(urbanVillage: UrbanVillage?): LiveData<DataResource<MessageResponse>> =
         crimeMapsRepository.urbanVillageDelete(urbanVillage)
+
+    var operation: MutableLiveData<CRUD> = MutableLiveData()
 }

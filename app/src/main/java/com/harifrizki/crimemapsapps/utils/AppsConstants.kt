@@ -72,3 +72,5 @@ const val PARENT_AREA           = "PARENT_AREA"
 
 const val URI_IMAGE  = "URI_IMAGE"
 const val NAME_IMAGE = "NAME_IMAGE"
+
+const val IS_READ_ONLY = "IS_READ_ONLY"
