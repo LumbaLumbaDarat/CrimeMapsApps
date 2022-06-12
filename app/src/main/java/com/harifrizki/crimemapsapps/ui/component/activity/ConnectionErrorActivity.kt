@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module
+package com.harifrizki.crimemapsapps.ui.component.activity
 
 import android.content.Intent
 import android.graphics.Color
@@ -7,7 +7,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityConnectionErrorBinding
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
 import com.harifrizki.crimemapsapps.utils.Error.*
 import com.harifrizki.crimemapsapps.utils.*
 

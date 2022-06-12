@@ -58,6 +58,13 @@ data class UrbanVillageResponse(
     @SerializedName("message")       var message : Message? = null
 )
 
+data class CrimeLocationResponse(
+    @SerializedName("crimeLocation")  var crimeLocation: CrimeLocation? = null,
+    @SerializedName("crimeLocations") var crimeLocationArrayList: ArrayList<CrimeLocation>? = null,
+    @SerializedName("page")          var page: Page? = null,
+    @SerializedName("message")       var message : Message? = null
+)
+
 data class MessageResponse(
     @SerializedName("message") var message : Message? = null
 )

@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module.password
+package com.harifrizki.crimemapsapps.ui.module.admin.changepassword
 
 import android.app.Activity
 import android.os.Bundle
@@ -8,21 +8,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.AdminResponse
-import com.harifrizki.crimemapsapps.databinding.ActivityPasswordBinding
+import com.harifrizki.crimemapsapps.databinding.ActivityChangePasswordBinding
 import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
 import com.harifrizki.crimemapsapps.utils.*
-import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
-import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
+import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.CRUD.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 
-class PasswordActivity : BaseActivity() {
+class ChangePasswordActivity : BaseActivity() {
     private val binding by lazy {
-        ActivityPasswordBinding.inflate(layoutInflater)
+        ActivityChangePasswordBinding.inflate(layoutInflater)
     }
     private val viewModel by lazy {
         ViewModelProvider(
@@ -30,7 +27,7 @@ class PasswordActivity : BaseActivity() {
             ViewModelFactory.getInstance(
                 this
             )
-        )[PasswordViewModel::class.java]
+        )[ChangePasswordViewModel::class.java]
     }
 
     private var isHidePassword: Boolean = true
@@ -65,9 +62,9 @@ class PasswordActivity : BaseActivity() {
             )
             srlPassword.apply {
                 setThemeForSwipeRefreshLayoutLoadingAnimation(
-                    this@PasswordActivity, this
+                    this@ChangePasswordActivity, this
                 )
-                setOnRefreshListener(this@PasswordActivity)
+                setOnRefreshListener(this@ChangePasswordActivity)
             }
             ivBtnShowHidePassword.setOnClickListener(onClickListener)
             btnSubmitPassword.setOnClickListener(onClickListener)

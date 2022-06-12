@@ -18,13 +18,14 @@ import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Utilization
 import com.harifrizki.crimemapsapps.ui.adapter.MenuAreaAdapter
 import com.harifrizki.crimemapsapps.ui.adapter.MenuAreaDetailAdapter
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
 import com.harifrizki.crimemapsapps.ui.component.MenuArea
 import com.harifrizki.crimemapsapps.ui.component.MenuAreaDetail
-import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminActivity
-import com.harifrizki.crimemapsapps.ui.module.area.ListOfAreaActivity
+import com.harifrizki.crimemapsapps.ui.module.admin.list.ListOfAdminActivity
+import com.harifrizki.crimemapsapps.ui.module.area.list.ListOfAreaActivity
+import com.harifrizki.crimemapsapps.ui.module.crimelocation.list.ListOfCrimeLocationActivity
 import com.harifrizki.crimemapsapps.ui.module.login.LoginActivity
-import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
+import com.harifrizki.crimemapsapps.ui.module.admin.profile.ProfileActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
@@ -33,7 +34,6 @@ import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
 import com.harifrizki.crimemapsapps.utils.MenuSetting.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
-import com.orhanobut.logger.Logger
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -286,7 +286,12 @@ class DashboardActivity : BaseActivity() {
         ).apply {
             create()
             onClickMenuArea = {
-
+                goTo(
+                    ListOfCrimeLocationActivity(),
+                    hashMapOf(
+                        FROM_ACTIVITY to getNameOfActivity(DASHBOARD)
+                    )
+                )
             }
         }.also {
             menuAreaDetailCrimeLocation = MenuAreaDetail(

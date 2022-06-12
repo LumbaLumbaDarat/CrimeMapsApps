@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module.area
+package com.harifrizki.crimemapsapps.ui.module.area.list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

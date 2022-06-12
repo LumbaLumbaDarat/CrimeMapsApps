@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.harifrizki.crimemapsapps.databinding.LayoutMenuAreaBinding
 import com.harifrizki.crimemapsapps.ui.component.MenuArea
 import com.harifrizki.crimemapsapps.utils.MAX_ITEM_LIST_SHIMMER
+import com.harifrizki.crimemapsapps.utils.getMaxShimmerList
 import com.harifrizki.crimemapsapps.utils.layoutStartDrawableShimmer
 import com.harifrizki.crimemapsapps.utils.widgetStartDrawableShimmer
 
@@ -43,7 +44,7 @@ class MenuAreaAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if (isShimmer!!) MAX_ITEM_LIST_SHIMMER
+        return if (isShimmer!!) getMaxShimmerList()
         else menuAreas!!.size
     }
 

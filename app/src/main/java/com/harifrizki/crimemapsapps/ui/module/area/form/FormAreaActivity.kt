@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module.formarea
+package com.harifrizki.crimemapsapps.ui.module.area.form
 
 import android.app.Activity
 import android.graphics.Color
@@ -14,9 +14,9 @@ import com.harifrizki.crimemapsapps.data.remote.response.SubDistrictResponse
 import com.harifrizki.crimemapsapps.data.remote.response.UrbanVillageResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityFormAreaBinding
 import com.harifrizki.crimemapsapps.model.*
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
 import com.harifrizki.crimemapsapps.ui.component.ParentArea
-import com.harifrizki.crimemapsapps.ui.module.area.ListOfAreaActivity
+import com.harifrizki.crimemapsapps.ui.module.area.list.ListOfAreaActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
@@ -26,7 +26,6 @@ import com.harifrizki.crimemapsapps.utils.MenuAreaType.*
 import com.harifrizki.crimemapsapps.utils.ParentAreaAction.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 import com.orhanobut.logger.Logger
-import org.jetbrains.annotations.NotNull
 
 class FormAreaActivity : BaseActivity() {
     private val binding by lazy {

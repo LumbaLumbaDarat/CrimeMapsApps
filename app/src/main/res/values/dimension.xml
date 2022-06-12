@@ -12,6 +12,7 @@
     <dimen name="margin_default">20dp</dimen>
     <dimen name="margin_half_default">10dp</dimen>
     <dimen name="margin_half_half_default">5dp</dimen>
+    <dimen name="margin_smallest_default">2dp</dimen>
     <dimen name="margin_multiple_default">40dp</dimen>
     <dimen name="margin_multiple_add_default">50dp</dimen>
     <dimen name="margin_triple_default">60dp</dimen>

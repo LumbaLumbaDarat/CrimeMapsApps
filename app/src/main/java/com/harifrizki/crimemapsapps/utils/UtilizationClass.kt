@@ -40,6 +40,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 @SuppressLint("UseCompatLoadingForDrawables")
 private fun drawableBackgroundLightGrayForShimmer(context: Context?): Drawable {
@@ -241,6 +242,18 @@ fun toMultipartBody(file: File?, name: String?, mediaType: String?): MultipartBo
     )
 }
 
+fun toMultipartBody(files: ArrayList<File>?, name: String?, mediaType: String?): List<MultipartBody.Part> {
+    val parts: MutableList<MultipartBody.Part> = mutableListOf()
+    files?.forEach {
+        parts += MultipartBody.Part.createFormData(
+            name!!,
+            it.name,
+            toRequestBody(it, mediaType)
+        )
+    }
+    return parts
+}
+
 fun makeSpannable(
     isSpanBold: Boolean? = true,
     text: String?,
@@ -304,6 +317,18 @@ fun setActivate(admin: Admin?, imageView: ImageView?) {
             setImageResource(R.drawable.ic_round_lock_open_24)
         }
     }
+}
+
+fun getMaxShimmerList(): Int {
+    return MAX_ITEM_LIST_SHIMMER
+}
+
+fun getMaxItemInList(): Int {
+    return MAX_LIST_IN_RECYCLER_VIEW
+}
+
+fun getMinItemForValidList(): Int {
+    return ZERO
 }
 
 fun layoutStartDrawableShimmer(

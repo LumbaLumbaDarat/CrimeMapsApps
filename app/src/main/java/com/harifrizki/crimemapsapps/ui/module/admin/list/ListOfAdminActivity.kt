@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module.admin
+package com.harifrizki.crimemapsapps.ui.module.admin.list
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -15,8 +15,8 @@ import com.harifrizki.crimemapsapps.databinding.ActivityListOfAdminBinding
 import com.harifrizki.crimemapsapps.model.Admin
 import com.harifrizki.crimemapsapps.model.Page
 import com.harifrizki.crimemapsapps.ui.adapter.AdminAdapter
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
-import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
+import com.harifrizki.crimemapsapps.ui.module.admin.profile.ProfileActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
@@ -134,8 +134,8 @@ class ListOfAdminActivity : BaseActivity() {
             }
             SUCCESS -> {
                 if (isResponseSuccess(it.data?.message)) {
-                    if (it.data?.adminArrayList?.size!! > ZERO) {
-                        if (it.data.page?.totalContentSize!! >= MAX_LIST_IN_RECYCLER_VIEW) {
+                    if (it.data?.adminArrayList?.size!! > getMinItemForValidList()) {
+                        if (it.data.page?.totalContentSize!! >= getMaxItemInList()) {
                             if (doNotLoadData!!) {
                                 showNotificationAndOptionMessageInformation(
                                     title = titleOverloadData(getString(R.string.admin_menu)),
@@ -155,8 +155,7 @@ class ListOfAdminActivity : BaseActivity() {
                                         )
                                     ),
                                     buttonNegative = getString(
-                                        R.string.label_show_overload,
-                                        getString(R.string.admin_menu)
+                                        R.string.label_show_overload
                                     ),
                                     onPositive = {
                                         binding.iSearchListOfAdmin.tieSearch.requestFocus()
@@ -171,9 +170,12 @@ class ListOfAdminActivity : BaseActivity() {
                                     isGetData = true,
                                     isOverloadData = true
                                 )
-                            } else setAdminAdapter(it.data)
-                        } else setAdminAdapter(it.data)
-                    } else {
+                            }
+                            else setAdminAdapter(it.data)
+                        }
+                        else setAdminAdapter(it.data)
+                    }
+                    else {
                         showEmpty(
                             getString(R.string.label_not_found),
                             getString(

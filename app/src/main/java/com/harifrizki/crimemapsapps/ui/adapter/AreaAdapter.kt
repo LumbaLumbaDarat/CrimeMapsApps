@@ -65,19 +65,21 @@ class AreaAdapter(
                     onClickArea?.invoke(area)
                 }
             }
-        } else area = Any()
+        }
+        else area = Any()
         holder.bind(area, menuAreaType, isShimmer)
     }
 
     override fun getItemCount(): Int {
-        return if (isShimmer!!) MAX_ITEM_LIST_SHIMMER
+        return if (isShimmer!!) getMaxShimmerList()
         else areas!!.size
     }
 
     class HolderView(
         val binding: ItemAreaBinding,
         private val context: Context?
-    ) : RecyclerView.ViewHolder(binding.root) {
+    )
+        : RecyclerView.ViewHolder(binding.root) {
         fun bind(
             area: Any?,
             menuAreaType: MenuAreaType?,
@@ -148,7 +150,8 @@ class AreaAdapter(
                         }
                         else -> {}
                     }
-                } else {
+                }
+                else {
                     layoutStartDrawableShimmer(
                         arrayOf(
                             llBackgroundArea

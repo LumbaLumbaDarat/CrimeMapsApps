@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module.cropphoto
+package com.harifrizki.crimemapsapps.ui.component.activity
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -11,7 +11,6 @@ import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.databinding.ActivityCropPhotoBinding
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity

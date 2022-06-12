@@ -133,4 +133,31 @@ interface DataSource {
 
     fun urbanVillageDelete(urbanVillage: UrbanVillage?):
             LiveData<ApiResource<MessageResponse>>
+
+    fun crimeLocation(pageNo: String?, crimeLocation: CrimeLocation?):
+            LiveData<ApiResource<CrimeLocationResponse>>
+
+    fun crimeLocationDetail(crimeLocation: CrimeLocation?):
+            LiveData<ApiResource<CrimeLocationResponse>>
+
+    fun crimeLocationAdd(
+        crimeLocation: CrimeLocation?,
+        photoCrimeLocation: ArrayList<File>?
+    ):
+            LiveData<ApiResource<CrimeLocationResponse>>
+
+    fun crimeLocationAddImage(
+        crimeLocation: CrimeLocation?,
+        photoCrimeLocation: ArrayList<File>?
+    ):
+            LiveData<ApiResource<CrimeLocationResponse>>
+
+    fun crimeLocationUpdate(crimeLocation: CrimeLocation?):
+            LiveData<ApiResource<CrimeLocationResponse>>
+
+    fun crimeLocationDeleteImage(crimeLocation: CrimeLocation?):
+            LiveData<ApiResource<MessageResponse>>
+
+    fun crimeLocationDelete(crimeLocation: CrimeLocation?):
+            LiveData<ApiResource<MessageResponse>>
 }

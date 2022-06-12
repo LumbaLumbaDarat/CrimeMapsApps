@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module.profile
+package com.harifrizki.crimemapsapps.ui.module.admin.profile
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.setPadding
 import androidx.lifecycle.Observer
@@ -18,9 +17,9 @@ import com.harifrizki.crimemapsapps.data.remote.response.AdminResponse
 import com.harifrizki.crimemapsapps.data.remote.response.MessageResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityProfileBinding
 import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
-import com.harifrizki.crimemapsapps.ui.module.cropphoto.CropPhotoActivity
-import com.harifrizki.crimemapsapps.ui.module.password.PasswordActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.CropPhotoActivity
+import com.harifrizki.crimemapsapps.ui.module.admin.changepassword.ChangePasswordActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
@@ -29,7 +28,6 @@ import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.ImageType.*
 import com.harifrizki.crimemapsapps.utils.MenuSetting.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
-import com.lumbalumbadrt.colortoast.ColorToast
 import com.orhanobut.logger.Logger
 import java.io.File
 import java.io.IOException
@@ -150,7 +148,8 @@ class ProfileActivity : BaseActivity() {
                     }
                     else -> {}
                 }
-            } else {
+            }
+            else {
                 map = getMap(it.data)
                 when (getEnumActivityName(map!![FROM_ACTIVITY].toString())) {
                     CROP_PHOTO -> {
@@ -713,7 +712,7 @@ class ProfileActivity : BaseActivity() {
                     )
                 }
                 btnChangePassword.setOnClickListener {
-                    goTo(PasswordActivity())
+                    goTo(ChangePasswordActivity())
                 }
             }
             iDetailProfileShimmer.root.visibility = View.VISIBLE

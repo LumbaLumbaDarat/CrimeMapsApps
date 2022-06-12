@@ -139,6 +139,53 @@ data class UrbanVillage(
 }
 
 @Parcelize
+data class CrimeLocation(
+    @field:SerializedName("crimeLocationId") var crimeLocationId: String? = null,
+    @field:SerializedName("province") var province: Province? = null,
+    @field:SerializedName("city") var city: City? = null,
+    @field:SerializedName("subDistrict") var subDistrict: SubDistrict? = null,
+    @field:SerializedName("urbanVillage") var urbanVillage: UrbanVillage? = null,
+    @field:SerializedName("crimeMapsName") var crimeMapsName: String? = null,
+    @field:SerializedName("crimeMapsAddress") var crimeMapsAddress: String? = null,
+    @field:SerializedName("crimeMapsDescription") var crimeMapsDescription: String? = null,
+    @field:SerializedName("crimeMapsLatitude") var crimeMapsLatitude: String? = null,
+    @field:SerializedName("crimeMapsLongitude") var crimeMapsLongitude: String? = null,
+    @field:SerializedName("imageCrimeLocations") var imageCrimeLocations: ArrayList<ImageCrimeLocation>? = null,
+    @field:SerializedName("distance") var distance: Double? = null,
+    @field:SerializedName("distanceUnit") var distanceUnit: String? = null,
+    @field:SerializedName("createdBy") var createdBy: Admin? = null,
+    @field:SerializedName("createdDate") var createdDate: String? = null,
+    @field:SerializedName("updatedBy") var updatedBy: Admin? = null,
+    @field:SerializedName("updatedDate") var updatedDate: String? = null,
+) : Parcelable {
+    companion object {
+        fun jsonObject(
+            crimeLocation: CrimeLocation?,
+            jsonForCRUD: CRUD?,
+            searchBy: String? = EMPTY_STRING
+        ): JsonObject {
+            return createJson(crimeLocation, jsonForCRUD, searchBy)
+        }
+    }
+}
+
+@Parcelize
+data class ImageCrimeLocation(
+    @field:SerializedName("imageCrimeLocationId") var imageCrimeLocationId: String? = null,
+    @field:SerializedName("imageName") var province: String? = null
+) : Parcelable {
+    companion object {
+        fun jsonObject(
+            imageCrimeLocation: ImageCrimeLocation?,
+            jsonForCRUD: CRUD?,
+            searchBy: String? = EMPTY_STRING
+        ): JsonObject {
+            return createJson(imageCrimeLocation, jsonForCRUD, searchBy)
+        }
+    }
+}
+
+@Parcelize
 data class Page(
     @field:SerializedName("pageNo") var pageNo: Int? = null,
     @field:SerializedName("totalPage") var totalPage: Int? = null,
@@ -251,6 +298,11 @@ fun createJson(
                                 )
                             }
                         }
+                        is CrimeLocation -> {
+                            JsonObject().apply {
+                                addProperty(any::crimeMapsName.name, any.crimeMapsName)
+                            }
+                        }
                         else -> {
                             JsonObject()
                         }
@@ -282,6 +334,11 @@ fun createJson(
                                 addProperty(
                                     any::urbanVillageId.name, any.urbanVillageId
                                 )
+                            }
+                        }
+                        is CrimeLocation -> {
+                            JsonObject().apply {
+                                addProperty(any::crimeLocationId.name, any.crimeLocationId)
                             }
                         }
                         else -> {
@@ -322,7 +379,21 @@ fun createJson(
                 is UrbanVillage -> {
                     JsonObject().apply {
                         addProperty(
-                            (any as UrbanVillage)::urbanVillageId.name, any.urbanVillageId
+                            any::urbanVillageId.name, any.urbanVillageId
+                        )
+                    }
+                }
+                is CrimeLocation -> {
+                    JsonObject().apply {
+                        addProperty(
+                            any::crimeLocationId.name, any.crimeLocationId
+                        )
+                    }
+                }
+                is ImageCrimeLocation -> {
+                    JsonObject().apply {
+                        addProperty(
+                            any::imageCrimeLocationId.name, any.imageCrimeLocationId
                         )
                     }
                 }

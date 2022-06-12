@@ -77,12 +77,13 @@ class AdminAdapter(
                         onClickAdmin?.invoke(admin)
                     }
             }
-        } else admin = Admin()
+        }
+        else admin = Admin()
         holder.bind(adminLogin, admin, isShimmer)
     }
 
     override fun getItemCount(): Int {
-        return if (isShimmer!!) MAX_ITEM_LIST_SHIMMER
+        return if (isShimmer!!) getMaxShimmerList()
         else admins!!.size
     }
 
@@ -129,7 +130,8 @@ class AdminAdapter(
                         ivBtnAdminDelete.visibility = View.GONE
                     }
 
-                } else {
+                }
+                else {
                     layoutStartDrawableShimmer(
                         arrayOf(
                             llAdminBackground

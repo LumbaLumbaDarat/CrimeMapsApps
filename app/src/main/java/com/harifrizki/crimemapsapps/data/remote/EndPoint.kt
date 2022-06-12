@@ -175,4 +175,44 @@ interface EndPoint {
     @POST(END_POINT_DELETE_URBAN_VILLAGE)
     fun urbanVillageDelete(@Body jsonObject: JsonObject):
             Call<MessageResponse>
+
+    @POST(END_POINT_CRIME_LOCATION)
+    fun crimeLocation(
+        @Query("searchBy") searchBy: String,
+        @Query("pageNo") pageNo: String,
+        @Body jsonObject: JsonObject
+    ):
+            Call<CrimeLocationResponse>
+
+    @POST(END_POINT_DETAIL_CRIME_LOCATION)
+    fun crimeLocationDetail(@Body jsonObject: JsonObject):
+            Call<CrimeLocationResponse>
+
+    @Multipart
+    @POST(END_POINT_ADD_CRIME_LOCATION)
+    fun crimeLocationAdd(
+        @Part("crimeLocationEntity") crimeLocationEntity: RequestBody,
+        @Part crimeLocationPhoto: List<MultipartBody.Part>
+    ):
+            Call<CrimeLocationResponse>
+
+    @Multipart
+    @POST(END_POINT_ADD_IMAGE_CRIME_LOCATION)
+    fun crimeLocationAddImage(
+        @Part("crimeLocationEntity") crimeLocationEntity: RequestBody,
+        @Part crimeLocationPhoto: List<MultipartBody.Part>
+    ):
+            Call<CrimeLocationResponse>
+
+    @POST(END_POINT_UPDATE_CRIME_LOCATION)
+    fun crimeLocationUpdate(@Body jsonObject: JsonObject):
+            Call<CrimeLocationResponse>
+
+    @POST(END_POINT_DELETE_IMAGE_CRIME_LOCATION)
+    fun crimeLocationDeleteImage(@Body jsonObject: JsonObject):
+            Call<MessageResponse>
+
+    @POST(END_POINT_DELETE_CRIME_LOCATION)
+    fun crimeLocationDelete(@Body jsonObject: JsonObject):
+            Call<MessageResponse>
 }

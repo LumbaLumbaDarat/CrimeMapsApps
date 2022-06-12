@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.component
+package com.harifrizki.crimemapsapps.ui.component.activity
 
 import android.content.Context
 import android.content.Intent
@@ -22,7 +22,7 @@ import com.harifrizki.crimemapsapps.data.remote.ERROR_CODE_404_PAGE_NOT_FOUND
 import com.harifrizki.crimemapsapps.data.remote.response.ErrorResponse
 import com.harifrizki.crimemapsapps.databinding.*
 import com.harifrizki.crimemapsapps.model.*
-import com.harifrizki.crimemapsapps.ui.module.ConnectionErrorActivity
+import com.harifrizki.crimemapsapps.ui.component.*
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName

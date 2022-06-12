@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module.profile
+package com.harifrizki.crimemapsapps.ui.module.admin.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

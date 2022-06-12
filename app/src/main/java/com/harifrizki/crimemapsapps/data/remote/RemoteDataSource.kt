@@ -438,6 +438,94 @@ class RemoteDataSource : DataSource {
         )
     }
 
+    override fun crimeLocation(
+        pageNo: String?,
+        crimeLocation: CrimeLocation?
+    ): LiveData<ApiResource<CrimeLocationResponse>> {
+        return response(
+            NetworkApi.connectToApi().crimeLocation(
+                PARAM_NAME,
+                pageNo!!,
+                CrimeLocation.jsonObject(crimeLocation, READ, PARAM_NAME)
+            ),
+            CrimeLocationResponse()
+        )
+    }
+
+    override fun crimeLocationDetail(crimeLocation: CrimeLocation?): LiveData<ApiResource<CrimeLocationResponse>> {
+        return response(
+            NetworkApi.connectToApi().crimeLocationDetail(
+                CrimeLocation.jsonObject(crimeLocation, READ, ID)
+            ),
+            CrimeLocationResponse()
+        )
+    }
+
+    override fun crimeLocationAdd(
+        crimeLocation: CrimeLocation?,
+        photoCrimeLocation: ArrayList<File>?
+    ): LiveData<ApiResource<CrimeLocationResponse>> {
+        return response(
+            NetworkApi.connectToApi().crimeLocationAdd(
+                toRequestBody(
+                    CrimeLocation.jsonObject(crimeLocation, CREATE).toString(),
+                    "multipart/form-data"
+                ),
+                toMultipartBody(
+                    photoCrimeLocation,
+                    "crimeLocationPhoto",
+                    "multipart/form-data")
+            ),
+            CrimeLocationResponse()
+        )
+    }
+
+    override fun crimeLocationAddImage(
+        crimeLocation: CrimeLocation?,
+        photoCrimeLocation: ArrayList<File>?
+    ): LiveData<ApiResource<CrimeLocationResponse>> {
+        return response(
+            NetworkApi.connectToApi().crimeLocationAdd(
+                toRequestBody(
+                    CrimeLocation.jsonObject(crimeLocation, CREATE).toString(),
+                    "multipart/form-data"
+                ),
+                toMultipartBody(
+                    photoCrimeLocation,
+                    "crimeLocationPhoto",
+                    "multipart/form-data")
+            ),
+            CrimeLocationResponse()
+        )
+    }
+
+    override fun crimeLocationUpdate(crimeLocation: CrimeLocation?): LiveData<ApiResource<CrimeLocationResponse>> {
+        return response(
+            NetworkApi.connectToApi().crimeLocationUpdate(
+                CrimeLocation.jsonObject(crimeLocation, CRUD.UPDATE)
+            ),
+            CrimeLocationResponse()
+        )
+    }
+
+    override fun crimeLocationDeleteImage(crimeLocation: CrimeLocation?): LiveData<ApiResource<MessageResponse>> {
+        return response(
+            NetworkApi.connectToApi().crimeLocationDeleteImage(
+                CrimeLocation.jsonObject(crimeLocation, CRUD.DELETE)
+            ),
+            MessageResponse()
+        )
+    }
+
+    override fun crimeLocationDelete(crimeLocation: CrimeLocation?): LiveData<ApiResource<MessageResponse>> {
+        return response(
+            NetworkApi.connectToApi().crimeLocationDelete(
+                CrimeLocation.jsonObject(crimeLocation, CRUD.DELETE)
+            ),
+            MessageResponse()
+        )
+    }
+
     private fun <T> response(client: Call<T>, modelResponse: T):
             MutableLiveData<ApiResource<T>> {
         val result = MutableLiveData<ApiResource<T>>()

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".ui.module.formarea.FormAreaActivity">
+    tools:context=".ui.module.area.form.FormAreaActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

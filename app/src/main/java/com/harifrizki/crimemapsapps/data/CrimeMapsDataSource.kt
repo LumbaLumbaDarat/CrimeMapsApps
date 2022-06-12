@@ -52,4 +52,12 @@ interface CrimeMapsDataSource {
     fun urbanVillageAdd(urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>>
     fun urbanVillageUpdate(urbanVillage: UrbanVillage?): LiveData<DataResource<UrbanVillageResponse>>
     fun urbanVillageDelete(urbanVillage: UrbanVillage?): LiveData<DataResource<MessageResponse>>
+
+    fun crimeLocation(pageNo: String?, crimeLocation: CrimeLocation?): LiveData<DataResource<CrimeLocationResponse>>
+    fun crimeLocationDetail(crimeLocation: CrimeLocation?): LiveData<DataResource<CrimeLocationResponse>>
+    fun crimeLocationAdd(crimeLocation: CrimeLocation?, photoCrimeLocation: ArrayList<File>?): LiveData<DataResource<CrimeLocationResponse>>
+    fun crimeLocationAddImage(crimeLocation: CrimeLocation?, photoCrimeLocation: ArrayList<File>?): LiveData<DataResource<CrimeLocationResponse>>
+    fun crimeLocationUpdate(crimeLocation: CrimeLocation?): LiveData<DataResource<CrimeLocationResponse>>
+    fun crimeLocationDeleteImage(crimeLocation: CrimeLocation?): LiveData<DataResource<MessageResponse>>
+    fun crimeLocationDelete(crimeLocation: CrimeLocation?): LiveData<DataResource<MessageResponse>>
 }

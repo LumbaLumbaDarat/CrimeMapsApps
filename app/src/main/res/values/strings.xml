@@ -15,6 +15,7 @@
     <string name="change">Ubah</string>
     <string name="done">Selesai</string>
     <string name="temp">Temp</string>
+    <string name="more">Selengkapnya</string>
     <string name="yes_delete">Ya, Hapus</string>
     <string name="yes_reset">Ya, Reset</string>
     <string name="yes_activate">Ya, %s</string>
@@ -73,7 +74,9 @@
     <string name="label_plus_two_string_regex_first">[%s] %s</string>
     <string name="label_plus_two_string_regex_second">%s [%s]</string>
     <string name="label_title_search_by">Cari [%s] Berdasarkan [%s]</string>
-    <string name="label_show_overload">Tampilkan Seluruh Data %s</string>
+    <string name="label_title_search">Cari Berdasarkan [%s]</string>
+    <string name="label_show_overload_of">Tampilkan Seluruh Data %s</string>
+    <string name="label_show_overload">Tetap tampilkan seluruh Data</string>
     <string name="label_see_child">Lihat seluruh %s yang teregristasi dengan %s ini</string>
 
     <string name="admin_menu">Admin</string>

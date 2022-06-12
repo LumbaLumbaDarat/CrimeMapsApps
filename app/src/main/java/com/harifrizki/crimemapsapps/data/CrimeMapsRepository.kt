@@ -334,4 +334,62 @@ class CrimeMapsRepository(
                 remote.urbanVillageDelete(urbanVillage)
         }.asLiveData()
     }
+
+    override fun crimeLocation(
+        pageNo: String?,
+        crimeLocation: CrimeLocation?
+    ): LiveData<DataResource<CrimeLocationResponse>> {
+        return object : NetworkResource<CrimeLocationResponse>() {
+            override fun createCall(): LiveData<ApiResource<CrimeLocationResponse>> =
+                remote.crimeLocation(pageNo, crimeLocation)
+        }.asLiveData()
+    }
+
+    override fun crimeLocationDetail(crimeLocation: CrimeLocation?): LiveData<DataResource<CrimeLocationResponse>> {
+        return object : NetworkResource<CrimeLocationResponse>() {
+            override fun createCall(): LiveData<ApiResource<CrimeLocationResponse>> =
+                remote.crimeLocationDetail(crimeLocation)
+        }.asLiveData()
+    }
+
+    override fun crimeLocationAdd(
+        crimeLocation: CrimeLocation?,
+        photoCrimeLocation: ArrayList<File>?
+    ): LiveData<DataResource<CrimeLocationResponse>> {
+        return object : NetworkResource<CrimeLocationResponse>() {
+            override fun createCall(): LiveData<ApiResource<CrimeLocationResponse>> =
+                remote.crimeLocationAdd(crimeLocation, photoCrimeLocation)
+        }.asLiveData()
+    }
+
+    override fun crimeLocationAddImage(
+        crimeLocation: CrimeLocation?,
+        photoCrimeLocation: ArrayList<File>?
+    ): LiveData<DataResource<CrimeLocationResponse>> {
+        return object : NetworkResource<CrimeLocationResponse>() {
+            override fun createCall(): LiveData<ApiResource<CrimeLocationResponse>> =
+                remote.crimeLocationAddImage(crimeLocation, photoCrimeLocation)
+        }.asLiveData()
+    }
+
+    override fun crimeLocationUpdate(crimeLocation: CrimeLocation?): LiveData<DataResource<CrimeLocationResponse>> {
+        return object : NetworkResource<CrimeLocationResponse>() {
+            override fun createCall(): LiveData<ApiResource<CrimeLocationResponse>> =
+                remote.crimeLocationUpdate(crimeLocation)
+        }.asLiveData()
+    }
+
+    override fun crimeLocationDeleteImage(crimeLocation: CrimeLocation?): LiveData<DataResource<MessageResponse>> {
+        return object : NetworkResource<MessageResponse>() {
+            override fun createCall(): LiveData<ApiResource<MessageResponse>> =
+                remote.crimeLocationDeleteImage(crimeLocation)
+        }.asLiveData()
+    }
+
+    override fun crimeLocationDelete(crimeLocation: CrimeLocation?): LiveData<DataResource<MessageResponse>> {
+        return object : NetworkResource<MessageResponse>() {
+            override fun createCall(): LiveData<ApiResource<MessageResponse>> =
+                remote.crimeLocationDelete(crimeLocation)
+        }.asLiveData()
+    }
 }

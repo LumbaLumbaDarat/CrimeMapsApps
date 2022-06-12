@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.harifrizki.crimemapsapps.data.CrimeMapsRepository
-import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminViewModel
-import com.harifrizki.crimemapsapps.ui.module.area.ListOfAreaViewModel
+import com.harifrizki.crimemapsapps.ui.module.admin.list.ListOfAdminViewModel
+import com.harifrizki.crimemapsapps.ui.module.area.list.ListOfAreaViewModel
+import com.harifrizki.crimemapsapps.ui.module.crimelocation.list.ListOfCrimeLocationViewModel
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardViewModel
-import com.harifrizki.crimemapsapps.ui.module.formarea.FormAreaViewModel
+import com.harifrizki.crimemapsapps.ui.module.area.form.FormAreaViewModel
 import com.harifrizki.crimemapsapps.ui.module.login.LoginViewModel
-import com.harifrizki.crimemapsapps.ui.module.password.PasswordViewModel
-import com.harifrizki.crimemapsapps.ui.module.profile.ProfileViewModel
+import com.harifrizki.crimemapsapps.ui.module.admin.changepassword.ChangePasswordViewModel
+import com.harifrizki.crimemapsapps.ui.module.admin.profile.ProfileViewModel
+import com.harifrizki.crimemapsapps.ui.module.crimelocation.detail.DetailCrimeLocationViewModel
+import com.harifrizki.crimemapsapps.ui.module.crimelocation.form.FromCrimeLocationViewModel
 import com.harifrizki.crimemapsapps.ui.module.splash.SplashViewModel
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -45,8 +48,8 @@ class ViewModelFactory private constructor (private val crimeMapsRepository: Cri
             modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
                 ProfileViewModel(crimeMapsRepository) as T
             }
-            modelClass.isAssignableFrom(PasswordViewModel::class.java) -> {
-                PasswordViewModel(crimeMapsRepository) as T
+            modelClass.isAssignableFrom(ChangePasswordViewModel::class.java) -> {
+                ChangePasswordViewModel(crimeMapsRepository) as T
             }
             modelClass.isAssignableFrom(ListOfAdminViewModel::class.java) -> {
                 ListOfAdminViewModel(crimeMapsRepository) as T
@@ -56,6 +59,15 @@ class ViewModelFactory private constructor (private val crimeMapsRepository: Cri
             }
             modelClass.isAssignableFrom(FormAreaViewModel::class.java) -> {
                 FormAreaViewModel(crimeMapsRepository) as T
+            }
+            modelClass.isAssignableFrom(ListOfCrimeLocationViewModel::class.java) -> {
+                ListOfCrimeLocationViewModel(crimeMapsRepository) as T
+            }
+            modelClass.isAssignableFrom(DetailCrimeLocationViewModel::class.java) -> {
+                DetailCrimeLocationViewModel(crimeMapsRepository) as T
+            }
+            modelClass.isAssignableFrom(FromCrimeLocationViewModel::class.java) -> {
+                FromCrimeLocationViewModel(crimeMapsRepository) as T
             }
             else -> {
                 Logger.e("Unknown ViewModel class: " + modelClass.name)

@@ -11,7 +11,7 @@ import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.LoginResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityLoginBinding
 import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ResponseStatus.*

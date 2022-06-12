@@ -24,45 +24,51 @@
         android:theme="@style/Theme.CrimeMapsApps"
         tools:ignore="AllowBackup,LockedOrientationActivity">
         <activity
-            android:name=".ui.module.formarea.FormAreaActivity"
-            android:screenOrientation="portrait"
+            android:name=".ui.module.crimelocation.form.FormCrimeLocationActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.module.area.ListOfAreaActivity"
-            android:screenOrientation="portrait"
+            android:name=".ui.module.crimelocation.list.ListOfCrimeLocationActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.module.cropphoto.CropPhotoActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:name=".ui.module.area.form.FormAreaActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.password.PasswordActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:name=".ui.module.area.list.ListOfAreaActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.admin.ListOfAdminActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:name=".ui.component.activity.CropPhotoActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.profile.ProfileActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:name=".ui.module.admin.changepassword.ChangePasswordActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.ConnectionErrorActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:name=".ui.module.admin.list.ListOfAdminActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.module.admin.profile.ProfileActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.component.activity.ConnectionErrorActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.module.dashboard.DashboardActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.module.login.LoginActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.module.splash.SplashScreenActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

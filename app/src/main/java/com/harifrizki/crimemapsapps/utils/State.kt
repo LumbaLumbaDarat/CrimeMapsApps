@@ -1,12 +1,14 @@
 package com.harifrizki.crimemapsapps.utils
 
-import com.harifrizki.crimemapsapps.ui.module.admin.ListOfAdminActivity
-import com.harifrizki.crimemapsapps.ui.module.area.ListOfAreaActivity
-import com.harifrizki.crimemapsapps.ui.module.cropphoto.CropPhotoActivity
+import com.harifrizki.crimemapsapps.ui.module.admin.list.ListOfAdminActivity
+import com.harifrizki.crimemapsapps.ui.module.area.list.ListOfAreaActivity
+import com.harifrizki.crimemapsapps.ui.module.crimelocation.list.ListOfCrimeLocationActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.CropPhotoActivity
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardActivity
-import com.harifrizki.crimemapsapps.ui.module.formarea.FormAreaActivity
-import com.harifrizki.crimemapsapps.ui.module.password.PasswordActivity
-import com.harifrizki.crimemapsapps.ui.module.profile.ProfileActivity
+import com.harifrizki.crimemapsapps.ui.module.area.form.FormAreaActivity
+import com.harifrizki.crimemapsapps.ui.module.crimelocation.form.FormCrimeLocationActivity
+import com.harifrizki.crimemapsapps.ui.module.admin.changepassword.ChangePasswordActivity
+import com.harifrizki.crimemapsapps.ui.module.admin.profile.ProfileActivity
 
 enum class ResponseStatus {
     SUCCESS,
@@ -84,11 +86,13 @@ enum class ParamArea {
 enum class ActivityName(val nameOfActivity: String) {
     DASHBOARD(DashboardActivity::class.java.name),
     PROFILE(ProfileActivity::class.java.name),
-    PASSWORD(PasswordActivity::class.java.name),
+    PASSWORD(ChangePasswordActivity::class.java.name),
     CROP_PHOTO(CropPhotoActivity::class.java.name),
     LIST_OF_ADMIN(ListOfAdminActivity::class.java.name),
     LIST_OF_AREA(ListOfAreaActivity::class.java.name),
-    FORM_AREA(FormAreaActivity::class.java.name);
+    FORM_AREA(FormAreaActivity::class.java.name),
+    LIST_OF_CRIME_LOCATION(ListOfCrimeLocationActivity::class.java.name),
+    FORM_CRIME_LOCATION(FormCrimeLocationActivity::class.java.name);
 
     companion object {
         fun getNameOfActivity(activityName: ActivityName): String = activityName.nameOfActivity

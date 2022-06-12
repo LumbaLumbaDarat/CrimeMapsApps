@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module.formarea
+package com.harifrizki.crimemapsapps.ui.module.area.form
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

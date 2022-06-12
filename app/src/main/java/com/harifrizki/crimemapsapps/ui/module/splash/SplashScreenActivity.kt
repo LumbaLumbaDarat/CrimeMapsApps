@@ -12,7 +12,7 @@ import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.HandshakeResponse
 import com.harifrizki.crimemapsapps.databinding.ActivitySplashScreenBinding
 import com.harifrizki.crimemapsapps.model.Admin
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardActivity
 import com.harifrizki.crimemapsapps.ui.module.login.LoginActivity
 import com.harifrizki.crimemapsapps.utils.*

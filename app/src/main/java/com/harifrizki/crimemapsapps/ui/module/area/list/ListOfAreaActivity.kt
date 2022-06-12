@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.ui.module.area
+package com.harifrizki.crimemapsapps.ui.module.area.list
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -13,8 +13,8 @@ import com.harifrizki.crimemapsapps.data.remote.response.*
 import com.harifrizki.crimemapsapps.databinding.ActivityListOfAreaBinding
 import com.harifrizki.crimemapsapps.model.*
 import com.harifrizki.crimemapsapps.ui.adapter.AreaAdapter
-import com.harifrizki.crimemapsapps.ui.component.BaseActivity
-import com.harifrizki.crimemapsapps.ui.module.formarea.FormAreaActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
+import com.harifrizki.crimemapsapps.ui.module.area.form.FormAreaActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getEnumActivityName
@@ -24,8 +24,6 @@ import com.harifrizki.crimemapsapps.utils.ResponseStatus.*
 import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.ParamArea.*
 import com.lumbalumbadrt.colortoast.ColorToast
-import com.orhanobut.logger.Logger
-import org.jetbrains.annotations.NotNull
 
 class ListOfAreaActivity : BaseActivity() {
     private val binding by lazy {
@@ -234,8 +232,8 @@ class ListOfAreaActivity : BaseActivity() {
                     else -> {}
                 }
                 if (isResponseSuccess(message)) {
-                    if (size!! > ZERO) {
-                        if (page?.totalContentSize!! >= MAX_LIST_IN_RECYCLER_VIEW) {
+                    if (size!! > getMinItemForValidList()) {
+                        if (page?.totalContentSize!! >= getMaxItemInList()) {
                             if (doNotLoadData!!) {
                                 showNotificationAndOptionMessageInformation(
                                     title = titleOverloadData(appBarTitle),
@@ -246,17 +244,11 @@ class ListOfAreaActivity : BaseActivity() {
                                     ),
                                     useOption = true,
                                     buttonPositive = getString(
-                                        R.string.label_title_search_by,
-                                        appBarTitle,
-                                        getString(
-                                            R.string.label_plus_two_string,
-                                            appBarTitle,
-                                            getString(R.string.label_name)
-                                        )
+                                        R.string.label_title_search,
+                                        getString(R.string.label_name)
                                     ),
                                     buttonNegative = getString(
-                                        R.string.label_show_overload,
-                                        appBarTitle
+                                        R.string.label_show_overload
                                     ),
                                     onPositive = {
                                         binding.iSearchListOfArea.tieSearch.requestFocus()
@@ -271,9 +263,12 @@ class ListOfAreaActivity : BaseActivity() {
                                     isGetData = true,
                                     isOverloadData = true
                                 )
-                            } else setArea(it.data)
-                        } else setArea(it.data)
-                    } else {
+                            }
+                            else setArea(it.data)
+                        }
+                        else setArea(it.data)
+                    }
+                    else {
                         showEmpty(
                             getString(R.string.label_not_found),
                             getString(
