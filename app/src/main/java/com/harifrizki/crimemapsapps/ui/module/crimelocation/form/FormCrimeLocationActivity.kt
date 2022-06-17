@@ -148,6 +148,7 @@ class FormCrimeLocationActivity : BaseActivity() {
                                 resetParam(
                                     MENU_AREA_PROVINCE_ID,
                                     provinceAsParent?.provinceName,
+                                    resetProvince = false,
                                     resetCity = true,
                                     resetSubDistrict = true,
                                     resetUrbanVillage = true
@@ -158,6 +159,7 @@ class FormCrimeLocationActivity : BaseActivity() {
                                 resetParam(
                                     MENU_AREA_CITY_ID,
                                     cityAsParent?.cityName,
+                                    resetProvince = false,
                                     resetCity = false,
                                     resetSubDistrict = true,
                                     resetUrbanVillage = true
@@ -168,6 +170,7 @@ class FormCrimeLocationActivity : BaseActivity() {
                                 resetParam(
                                     MENU_AREA_SUB_DISTRICT_ID,
                                     subDistrictAsParent?.subDistrictName,
+                                    resetProvince = false,
                                     resetCity = false,
                                     resetSubDistrict = false,
                                     resetUrbanVillage = true
@@ -178,6 +181,7 @@ class FormCrimeLocationActivity : BaseActivity() {
                                 resetParam(
                                     MENU_AREA_URBAN_VILLAGE_ID,
                                     subDistrictAsParent?.subDistrictName,
+                                    resetProvince = false,
                                     resetCity = false,
                                     resetSubDistrict = false,
                                     resetUrbanVillage = false
@@ -263,7 +267,7 @@ class FormCrimeLocationActivity : BaseActivity() {
 
     override fun onBackPressed() {
         onBackPressed(
-            getNameOfActivity(LIST_OF_CRIME_LOCATION),
+            getNameOfActivity(FORM_CRIME_LOCATION),
             isAfterCRUD
         )
         super.onBackPressed()
@@ -294,7 +298,21 @@ class FormCrimeLocationActivity : BaseActivity() {
                         message = it.data?.message?.message,
                         onClick = {
                             dismissNotification()
-                            onBackPressed()
+                            binding.apply {
+                                tieName.text?.clear()
+                                tieDescription.text?.clear()
+                            }
+                            initializeUploadImage()
+                            resetParam(MenuAreaType.MENU_NONE,
+                                EMPTY_STRING,
+                                resetProvince = true,
+                                resetCity = true,
+                                resetSubDistrict = true,
+                                resetUrbanVillage = true
+                            )
+                            addImageAdapter?.apply {
+                                setImageResources(imageResources = imageResources)
+                            }
                         }
                     )
                 }
@@ -314,13 +332,18 @@ class FormCrimeLocationActivity : BaseActivity() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun initializeForm() {
+    private fun initializeUploadImage() {
+        imageResources?.clear()
         imageResources = arrayListOf(
             ImageResource().apply {
                 imageState = ADD_IMAGE
             }
         )
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initializeForm() {
+        initializeUploadImage()
         addImageAdapter = AddImageAdapter(
             this
         ).apply {
@@ -640,6 +663,7 @@ class FormCrimeLocationActivity : BaseActivity() {
     private fun resetParam(
         menuAreaType: MenuAreaType?,
         areaName: String?,
+        resetProvince: Boolean?,
         resetCity: Boolean?,
         resetSubDistrict: Boolean?,
         resetUrbanVillage: Boolean?
@@ -666,6 +690,18 @@ class FormCrimeLocationActivity : BaseActivity() {
                 }
             }
             else -> {}
+        }
+
+        if (resetProvince!!) {
+            provinceAsParent = null
+            parentAreaProvince?.apply {
+                setContent(
+                    getString(
+                        R.string.label_not_yet,
+                        getString(R.string.province_menu)
+                    )
+                )
+            }
         }
 
         if (resetCity!!) {

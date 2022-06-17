@@ -783,6 +783,19 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                             }
                         }
                     }
+                    LIST_OF_CRIME_LOCATION,
+                    FORM_CRIME_LOCATION -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(
+                                R.string.message_success_add,
+                                getString(R.string.crime_location_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
+                        true
+                    }
                     else -> {
                         false
                     }
@@ -872,6 +885,18 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                             }
                         }
                     }
+                    FORM_CRIME_LOCATION -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(
+                                R.string.message_success_update,
+                                getString(R.string.crime_location_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
+                        true
+                    }
                     else -> {
                         false
                     }
@@ -946,6 +971,18 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                                 false
                             }
                         }
+                    }
+                    LIST_OF_CRIME_LOCATION -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(
+                                R.string.message_success_delete,
+                                getString(R.string.crime_location_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
+                        true
                     }
                     else -> {
                         false
