@@ -30,6 +30,9 @@
     <dimen name="round_default">5dp</dimen>
     <dimen name="round_multiple_default">10dp</dimen>
 
+    <dimen name="height_smallest">2dp</dimen>
+    <dimen name="height_small">5dp</dimen>
+
     <dimen name="text_smallest">10sp</dimen>
     <dimen name="text_small">12sp</dimen>
     <dimen name="text_big">18sp</dimen>

@@ -24,11 +24,17 @@
         android:theme="@style/Theme.CrimeMapsApps"
         tools:ignore="AllowBackup,LockedOrientationActivity">
         <activity
+            android:name=".ui.module.crimelocation.detail.DetailCrimeLocationActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.module.crimelocation.form.FormCrimeLocationActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.module.crimelocation.list.ListOfCrimeLocationActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.module.area.form.FormAreaActivity"
             android:exported="true"

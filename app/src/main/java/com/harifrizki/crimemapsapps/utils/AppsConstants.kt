@@ -21,6 +21,7 @@ val APP_PERMISSION_GET_IMAGE: Array<String> = arrayOf(
 
 const val ZERO   = 0
 const val ONE    = 1
+const val TWO    = 2
 const val TWENTY = 20
 
 const val ROTATE_DEGREE             = 90

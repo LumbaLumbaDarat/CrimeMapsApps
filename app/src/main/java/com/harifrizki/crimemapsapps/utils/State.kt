@@ -9,6 +9,7 @@ import com.harifrizki.crimemapsapps.ui.module.area.form.FormAreaActivity
 import com.harifrizki.crimemapsapps.ui.module.crimelocation.form.FormCrimeLocationActivity
 import com.harifrizki.crimemapsapps.ui.module.admin.changepassword.ChangePasswordActivity
 import com.harifrizki.crimemapsapps.ui.module.admin.profile.ProfileActivity
+import com.harifrizki.crimemapsapps.ui.module.crimelocation.detail.DetailCrimeLocationActivity
 
 enum class ResponseStatus {
     SUCCESS,
@@ -83,6 +84,11 @@ enum class ParamArea {
     PARENT_NAME
 }
 
+enum class ImageState {
+    ADD_IMAGE,
+    IS_IMAGE
+}
+
 enum class ActivityName(val nameOfActivity: String) {
     DASHBOARD(DashboardActivity::class.java.name),
     PROFILE(ProfileActivity::class.java.name),
@@ -92,6 +98,7 @@ enum class ActivityName(val nameOfActivity: String) {
     LIST_OF_AREA(ListOfAreaActivity::class.java.name),
     FORM_AREA(FormAreaActivity::class.java.name),
     LIST_OF_CRIME_LOCATION(ListOfCrimeLocationActivity::class.java.name),
+    DETAIL_CRIME_LOCATION(DetailCrimeLocationActivity::class.java.name),
     FORM_CRIME_LOCATION(FormCrimeLocationActivity::class.java.name);
 
     companion object {

@@ -1,19 +1,18 @@
 package com.harifrizki.crimemapsapps.model
 
+import android.net.Uri
 import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import com.harifrizki.crimemapsapps.data.remote.ID
 import com.harifrizki.crimemapsapps.data.remote.PARAM_NAME
-import com.harifrizki.crimemapsapps.utils.CRUD
+import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.CRUD.*
-import com.harifrizki.crimemapsapps.utils.EMPTY_STRING
-import com.harifrizki.crimemapsapps.utils.MenuSetting
+import com.harifrizki.crimemapsapps.utils.ImageState.*
 import com.harifrizki.crimemapsapps.utils.MenuSetting.MENU_NONE
-import com.harifrizki.crimemapsapps.utils.ZERO
-import com.orhanobut.logger.Logger
 import kotlinx.parcelize.Parcelize
+import java.io.File
 
 @Parcelize
 data class Admin(
@@ -260,6 +259,21 @@ data class Menu(
         MENU_NONE, EMPTY_STRING, ZERO, EMPTY_STRING, false, ZERO, ZERO, ZERO
     )
 }
+
+@Parcelize
+data class RegistrationArea(
+    var label: String? = null,
+    var areaRegistration: String? = null
+) : Parcelable
+
+@Parcelize
+data class ImageResource(
+    var imageState: ImageState? = null,
+    var imageName: String? = null,
+    var imagePath: String? = null,
+    var imageUri: Uri? = null,
+    var imageFile: File? = null
+) : Parcelable
 
 fun createJson(
     any: Any?,

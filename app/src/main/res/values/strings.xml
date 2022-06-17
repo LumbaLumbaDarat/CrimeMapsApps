@@ -19,6 +19,7 @@
     <string name="yes_delete">Ya, Hapus</string>
     <string name="yes_reset">Ya, Reset</string>
     <string name="yes_activate">Ya, %s</string>
+    <string name="choose">Pilih %s</string>
 
     <string name="label_id">ID</string>
     <string name="label_login">Masuk</string>
@@ -26,10 +27,19 @@
     <string name="label_username">Email</string>
     <string name="label_password">Kata Sandi</string>
     <string name="label_photo_profile">Foto Profil</string>
+    <string name="label_photo">Foto</string>
     <string name="label_existing_password">Kata Sandi saat ini</string>
     <string name="label_new_password">Kata Sandi Baru</string>
     <string name="label_confirm_new_password">Konfirmasi Kata Sandi Baru</string>
     <string name="label_not_found">Tidak ditemukan</string>
+    <string name="label_address">Alamat</string>
+    <string name="label_latitude">Latitude</string>
+    <string name="label_latitude_of">Latitude [%s]</string>
+    <string name="label_longitude">Longitude</string>
+    <string name="label_longitude_of">Longitude [%s]</string>
+    <string name="label_see_location">Lihat Lokasi</string>
+    <string name="label_description">Deskripsi</string>
+    <string name="label_registration_area">Registrasi Area</string>
 
     <string name="label_welcome_greeting_main">Selamat Datang</string>
     <string name="label_get_image_from">Ambil Gambar melalui</string>
@@ -78,6 +88,7 @@
     <string name="label_show_overload_of">Tampilkan Seluruh Data %s</string>
     <string name="label_show_overload">Tetap tampilkan seluruh Data</string>
     <string name="label_see_child">Lihat seluruh %s yang teregristasi dengan %s ini</string>
+    <string name="label_registered_of">Teregistrasi dengan %s</string>
 
     <string name="admin_menu">Admin</string>
     <string name="crime_location_menu">Lokasi Rawan Kriminal</string>
@@ -126,6 +137,9 @@
     <string name="message_overload_data">Kami menemukan [%s] Data [%s], Data ini terlalu banyak untuk ditampilkan, Anda bisa melakukan Pencarian Data [%s] berdasarkan [%s] untuk mendapatkan Data yang lebih Spesifik.</string>
     <string name="message_overload_data_area">Atau Anda dapat mencari Data [%s] dimulai dari [%s] terlebih dahulu.</string>
     <string name="message_question_overload_data">Apakah Anda tetap ingin menampilkan [seluruh Data %s] ?</string>
+
+    <string name="message_overload_upload_image">Maksimal Upload [%s] adalah [%s] %s</string>
+    <string name="message_minimum_upload_image">Minimal Upload [%s %s %s]</string>
 
     <string name="message_error_empty">%s harus diisi, [Tidak Boleh kosong]</string>
     <string name="message_error_empty_non_spannable">%s harus diisi, Tidak Boleh kosong</string>

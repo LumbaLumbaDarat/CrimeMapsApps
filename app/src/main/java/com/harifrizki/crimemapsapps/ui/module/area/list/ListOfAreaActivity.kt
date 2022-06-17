@@ -101,6 +101,7 @@ class ListOfAreaActivity : BaseActivity() {
                             )
                         })
                 }
+                FORM_CRIME_LOCATION,
                 FORM_AREA -> {
                     appBar(
                         iAppBarListOfArea,
@@ -163,7 +164,9 @@ class ListOfAreaActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (fromActivity != FORM_AREA && isReadOnly == false)
+        if (fromActivity != FORM_AREA &&
+            fromActivity != FORM_CRIME_LOCATION &&
+            isReadOnly == false)
             onBackPressed(
                 getNameOfActivity(LIST_OF_AREA),
                 isAfterCRUD,
@@ -466,6 +469,7 @@ class ListOfAreaActivity : BaseActivity() {
                             )
                         )
                     }
+                    FORM_CRIME_LOCATION,
                     FORM_AREA -> {
                         if (isReadOnly!!)
                             goTo(

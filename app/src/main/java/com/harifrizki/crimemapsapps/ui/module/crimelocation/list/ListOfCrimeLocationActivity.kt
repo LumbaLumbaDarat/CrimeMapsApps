@@ -16,9 +16,11 @@ import com.harifrizki.crimemapsapps.model.CrimeLocation
 import com.harifrizki.crimemapsapps.model.Page
 import com.harifrizki.crimemapsapps.ui.adapter.CrimeLocationAdapter
 import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
+import com.harifrizki.crimemapsapps.ui.module.crimelocation.detail.DetailCrimeLocationActivity
 import com.harifrizki.crimemapsapps.ui.module.crimelocation.form.FormCrimeLocationActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
+import com.harifrizki.crimemapsapps.utils.CRUD.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.lumbalumbadrt.colortoast.ColorToast
 
@@ -38,7 +40,7 @@ class ListOfCrimeLocationActivity : BaseActivity() {
     private var crimeLocationAdapter: CrimeLocationAdapter? = null
 
     private var page: Page? = null
-    private var isAfterCRUD: CRUD? = CRUD.NONE
+    private var isAfterCRUD: CRUD? = NONE
     private var doNotLoadData: Boolean? = true
     private var searchName: String? = EMPTY_STRING
     private var stateActive: String? = EMPTY_STRING
@@ -60,7 +62,7 @@ class ListOfCrimeLocationActivity : BaseActivity() {
                     FormCrimeLocationActivity(),
                     hashMapOf(
                         FROM_ACTIVITY to getNameOfActivity(LIST_OF_CRIME_LOCATION),
-                        OPERATION_CRUD to CRUD.CREATE
+                        OPERATION_CRUD to CREATE
                     )
                 )
             })
@@ -238,7 +240,7 @@ class ListOfCrimeLocationActivity : BaseActivity() {
             ResponseStatus.SUCCESS -> {
                 dismissLoading()
                 if (isResponseSuccess(it.data?.message)) {
-                    isAfterCRUD = CRUD.DELETE
+                    isAfterCRUD = DELETE
                     showSuccess(
                         titleNotification = getString(
                             R.string.message_success_delete,
@@ -274,10 +276,10 @@ class ListOfCrimeLocationActivity : BaseActivity() {
         ).apply {
             onClickCrimeLocation = {
                 goTo(
-                    FormCrimeLocationActivity(),
+                    DetailCrimeLocationActivity(),
                     hashMapOf(
-                        FROM_ACTIVITY to getNameOfActivity(LIST_OF_CRIME_LOCATION),
-                        OPERATION_CRUD to CRUD.READ,
+                        FROM_ACTIVITY to getNameOfActivity(DETAIL_CRIME_LOCATION),
+                        OPERATION_CRUD to READ,
                         CRIME_LOCATION_MODEL to it!!
                     )
                 )

@@ -13,7 +13,7 @@ import com.harifrizki.crimemapsapps.ui.module.login.LoginViewModel
 import com.harifrizki.crimemapsapps.ui.module.admin.changepassword.ChangePasswordViewModel
 import com.harifrizki.crimemapsapps.ui.module.admin.profile.ProfileViewModel
 import com.harifrizki.crimemapsapps.ui.module.crimelocation.detail.DetailCrimeLocationViewModel
-import com.harifrizki.crimemapsapps.ui.module.crimelocation.form.FromCrimeLocationViewModel
+import com.harifrizki.crimemapsapps.ui.module.crimelocation.form.FormCrimeLocationViewModel
 import com.harifrizki.crimemapsapps.ui.module.splash.SplashViewModel
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
@@ -66,8 +66,8 @@ class ViewModelFactory private constructor (private val crimeMapsRepository: Cri
             modelClass.isAssignableFrom(DetailCrimeLocationViewModel::class.java) -> {
                 DetailCrimeLocationViewModel(crimeMapsRepository) as T
             }
-            modelClass.isAssignableFrom(FromCrimeLocationViewModel::class.java) -> {
-                FromCrimeLocationViewModel(crimeMapsRepository) as T
+            modelClass.isAssignableFrom(FormCrimeLocationViewModel::class.java) -> {
+                FormCrimeLocationViewModel(crimeMapsRepository) as T
             }
             else -> {
                 Logger.e("Unknown ViewModel class: " + modelClass.name)
