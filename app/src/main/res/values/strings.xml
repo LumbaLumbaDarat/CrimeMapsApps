@@ -20,6 +20,7 @@
     <string name="yes_reset">Ya, Reset</string>
     <string name="yes_activate">Ya, %s</string>
     <string name="choose">Pilih %s</string>
+    <string name="geo_google_maps">geo:%s,%s</string>
 
     <string name="label_id">ID</string>
     <string name="label_login">Masuk</string>
@@ -116,6 +117,8 @@
     <string name="message_reset_password">Apakah Anda ingin [me-reset Kata Sandi] %s [%s] ?</string>
     <string name="message_activate">Apakah Anda ingin [%s] %s [%s] ?</string>
 
+    <string name="message_your_location">Lokasi Anda</string>
+
     <string name="message_loading_splash">Memuat koneksi, mohon menunggu…</string>
     <string name="message_loading_login">[Mohon menunggu]\nKami sedang [mencari] data [Credential Anda]</string>
     <string name="message_loading">[Mohon menunggu]\nKami sedang [%s]</string>
@@ -146,6 +149,7 @@
     <string name="message_error_not_valid">%s yang Anda masukkan [Tidak Valid]</string>
     <string name="message_error_validate_not_valid">%s dan %s yang Anda masukkan [Tidak Valid]</string>
     <string name="message_error_permission_change_image_profile">Anda harus mengizinkan Aplikasi untuk mengakses Kamera dan Galeri Anda untuk bisa mengubah Foto Profil</string>
+    <string name="message_error_permission_location">Anda harus mengizinkan Aplikasi untuk mengakses Lokasi Pencarian</string>
     <string name="message_empty_list">Mohon Maaf, %s [tidak ditemukan]</string>
     <string name="message_empty_list_by_search">Mohon Maaf, [%s] yang Anda cari [tidak ditemukan]</string>
     <string name="message_all_data_was_load">Seluruh Data %s telah berhasil ditampilkan semua</string>

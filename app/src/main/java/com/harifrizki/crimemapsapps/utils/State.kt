@@ -4,6 +4,7 @@ import com.harifrizki.crimemapsapps.ui.module.admin.list.ListOfAdminActivity
 import com.harifrizki.crimemapsapps.ui.module.area.list.ListOfAreaActivity
 import com.harifrizki.crimemapsapps.ui.module.crimelocation.list.ListOfCrimeLocationActivity
 import com.harifrizki.crimemapsapps.ui.component.activity.CropPhotoActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.MapsActivity
 import com.harifrizki.crimemapsapps.ui.module.dashboard.DashboardActivity
 import com.harifrizki.crimemapsapps.ui.module.area.form.FormAreaActivity
 import com.harifrizki.crimemapsapps.ui.module.crimelocation.form.FormCrimeLocationActivity
@@ -99,7 +100,8 @@ enum class ActivityName(val nameOfActivity: String) {
     FORM_AREA(FormAreaActivity::class.java.name),
     LIST_OF_CRIME_LOCATION(ListOfCrimeLocationActivity::class.java.name),
     DETAIL_CRIME_LOCATION(DetailCrimeLocationActivity::class.java.name),
-    FORM_CRIME_LOCATION(FormCrimeLocationActivity::class.java.name);
+    FORM_CRIME_LOCATION(FormCrimeLocationActivity::class.java.name),
+    MAPS(MapsActivity::class.java.name);
 
     companion object {
         fun getNameOfActivity(activityName: ActivityName): String = activityName.nameOfActivity

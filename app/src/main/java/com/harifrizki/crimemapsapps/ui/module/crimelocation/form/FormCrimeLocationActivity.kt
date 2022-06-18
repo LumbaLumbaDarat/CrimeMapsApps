@@ -18,6 +18,7 @@ import com.harifrizki.crimemapsapps.ui.adapter.AddImageAdapter
 import com.harifrizki.crimemapsapps.ui.component.ParentArea
 import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
 import com.harifrizki.crimemapsapps.ui.component.activity.CropPhotoActivity
+import com.harifrizki.crimemapsapps.ui.component.activity.MapsActivity
 import com.harifrizki.crimemapsapps.ui.module.area.list.ListOfAreaActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
@@ -65,9 +66,9 @@ class FormCrimeLocationActivity : BaseActivity() {
     private var cityAsParent: City? = null
     private var subDistrictAsParent: SubDistrict? = null
     private var urbanVillageAsParent: UrbanVillage? = null
-    private var address: String? = "Test"
-    private var latitude: String? = "109.00"
-    private var longitude: String? = "-112.12"
+    private var address: String? = null
+    private var latitude: String? = null
+    private var longitude: String? = null
 
     private var addImageAdapter: AddImageAdapter? = null
     private var imageResources: ArrayList<ImageResource>? = ArrayList();
@@ -211,6 +212,29 @@ class FormCrimeLocationActivity : BaseActivity() {
                             else -> {}
                         }
                     }
+                    MAPS -> {
+                        val crimeLocation = map[CRIME_LOCATION_MODEL] as CrimeLocation
+                        address = crimeLocation.crimeMapsAddress
+                        latitude = crimeLocation.crimeMapsLatitude
+                        longitude = crimeLocation.crimeMapsLongitude
+                        parentAreaLocation?.apply {
+                            setContent(address)
+                        }
+                        binding.apply {
+                            tvLatitude.text = makeSpannable(
+                                text = getString(
+                                    R.string.label_latitude_of,
+                                    latitude
+                                )
+                            )
+                            tvLongitude.text = makeSpannable(
+                                text = getString(
+                                    R.string.label_longitude_of,
+                                    longitude
+                                )
+                            )
+                        }
+                    }
                     else -> {
                         showMessage(getMap(it.data))
                     }
@@ -263,7 +287,7 @@ class FormCrimeLocationActivity : BaseActivity() {
                     onClick = { onBackPressed() })
             else {
                 when (getImageFrom) {
-                    MenuSetting.MENU_CAMERA -> {
+                    MENU_CAMERA -> {
                         try {
                             lifecycleScope.launchWhenStarted {
                                 getTempFileUri(ImageType.IMAGE_PROFILE).let { uri ->
@@ -278,12 +302,33 @@ class FormCrimeLocationActivity : BaseActivity() {
                                 onClick = { onBackPressed() })
                         }
                     }
-                    MenuSetting.MENU_GALLERY -> {
+                    MENU_GALLERY -> {
                         openGallery.launch(IMAGE_FORMAT_GALLERY)
                     }
                     else -> {}
                 }
             }
+        }
+
+    private val resultLauncherLocationPermission =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        )
+        { permissions ->
+            var invalidCountPermission = ZERO
+            permissions.entries.forEach {
+                val isGranted = it.value
+                if (!isGranted)
+                    invalidCountPermission++
+            }
+
+            if (invalidCountPermission >= ONE)
+                showWarning(
+                    message = getString(R.string.message_error_permission_location),
+                    onClick = { onBackPressed() })
+            else goTo(
+                MapsActivity()
+            )
         }
 
     override fun onBackPressed() {
@@ -320,6 +365,16 @@ class FormCrimeLocationActivity : BaseActivity() {
                         onClick = {
                             dismissNotification()
                             binding.apply {
+                                tvLatitude.text = makeSpannable(
+                                    text = getString(
+                                        R.string.label_not_yet, getString(R.string.label_latitude)
+                                    )
+                                )
+                                tvLongitude.text = makeSpannable(
+                                    text = getString(
+                                        R.string.label_not_yet, getString(R.string.label_longitude)
+                                    )
+                                )
                                 tieName.text?.clear()
                                 tieDescription.text?.clear()
                             }
@@ -331,6 +386,14 @@ class FormCrimeLocationActivity : BaseActivity() {
                                 resetSubDistrict = true,
                                 resetUrbanVillage = true
                             )
+                            parentAreaProvince?.apply {
+                                setContent(
+                                    getString(
+                                        R.string.label_not_yet,
+                                        getString(R.string.label_address)
+                                    )
+                                )
+                            }
                             addImageAdapter?.apply {
                                 setImageResources(imageResources = imageResources)
                             }
@@ -494,8 +557,15 @@ class FormCrimeLocationActivity : BaseActivity() {
                 iconRightAction = R.drawable.ic_round_dashboard_24
                 parentAreaAction = PARENT_AREA_ACTION_RIGHT
                 onActionRight = {
-                    getParentArea(MENU_AREA_CITY_ID,
-                        provinceAsParent?.provinceId)
+                    if (provinceAsParent != null)
+                        getParentArea(MENU_AREA_CITY_ID,
+                            provinceAsParent?.provinceId)
+                    else showWarning(
+                        message = getString(
+                            R.string.message_error_empty,
+                            getString(R.string.province_menu)
+                        )
+                    )
                 }
                 create()
             }
@@ -512,8 +582,15 @@ class FormCrimeLocationActivity : BaseActivity() {
                 iconLeftAction = R.drawable.ic_round_dashboard_24
                 parentAreaAction = PARENT_AREA_ACTION_LEFT
                 onActionLeft = {
-                    getParentArea(MENU_AREA_SUB_DISTRICT_ID,
-                        cityAsParent?.cityId)
+                    if (cityAsParent != null)
+                        getParentArea(MENU_AREA_SUB_DISTRICT_ID,
+                            cityAsParent?.cityId)
+                    else showWarning(
+                        message = getString(
+                            R.string.message_error_empty,
+                            getString(R.string.city_menu)
+                        )
+                    )
                 }
                 create()
             }
@@ -530,8 +607,15 @@ class FormCrimeLocationActivity : BaseActivity() {
                 iconRightAction = R.drawable.ic_round_dashboard_24
                 parentAreaAction = PARENT_AREA_ACTION_RIGHT
                 onActionRight = {
-                    getParentArea(MENU_AREA_URBAN_VILLAGE_ID,
-                        subDistrictAsParent?.subDistrictId)
+                    if (subDistrictAsParent != null)
+                        getParentArea(MENU_AREA_URBAN_VILLAGE_ID,
+                            subDistrictAsParent?.subDistrictId)
+                    else showWarning(
+                        message = getString(
+                            R.string.message_error_empty,
+                            getString(R.string.sub_district_menu)
+                        )
+                    )
                 }
                 create()
             }
@@ -548,7 +632,7 @@ class FormCrimeLocationActivity : BaseActivity() {
                 iconRightAction = R.drawable.ic_round_location_on_24
                 parentAreaAction = PARENT_AREA_ACTION_RIGHT
                 onActionRight = {
-
+                    resultLauncherLocationPermission.launch(APP_PERMISSION_LOCATION)
                 }
                 create()
             }

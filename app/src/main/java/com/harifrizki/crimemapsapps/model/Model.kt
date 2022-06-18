@@ -171,7 +171,7 @@ data class CrimeLocation(
 @Parcelize
 data class ImageCrimeLocation(
     @field:SerializedName("imageCrimeLocationId") var imageCrimeLocationId: String? = null,
-    @field:SerializedName("imageName") var province: String? = null
+    @field:SerializedName("imageName") var imageCrimeLocationName: String? = null
 ) : Parcelable {
     companion object {
         fun jsonObject(

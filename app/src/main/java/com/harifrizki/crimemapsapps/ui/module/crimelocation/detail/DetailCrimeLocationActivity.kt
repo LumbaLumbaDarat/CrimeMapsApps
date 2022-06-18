@@ -2,25 +2,38 @@ package com.harifrizki.crimemapsapps.ui.module.crimelocation.detail
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.harifrizki.crimemapsapps.R
 import com.harifrizki.crimemapsapps.data.remote.response.CrimeLocationResponse
 import com.harifrizki.crimemapsapps.databinding.ActivityDetailCrimeLocationBinding
 import com.harifrizki.crimemapsapps.model.CrimeLocation
+import com.harifrizki.crimemapsapps.model.ImageCrimeLocation
+import com.harifrizki.crimemapsapps.model.ImageResource
 import com.harifrizki.crimemapsapps.model.RegistrationArea
 import com.harifrizki.crimemapsapps.ui.adapter.RegistrationAreaAdapter
 import com.harifrizki.crimemapsapps.ui.component.activity.BaseActivity
+import com.harifrizki.crimemapsapps.ui.component.imageslider.DotSlider
+import com.harifrizki.crimemapsapps.ui.component.imageslider.ImagePagerAdapter
 import com.harifrizki.crimemapsapps.ui.module.crimelocation.form.FormCrimeLocationActivity
 import com.harifrizki.crimemapsapps.utils.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.*
 import com.harifrizki.crimemapsapps.utils.ActivityName.Companion.getNameOfActivity
 import com.harifrizki.crimemapsapps.utils.CRUD.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class DetailCrimeLocationActivity : BaseActivity() {
     private val binding by lazy {
@@ -40,6 +53,9 @@ class DetailCrimeLocationActivity : BaseActivity() {
     private var map: HashMap<String, Any>? = null
     private var isAfterCRUD: CRUD? = NONE
     private var crimeLocation: CrimeLocation? = null
+    private var dotSlider: DotSlider? = null
+    private var imagePagerAdapter: ImagePagerAdapter? = null
+    private var currentPage: Int = ZERO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,12 +158,39 @@ class DetailCrimeLocationActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initializeDetailCrimeLocation() {
         registrationAreaAdapter = RegistrationAreaAdapter(
             context = this,
             isShimmer = false
         )
+        imagePagerAdapter = ImagePagerAdapter(this).
+        apply {
+            notifyDataSetChanged()
+            onClick = {
+
+            }
+        }
         binding.apply {
+            iCrimeLocationImageSlider.apply {
+                dotSlider = DotSlider(
+                    context = this@DetailCrimeLocationActivity).
+                apply {
+                    linearLayout = llDotSlider
+                    sizePage = imagePagerAdapter?.getImageCrimeLocationSize()
+                    addBottomIcons(ZERO)
+                }
+                vpImage.apply {
+                    adapter = imagePagerAdapter
+                    registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                        override fun onPageSelected(position: Int) {
+                            super.onPageSelected(position)
+                            dotSlider?.addBottomIcons(position)
+                            currentPage = position
+                        }
+                    })
+                }
+            }
             widgetStartDrawableShimmer(
                 arrayOf(
                     iNameShimmer.tvId,
@@ -168,6 +211,9 @@ class DetailCrimeLocationActivity : BaseActivity() {
                     iCreatedAndUpdatedShimmer.tvUpdated
                 ), this@DetailCrimeLocationActivity
             )
+            widgetStartDrawableShimmer(
+                arrayOf(ivShimmer), this@DetailCrimeLocationActivity
+            )
             iAreaRegistrationShimmer.rvListAreaRegistration.apply {
                 layoutManager = LinearLayoutManager(this@DetailCrimeLocationActivity)
                 adapter = RegistrationAreaAdapter(
@@ -180,6 +226,7 @@ class DetailCrimeLocationActivity : BaseActivity() {
 
     private fun loadingOn() {
         binding.apply {
+            iCrimeLocationImageSlider.root.visibility = View.GONE
             iName.root.visibility = View.GONE
             iAddress.root.visibility = View.GONE
             iAddressShimmer.btnSeeLocation.visibility = View.GONE
@@ -187,6 +234,9 @@ class DetailCrimeLocationActivity : BaseActivity() {
             iAreaRegistration.root.visibility = View.GONE
             iCreatedAndUpdated.root.visibility = View.GONE
 
+            shimmerOn(
+                sflCrimeLocationImageSlider,
+                true)
             shimmerOn(
                 sflName,
                 true
@@ -207,6 +257,16 @@ class DetailCrimeLocationActivity : BaseActivity() {
                 sflCreatedAndUpdated,
                 true
             )
+        }
+    }
+
+    private fun loadingImageSliderOff() {
+        binding.apply {
+            shimmerOn(
+                binding.sflCrimeLocationImageSlider,
+                false
+            )
+            binding.iCrimeLocationImageSlider.root.visibility = View.VISIBLE
         }
     }
 
@@ -263,6 +323,15 @@ class DetailCrimeLocationActivity : BaseActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun setCrimeLocation(crimeLocation: CrimeLocation?) {
         binding.apply {
+            imagePagerAdapter?.apply {
+                setImageCrimeLocations(crimeLocation?.imageCrimeLocations)
+                dotSlider?.apply {
+                    sizePage = getImageCrimeLocationSize()
+                    addBottomIcons(ZERO)
+                }
+                notifyDataSetChanged()
+            }
+            loadingImageSliderOff()
             iName.apply {
                 tvId.text = crimeLocation?.crimeLocationId?.uppercase()
                 tvName.text = crimeLocation?.crimeMapsName
@@ -277,7 +346,16 @@ class DetailCrimeLocationActivity : BaseActivity() {
                     text = getString(R.string.label_longitude_of,
                         crimeLocation?.crimeMapsLongitude)
                 )
-                btnSeeLocation.setOnClickListener {  }
+                btnSeeLocation.setOnClickListener {
+                    Intent(Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.geo_google_maps,
+                            crimeLocation?.crimeMapsLatitude,
+                            crimeLocation?.crimeMapsLongitude))).apply {
+                        setPackage("com.google.android.apps.maps")
+                        resolveActivity(packageManager)
+                        resultLauncher.launch(this)
+                    }
+                }
             }
             loadingAddressOff()
             iDescription.apply {

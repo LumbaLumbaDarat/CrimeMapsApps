@@ -21,8 +21,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.crimemapsapps.R
@@ -459,19 +463,43 @@ fun doGlide(
     context: Context?,
     imageView: ImageView?,
     imageName: String?,
-    imageError: Int? = R.drawable.ic_round_broken_image_primary_24
+    imageError: Int? = R.drawable.ic_round_broken_image_primary_24,
+    useLoadingResize: Boolean? = false,
+    scaleType: ImageView.ScaleType? = ImageView.ScaleType.FIT_XY,
+    url: String? = PreferencesManager.getInstance(context!!).getPreferences(URL_CONNECTION_API_IMAGE_ADMIN)
 ) {
-    val url =
-        PreferencesManager.getInstance(context!!).getPreferences(URL_CONNECTION_API_IMAGE_ADMIN)
     if (url?.isNotEmpty()!!)
         imageView?.let {
-            Glide.with(context).applyDefaultRequestOptions(requestOptions)
-                .load(url.plus(imageName)).error(imageError)
+            Glide.with(context!!).applyDefaultRequestOptions(requestOptions)
+                .load(url.plus(imageName))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        if (useLoadingResize!!)
+                            it.scaleType = scaleType
+                        return false
+                    }
+
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+                })
+                .error(imageError)
                 .into(it)
         }
     else
         imageView?.let {
-            Glide.with(context).load(imageError)
+            Glide.with(context!!).load(imageError)
                 .into(it)
         }
 }

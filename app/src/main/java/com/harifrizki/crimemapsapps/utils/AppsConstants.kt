@@ -19,6 +19,11 @@ val APP_PERMISSION_GET_IMAGE: Array<String> = arrayOf(
     Manifest.permission.READ_EXTERNAL_STORAGE
 )
 
+val APP_PERMISSION_LOCATION: Array<String> = arrayOf(
+    Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.ACCESS_COARSE_LOCATION
+)
+
 const val ZERO   = 0
 const val ONE    = 1
 const val TWO    = 2

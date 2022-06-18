@@ -798,7 +798,14 @@ class FormAreaActivity : BaseActivity() {
                             iconLeftAction = R.drawable.ic_round_edit_24
                             parentAreaAction = PARENT_AREA_ACTION_LEFT
                             onActionLeft = {
-                                getParentArea(MENU_AREA_PROVINCE_ID, EMPTY_STRING)
+                                if (provinceAsParent != null)
+                                    getParentArea(MENU_AREA_PROVINCE_ID, EMPTY_STRING)
+                                else showWarning(
+                                    message = getString(
+                                        R.string.message_error_empty,
+                                        getString(R.string.province_menu)
+                                    )
+                                )
                             }
                         }
                         else -> {
@@ -920,9 +927,16 @@ class FormAreaActivity : BaseActivity() {
                             iconRightAction = R.drawable.ic_round_edit_24
                             parentAreaAction = PARENT_AREA_ACTION_RIGHT
                             onActionRight = {
-                                getParentArea(
-                                    MENU_AREA_CITY_ID,
-                                    provinceAsParent?.provinceId)
+                                if (provinceAsParent != null)
+                                    getParentArea(
+                                        MENU_AREA_CITY_ID,
+                                        provinceAsParent?.provinceId)
+                                else showWarning(
+                                    message = getString(
+                                        R.string.message_error_empty,
+                                        getString(R.string.province_menu)
+                                    )
+                                )
                             }
                         }
                         else -> {
@@ -1045,9 +1059,16 @@ class FormAreaActivity : BaseActivity() {
                             iconRightAction = R.drawable.ic_round_edit_24
                             parentAreaAction = PARENT_AREA_ACTION_RIGHT
                             onActionRight = {
-                                getParentArea(
-                                    MENU_AREA_CITY_ID,
-                                    provinceAsParent?.provinceId)
+                                if (provinceAsParent != null)
+                                    getParentArea(
+                                        MENU_AREA_CITY_ID,
+                                        provinceAsParent?.provinceId)
+                                else showWarning(
+                                    message = getString(
+                                        R.string.message_error_empty,
+                                        getString(R.string.province_menu)
+                                    )
+                                )
                             }
                         }
                         else -> {
@@ -1074,9 +1095,16 @@ class FormAreaActivity : BaseActivity() {
                             iconLeftAction = R.drawable.ic_round_edit_24
                             parentAreaAction = PARENT_AREA_ACTION_LEFT
                             onActionLeft = {
-                                getParentArea(
-                                    MENU_AREA_SUB_DISTRICT_ID,
-                                    cityAsParent?.cityId)
+                                if (cityAsParent != null)
+                                    getParentArea(
+                                        MENU_AREA_SUB_DISTRICT_ID,
+                                        cityAsParent?.cityId)
+                                else showWarning(
+                                    message = getString(
+                                        R.string.message_error_empty,
+                                        getString(R.string.city_menu)
+                                    )
+                                )
                             }
                         }
                         else -> {
