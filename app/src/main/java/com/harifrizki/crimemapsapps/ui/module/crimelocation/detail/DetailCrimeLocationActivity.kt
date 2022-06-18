@@ -62,7 +62,8 @@ class DetailCrimeLocationActivity : BaseActivity() {
                     FormCrimeLocationActivity(),
                     hashMapOf(
                         FROM_ACTIVITY to getNameOfActivity(FORM_CRIME_LOCATION),
-                        OPERATION_CRUD to UPDATE
+                        OPERATION_CRUD to UPDATE,
+                        CRIME_LOCATION_MODEL to crimeLocation!!
                     )
                 )
             })
@@ -87,6 +88,12 @@ class DetailCrimeLocationActivity : BaseActivity() {
         if (it.resultCode == Activity.RESULT_OK) {
             if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
                 crimeLocationDetail(crimeLocation)
+            else {
+                if (showMessage(getMap(it.data))) {
+                    isAfterCRUD = getMap(it.data)[OPERATION_CRUD] as CRUD
+                    crimeLocationDetail(crimeLocation)
+                }
+            }
         }
     }
 

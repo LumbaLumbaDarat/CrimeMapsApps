@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -78,6 +79,7 @@ class FormCrimeLocationActivity : BaseActivity() {
 
     private var latestTempUri: Uri? = null
     private var file: File? = null
+    private var crimeLocation: CrimeLocation? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,18 +90,37 @@ class FormCrimeLocationActivity : BaseActivity() {
         fromActivity = getEnumActivityName(map!![FROM_ACTIVITY].toString())
         crud = map!![OPERATION_CRUD] as CRUD
 
+        when (crud) {
+            CREATE -> {
+                appBar(
+                    binding.iAppBarFormCrimeLocation,
+                    getString(
+                        R.string.label_add,
+                        getString(R.string.crime_location_menu)
+                    ),
+                    R.drawable.ic_round_location_on_24,
+                    R.color.primary,
+                    R.drawable.frame_background_secondary
+                )
+                initializeForm()
+            }
+            UPDATE -> {
+                crimeLocation = map!![CRIME_LOCATION_MODEL] as CrimeLocation
+                appBar(
+                    binding.iAppBarFormCrimeLocation,
+                    getString(
+                        R.string.label_edit,
+                        getString(R.string.crime_location_menu)
+                    ),
+                    R.drawable.ic_round_location_on_24,
+                    R.color.primary,
+                    R.drawable.frame_background_secondary
+                )
+                initializeEditForm(crimeLocation)
+            }
+            else -> {}
+        }
         binding.apply {
-            appBar(
-                iAppBarFormCrimeLocation,
-                getString(
-                    R.string.label_add,
-                    getString(R.string.crime_location_menu)
-                ),
-                R.drawable.ic_round_location_on_24,
-                R.color.primary,
-                R.drawable.frame_background_secondary
-            )
-            initializeForm()
             btnSubmitCrimeLocation.setOnClickListener { submitCrimeLocation() }
             btnBackCrimeLocation.setOnClickListener { onBackPressed() }
         }
@@ -332,6 +353,51 @@ class FormCrimeLocationActivity : BaseActivity() {
         }
     }
 
+    private val crimeLocationUpdate = Observer<DataResource<CrimeLocationResponse>> {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(
+                            R.string.label_edit_append,
+                            getString(R.string.crime_location_menu)
+                        )
+                    )
+                )
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
+                    isAfterCRUD = UPDATE
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_add,
+                            getString(R.string.crime_location_menu)
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            onBackPressed()
+                        }
+                    )
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun crimeLocationUpdate(crimeLocation: CrimeLocation?) {
+        if (networkConnected()) {
+            viewModel.crimeLocationUpdate(crimeLocation)
+                .observe(this, crimeLocationUpdate)
+        }
+    }
+
     private fun initializeUploadImage() {
         imageResources?.clear()
         imageResources = arrayListOf(
@@ -526,6 +592,142 @@ class FormCrimeLocationActivity : BaseActivity() {
         }
     }
 
+    private fun initializeEditForm(crimeLocation: CrimeLocation?) {
+        binding.apply {
+            parentAreaProvince = ParentArea().apply {
+                provinceAsParent = crimeLocation?.province
+                init(this@FormCrimeLocationActivity, iParentAreaProvince)
+                title = getString(
+                    R.string.message_area_registration,
+                    getString(R.string.crime_location_menu),
+                    getString(R.string.province_menu)
+                )
+                content = getContentArea(
+                    this@FormCrimeLocationActivity,
+                    MENU_AREA_PROVINCE_ID,
+                    crimeLocation?.province,
+                    getString(R.string.province_menu)
+                )
+                iconLeftAction = R.drawable.ic_round_edit_24
+                parentAreaAction = PARENT_AREA_ACTION_LEFT
+                onActionLeft = {
+                    getParentArea(MENU_AREA_PROVINCE_ID, EMPTY_STRING)
+                }
+                create()
+            }
+            parentAreaCity = ParentArea().apply {
+                cityAsParent = crimeLocation?.city
+                init(this@FormCrimeLocationActivity, iParentAreaCity)
+                title = getString(
+                    R.string.message_area_registration,
+                    getString(R.string.crime_location_menu),
+                    getString(R.string.city_menu)
+                )
+                content = getContentArea(
+                    this@FormCrimeLocationActivity,
+                    MENU_AREA_CITY_ID,
+                    crimeLocation?.city,
+                    getString(R.string.city_menu)
+                )
+                iconRightAction = R.drawable.ic_round_edit_24
+                parentAreaAction = PARENT_AREA_ACTION_RIGHT
+                onActionRight = {
+                    getParentArea(MENU_AREA_CITY_ID,
+                        provinceAsParent?.provinceId)
+                }
+                create()
+            }
+            parentAreaSubDistrict = ParentArea().apply {
+                subDistrictAsParent = crimeLocation?.subDistrict
+                init(this@FormCrimeLocationActivity, iParentAreaSubDistrict)
+                title = getString(
+                    R.string.message_area_registration,
+                    getString(R.string.crime_location_menu),
+                    getString(R.string.sub_district_menu)
+                )
+                content = getContentArea(
+                    this@FormCrimeLocationActivity,
+                    MENU_AREA_SUB_DISTRICT_ID,
+                    crimeLocation?.subDistrict,
+                    getString(R.string.sub_district_menu)
+                )
+                iconLeftAction = R.drawable.ic_round_edit_24
+                parentAreaAction = PARENT_AREA_ACTION_LEFT
+                onActionLeft = {
+                    getParentArea(MENU_AREA_SUB_DISTRICT_ID,
+                        cityAsParent?.cityId)
+                }
+                create()
+            }
+            parentAreaUrbanVillage = ParentArea().apply {
+                urbanVillageAsParent = crimeLocation?.urbanVillage
+                init(this@FormCrimeLocationActivity, iParentAreaUrbanVillage)
+                title = getString(
+                    R.string.message_area_registration,
+                    getString(R.string.crime_location_menu),
+                    getString(R.string.urban_village_menu)
+                )
+                content = getContentArea(
+                    this@FormCrimeLocationActivity,
+                    MENU_AREA_URBAN_VILLAGE_ID,
+                    crimeLocation?.urbanVillage,
+                    getString(R.string.urban_village_menu)
+                )
+                iconRightAction = R.drawable.ic_round_edit_24
+                parentAreaAction = PARENT_AREA_ACTION_RIGHT
+                onActionRight = {
+                    getParentArea(MENU_AREA_URBAN_VILLAGE_ID,
+                        subDistrictAsParent?.subDistrictId)
+                }
+                create()
+            }
+            parentAreaLocation = ParentArea().apply {
+                init(this@FormCrimeLocationActivity, iParentAreaAddAddress)
+                title = getString(R.string.label_address)
+                content = crimeLocation?.crimeMapsAddress
+                iconRightAction = R.drawable.ic_round_location_on_24
+                parentAreaAction = PARENT_AREA_ACTION_RIGHT
+                onActionRight = {
+
+                }
+                create()
+            }
+
+            tvLatitude.text = makeSpannable(
+                text = getString(
+                    R.string.label_latitude_of,
+                    crimeLocation?.crimeMapsLatitude
+                )
+            )
+            tvLongitude.text = makeSpannable(
+                text = getString(
+                    R.string.label_longitude_of,
+                    crimeLocation?.crimeMapsLongitude
+                )
+            )
+
+            tilName.hint = getString(
+                R.string.label_plus_two_string,
+                getString(R.string.label_name),
+                getString(R.string.crime_location_menu)
+            )
+            tieName.setText(crimeLocation?.crimeMapsName)
+            tilDescription.hint = getString(
+                R.string.label_plus_two_string,
+                getString(R.string.label_description),
+                getString(R.string.crime_location_menu)
+            )
+            tieDescription.setText(crimeLocation?.crimeMapsDescription)
+
+            btnSubmitCrimeLocation.text = getString(
+                R.string.label_edit,
+                getString(R.string.crime_location_menu)
+            )
+            btnBackCrimeLocation.text = getString(R.string.cancel)
+            rvPhoto.visibility = View.GONE
+        }
+    }
+
     private fun submitCrimeLocation() {
         if (provinceAsParent != null) {
             if (cityAsParent != null) {
@@ -534,59 +736,95 @@ class FormCrimeLocationActivity : BaseActivity() {
                         if (!latitude?.isEmpty()!! && !longitude?.isEmpty()!!) {
                             if (!address?.isEmpty()!!) {
                                 if (!textInputEditTextIsEmpty(binding.tieName)) {
-                                    if (!textInputEditTextIsEmpty(binding.tieDescription)) {
-                                        if (imageResources?.size!! >= TWO) {
-                                            val files: ArrayList<File> = ArrayList()
-                                            for (image in imageResources!!) {
-                                                if (image.imageState == IS_IMAGE)
-                                                    image.imageFile?.let { files.add(it) }
-                                            }
-                                            crimeLocationAdd(
-                                                CrimeLocation().apply {
-                                                    province = Province().apply {
-                                                        provinceId = provinceAsParent?.provinceId
+                                    if (!textInputEditTextIsEmpty(binding.tieDescription))
+                                    {
+                                        when (crud) {
+                                            CREATE -> {
+                                                if (imageResources?.size!! >= TWO) {
+                                                    val files: ArrayList<File> = ArrayList()
+                                                    for (image in imageResources!!) {
+                                                        if (image.imageState == IS_IMAGE)
+                                                            image.imageFile?.let { files.add(it) }
                                                     }
-                                                    city = City().apply {
-                                                        cityId = cityAsParent?.cityId
-                                                    }
-                                                    subDistrict = SubDistrict().apply {
-                                                        subDistrictId =
-                                                            subDistrictAsParent?.subDistrictId
-                                                    }
-                                                    urbanVillage = UrbanVillage().apply {
-                                                        urbanVillageId =
-                                                            urbanVillageAsParent?.urbanVillageId
-                                                    }
-                                                    crimeMapsName =
-                                                        binding.tieName.text.toString().trim()
-                                                    crimeMapsAddress = address
-                                                    crimeMapsDescription =
-                                                        binding.tieDescription.text.toString()
-                                                            .trim()
-                                                    crimeMapsLatitude = latitude
-                                                    crimeMapsLongitude = longitude
-                                                    createdBy = Admin().apply { adminId = admin?.adminId }
-                                                },
-                                                files
-                                            )
-                                        } else showWarning(
-                                            message = getString(
-                                                R.string.label_plus_two_string,
-                                                getString(
-                                                    R.string.message_error_empty,
-                                                    getString(
-                                                        R.string.label_plus_two_string,
-                                                        getString(R.string.label_photo),
-                                                        getString(R.string.crime_location_menu)
+                                                    crimeLocationAdd(
+                                                        CrimeLocation().apply {
+                                                            province = Province().apply {
+                                                                provinceId = provinceAsParent?.provinceId
+                                                            }
+                                                            city = City().apply {
+                                                                cityId = cityAsParent?.cityId
+                                                            }
+                                                            subDistrict = SubDistrict().apply {
+                                                                subDistrictId =
+                                                                    subDistrictAsParent?.subDistrictId
+                                                            }
+                                                            urbanVillage = UrbanVillage().apply {
+                                                                urbanVillageId =
+                                                                    urbanVillageAsParent?.urbanVillageId
+                                                            }
+                                                            crimeMapsName =
+                                                                binding.tieName.text.toString().trim()
+                                                            crimeMapsAddress = address
+                                                            crimeMapsDescription =
+                                                                binding.tieDescription.text.toString()
+                                                                    .trim()
+                                                            crimeMapsLatitude = latitude
+                                                            crimeMapsLongitude = longitude
+                                                            createdBy = Admin().apply { adminId = admin?.adminId }
+                                                        },
+                                                        files
                                                     )
-                                                ), getString(
-                                                    R.string.message_minimum_upload_image,
-                                                    ONE.toString(),
-                                                    getString(R.string.label_photo),
-                                                    getString(R.string.crime_location_menu)
+                                                } else showWarning(
+                                                    message = getString(
+                                                        R.string.label_plus_two_string,
+                                                        getString(
+                                                            R.string.message_error_empty,
+                                                            getString(
+                                                                R.string.label_plus_two_string,
+                                                                getString(R.string.label_photo),
+                                                                getString(R.string.crime_location_menu)
+                                                            )
+                                                        ), getString(
+                                                            R.string.message_minimum_upload_image,
+                                                            ONE.toString(),
+                                                            getString(R.string.label_photo),
+                                                            getString(R.string.crime_location_menu)
+                                                        )
+                                                    )
                                                 )
-                                            )
-                                        )
+                                            }
+                                            UPDATE -> {
+                                                crimeLocationUpdate(
+                                                    CrimeLocation().apply {
+                                                        crimeLocationId = crimeLocation?.crimeLocationId
+                                                        province = Province().apply {
+                                                            provinceId = provinceAsParent?.provinceId
+                                                        }
+                                                        city = City().apply {
+                                                            cityId = cityAsParent?.cityId
+                                                        }
+                                                        subDistrict = SubDistrict().apply {
+                                                            subDistrictId =
+                                                                subDistrictAsParent?.subDistrictId
+                                                        }
+                                                        urbanVillage = UrbanVillage().apply {
+                                                            urbanVillageId =
+                                                                urbanVillageAsParent?.urbanVillageId
+                                                        }
+                                                        crimeMapsName =
+                                                            binding.tieName.text.toString().trim()
+                                                        crimeMapsAddress = address
+                                                        crimeMapsDescription =
+                                                            binding.tieDescription.text.toString()
+                                                                .trim()
+                                                        crimeMapsLatitude = latitude
+                                                        crimeMapsLongitude = longitude
+                                                        updatedBy = Admin().apply { adminId = admin?.adminId }
+                                                    }
+                                                )
+                                            }
+                                            else -> {}
+                                        }
                                     } else showWarning(
                                         message = getString(
                                             R.string.message_error_empty,

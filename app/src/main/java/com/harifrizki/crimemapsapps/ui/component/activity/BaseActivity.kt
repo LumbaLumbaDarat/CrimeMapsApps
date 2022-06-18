@@ -999,7 +999,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     fun showEmpty(
         title: String?,
         message: String?,
-        animation: String? = LOTTIE_QUESTION_JSON,
+        animation: String? = LOTTIE_SEARCH_NOT_FOUND_JSON,
         useAnimation: Boolean? = true,
         directShow: Boolean? = false
     ) {

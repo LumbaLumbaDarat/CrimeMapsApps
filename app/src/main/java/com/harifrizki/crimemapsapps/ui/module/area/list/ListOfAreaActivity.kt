@@ -358,7 +358,7 @@ class ListOfAreaActivity : BaseActivity() {
                                 urbanVillageName = searchName
                             })
                             .observe(this, urbanVillage)
-                    viewModel.urbanVillage(
+                    else viewModel.urbanVillage(
                         pageNo,
                         UrbanVillage().apply { urbanVillageName = searchName })
                         .observe(this, urbanVillage)
