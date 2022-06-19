@@ -13,6 +13,8 @@ import com.harifrizki.core.utils.doGlide
 
 class ImageSliderFragment(
     var imageCrimeLocation: ImageCrimeLocation?,
+
+    var isCanDelete: Boolean? = null,
     var onClick: ((ImageCrimeLocation) -> Unit)? = null) : Fragment() {
     private val binding by lazy {
         FragmentImageSliderBinding.inflate(layoutInflater)
@@ -36,7 +38,10 @@ class ImageSliderFragment(
                 url = PreferencesManager
                     .getInstance(view.context)
                     .getPreferences(URL_CONNECTION_API_IMAGE_CRIME_LOCATION))
-            ivEditPhoto.setOnClickListener { onClick?.invoke(imageCrimeLocation!!) }
+            if (!isCanDelete!!)
+                ivEditPhoto.visibility = View.GONE
+            else ivEditPhoto
+                .setOnClickListener { onClick?.invoke(imageCrimeLocation!!) }
         }
     }
 }

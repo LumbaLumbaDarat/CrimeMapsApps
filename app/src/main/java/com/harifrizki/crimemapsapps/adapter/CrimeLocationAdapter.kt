@@ -3,8 +3,15 @@ package com.harifrizki.crimemapsapps.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.harifrizki.core.R
+import com.harifrizki.core.component.imageslider.DotSlider
+import com.harifrizki.core.component.imageslider.ImagePagerAdapter
 import com.harifrizki.core.model.CrimeLocation
 import com.harifrizki.core.utils.*
 import com.harifrizki.crimemapsapps.databinding.ItemCrimeLocationBinding
@@ -48,6 +55,7 @@ class CrimeLocationAdapter(
         )
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: HolderView, position: Int) {
         val crimeLocation: CrimeLocation
         if (!isShimmer!!) {
@@ -78,13 +86,45 @@ class CrimeLocationAdapter(
         private val context: Context?
     ) :
         RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("UseCompatLoadingForDrawables")
+        @SuppressLint("UseCompatLoadingForDrawables", "NotifyDataSetChanged")
         fun bind(
             crimeLocation: CrimeLocation?,
             isShimmer: Boolean?
         ) {
             binding.apply {
                 if (!isShimmer!!) {
+                    var currentPage: Int? = ZERO
+                    val imagePagerAdapter = ImagePagerAdapter(context as FragmentActivity).
+                    apply {
+                        isCanDelete = false
+                        setImageCrimeLocations(crimeLocation?.imageCrimeLocations)
+                        notifyDataSetChanged()
+                    }
+                    iImageLocation.apply {
+                        val dotSlider = DotSlider(
+                            context = context).
+                        apply {
+                            linearLayout = llDotSlider
+                            sizePage = imagePagerAdapter.getImageCrimeLocationSize()
+                            addBottomIcons(ZERO)
+                        }
+                        vpImage.apply {
+                            adapter = imagePagerAdapter
+                            updateLayoutParams {
+                                height = resources.getDimensionPixelOffset(
+                                    R.dimen.image_height_rectangular_default)
+                            }
+                            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                                override fun onPageSelected(position: Int) {
+                                    super.onPageSelected(position)
+                                    dotSlider.addBottomIcons(position)
+                                    currentPage = position
+                                }
+                            })
+                        }
+                        root.visibility = View.VISIBLE
+                    }
+                    ivImageLocation.visibility = View.GONE
                     tvNameLocation.text = crimeLocation?.crimeMapsName
                     tvAddressLocation.text = crimeLocation?.crimeMapsAddress
                     tvCreatedBy.text = makeSpannable(
@@ -96,7 +136,8 @@ class CrimeLocationAdapter(
                     tvCreatedDate.text = makeSpannable(
                         text = getCreateAt(context, crimeLocation?.createdDate)
                     )
-                } else {
+                }
+                else {
                     layoutStartDrawableShimmer(
                         arrayOf(
                             llCrimeLocationBackground
@@ -104,6 +145,7 @@ class CrimeLocationAdapter(
                     )
                     widgetStartDrawableShimmer(
                         arrayOf(
+                            ivImageLocation,
                             ivIconLocation,
                             ivDeleteLocation,
                             ivIconCreatedBy,

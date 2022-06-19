@@ -53,7 +53,13 @@
         android:id="@+id/i_image_location"
         layout="@layout/image_slider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/iv_image_location"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/image_height_rectangular_default" />
 
     <TextView
         android:id="@+id/tv_address_location"

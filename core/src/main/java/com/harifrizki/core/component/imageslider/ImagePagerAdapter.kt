@@ -10,6 +10,8 @@ class ImagePagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
 
     private var imageCrimeLocations: ArrayList<ImageCrimeLocation> = arrayListOf()
+
+    var isCanDelete: Boolean? = null
     var onClick: ((ImageCrimeLocation) -> Unit)? = null
 
     @SuppressLint("NotifyDataSetChanged")
@@ -32,6 +34,7 @@ class ImagePagerAdapter(fragmentActivity: FragmentActivity) :
     override fun createFragment(position: Int): Fragment {
         return ImageSliderFragment(
             imageCrimeLocation = imageCrimeLocations[position],
+            isCanDelete = isCanDelete,
             onClick = {
                 onClick?.invoke(imageCrimeLocations[position])
             }

@@ -153,6 +153,7 @@ class DetailCrimeLocationActivity : BaseActivity() {
         )
         imagePagerAdapter = ImagePagerAdapter(this).
         apply {
+            isCanDelete = true
             notifyDataSetChanged()
             onClick = {
 
