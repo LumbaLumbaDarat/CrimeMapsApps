@@ -42,6 +42,9 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     private val loading by lazy {
         Loading()
     }
+    private val imagePreview by lazy {
+        ImagePreview()
+    }
     private val notification by lazy {
         Notification()
     }
@@ -88,6 +91,7 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         Logger.addLogAdapter(AndroidLogAdapter())
 
         createLoading()
+        createImagePreview()
         createNotification()
         createOption()
         createOptionList()
@@ -128,6 +132,12 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
 
     private fun createLoading() {
         loading.apply {
+            create(context)
+        }
+    }
+
+    private fun createImagePreview() {
+        imagePreview.apply {
             create(context)
         }
     }
@@ -431,6 +441,17 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
 
     fun dismissLoading() {
         loading.dismiss()
+    }
+
+    fun showImagePreview(imagePath: String?, url: String?) {
+        imagePreview.apply {
+            setImageToPreview(context, imagePath, url)
+            show()
+        }
+    }
+
+    fun dismissImagePreview() {
+        imagePreview.dismiss()
     }
 
     fun showError(

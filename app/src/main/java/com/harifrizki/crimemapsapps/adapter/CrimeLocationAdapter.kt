@@ -13,6 +13,7 @@ import com.harifrizki.core.R
 import com.harifrizki.core.component.imageslider.DotSlider
 import com.harifrizki.core.component.imageslider.ImagePagerAdapter
 import com.harifrizki.core.model.CrimeLocation
+import com.harifrizki.core.model.ImageCrimeLocation
 import com.harifrizki.core.utils.*
 import com.harifrizki.crimemapsapps.databinding.ItemCrimeLocationBinding
 
@@ -23,6 +24,7 @@ class CrimeLocationAdapter(
     var crimeLocations: ArrayList<CrimeLocation>? = ArrayList()
 
     var onClickDelete: ((CrimeLocation?) -> Unit)? = null
+    var onClickPreviewImage: ((ImageCrimeLocation) -> Unit)? = null
     var onClickCrimeLocation: ((CrimeLocation?) -> Unit)? = null
 
     @JvmName("initializeCrimeLocations")
@@ -73,7 +75,9 @@ class CrimeLocationAdapter(
             }
         }
         else crimeLocation = CrimeLocation()
-        holder.bind(crimeLocation, isShimmer)
+        holder.bind(crimeLocation, isShimmer, onClickPreviewImage = {
+            onClickPreviewImage?.invoke(it)
+        })
     }
 
     override fun getItemCount(): Int {
@@ -89,16 +93,20 @@ class CrimeLocationAdapter(
         @SuppressLint("UseCompatLoadingForDrawables", "NotifyDataSetChanged")
         fun bind(
             crimeLocation: CrimeLocation?,
-            isShimmer: Boolean?
+            isShimmer: Boolean?,
+            onClickPreviewImage: ((ImageCrimeLocation) -> Unit)?
         ) {
             binding.apply {
                 if (!isShimmer!!) {
                     var currentPage: Int? = ZERO
                     val imagePagerAdapter = ImagePagerAdapter(context as FragmentActivity).
                     apply {
-                        isCanDelete = false
+                        isCanEdit = false
                         setImageCrimeLocations(crimeLocation?.imageCrimeLocations)
                         notifyDataSetChanged()
+                        onClickPreview = {
+                            onClickPreviewImage?.invoke(it)
+                        }
                     }
                     iImageLocation.apply {
                         val dotSlider = DotSlider(

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.harifrizki.core.databinding.FragmentImageSliderBinding
 import com.harifrizki.core.model.ImageCrimeLocation
 import com.harifrizki.core.utils.PreferencesManager
@@ -14,8 +15,10 @@ import com.harifrizki.core.utils.doGlide
 class ImageSliderFragment(
     var imageCrimeLocation: ImageCrimeLocation?,
 
-    var isCanDelete: Boolean? = null,
-    var onClick: ((ImageCrimeLocation) -> Unit)? = null) : Fragment() {
+    var isCanEdit: Boolean? = null,
+
+    var onClickPreview: ((ImageCrimeLocation) -> Unit)? = null,
+    var onClickEdit: ((ImageCrimeLocation) -> Unit)? = null) : Fragment() {
     private val binding by lazy {
         FragmentImageSliderBinding.inflate(layoutInflater)
     }
@@ -31,17 +34,21 @@ class ImageSliderFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
+            ivPhoto.scaleType = ImageView.ScaleType.CENTER_CROP
             doGlide(
                 view.context,
                 ivPhoto,
+                useLoadingResize = true,
+                scaleType = ImageView.ScaleType.CENTER,
                 imageName = imageCrimeLocation?.imageCrimeLocationName,
                 url = PreferencesManager
                     .getInstance(view.context)
                     .getPreferences(URL_CONNECTION_API_IMAGE_CRIME_LOCATION))
-            if (!isCanDelete!!)
+            if (!isCanEdit!!)
                 ivEditPhoto.visibility = View.GONE
             else ivEditPhoto
-                .setOnClickListener { onClick?.invoke(imageCrimeLocation!!) }
+                .setOnClickListener { onClickEdit?.invoke(imageCrimeLocation!!) }
+            ivPhoto.setOnClickListener { onClickPreview?.invoke(imageCrimeLocation!!) }
         }
     }
 }

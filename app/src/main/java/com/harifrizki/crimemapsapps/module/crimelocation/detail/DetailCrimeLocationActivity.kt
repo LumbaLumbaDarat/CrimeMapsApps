@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +29,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.collections.ArrayList
 import com.harifrizki.core.R
+import com.lumbalumbadrt.colortoast.ColorToast
 
 class DetailCrimeLocationActivity : BaseActivity() {
     private val binding by lazy {
@@ -153,10 +155,25 @@ class DetailCrimeLocationActivity : BaseActivity() {
         )
         imagePagerAdapter = ImagePagerAdapter(this).
         apply {
-            isCanDelete = true
+            isCanEdit = true
             notifyDataSetChanged()
-            onClick = {
-
+            onClickEdit = {
+                goTo(
+                    FormCrimeLocationActivity(),
+                    hashMapOf(
+                        FROM_ACTIVITY to getNameOfActivity(FORM_CRIME_LOCATION),
+                        OPERATION_CRUD to UPDATE,
+                        CRIME_LOCATION_MODEL to crimeLocation!!
+                    )
+                )
+            }
+            onClickPreview = {
+//                ColorToast.roundLineInfo(this@DetailCrimeLocationActivity, "TEST", Toast.LENGTH_SHORT)
+//                showLoading()
+                showImagePreview(it.imageCrimeLocationName,
+                    PreferencesManager
+                        .getInstance(this@DetailCrimeLocationActivity)
+                        .getPreferences(URL_CONNECTION_API_IMAGE_CRIME_LOCATION))
             }
         }
         binding.apply {

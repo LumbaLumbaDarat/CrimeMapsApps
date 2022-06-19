@@ -277,6 +277,12 @@ class ListOfCrimeLocationActivity : BaseActivity() {
                     )
                 )
             }
+            onClickPreviewImage = {
+                showImagePreview(it.imageCrimeLocationName,
+                    PreferencesManager
+                        .getInstance(this@ListOfCrimeLocationActivity)
+                        .getPreferences(URL_CONNECTION_API_IMAGE_CRIME_LOCATION))
+            }
             onClickDelete = {
                 showOption(
                     titleOption = getString(
