@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/padding_default"
-        android:paddingVertical="@dimen/padding_half_default"
+        android:paddingTop="@dimen/padding_default"
+        android:layout_marginBottom="@dimen/margin_half_default"
         android:gravity="start|center"
         android:orientation="horizontal">
 
@@ -47,6 +48,12 @@
             app:srcCompat="@drawable/ic_round_delete_forever_24"
             app:tint="@color/red" />
     </LinearLayout>
+
+    <include
+        android:id="@+id/i_image_location"
+        layout="@layout/image_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_address_location"

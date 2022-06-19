@@ -3,26 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.harifrizki.crimemapsapps">
 
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the "MyLocation" functionality.
-    -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
-        tools:ignore="CoarseFineLocation" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
 
     <application
+        android:name=".module.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -44,58 +30,58 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ui.component.activity.MapsActivity"
+            android:name=".module.maps.MapsActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.module.crimelocation.detail.DetailCrimeLocationActivity"
+            android:name=".module.crimelocation.detail.DetailCrimeLocationActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.crimelocation.form.FormCrimeLocationActivity"
+            android:name=".module.crimelocation.form.FormCrimeLocationActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.crimelocation.list.ListOfCrimeLocationActivity"
+            android:name=".module.crimelocation.list.ListOfCrimeLocationActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.area.form.FormAreaActivity"
+            android:name=".module.area.form.FormAreaActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.area.list.ListOfAreaActivity"
+            android:name=".module.area.list.ListOfAreaActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.component.activity.CropPhotoActivity"
+            android:name="com.harifrizki.core.component.activity.CropPhotoActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.admin.changepassword.ChangePasswordActivity"
+            android:name=".module.admin.changepassword.ChangePasswordActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.admin.list.ListOfAdminActivity"
+            android:name=".module.admin.list.ListOfAdminActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.admin.profile.ProfileActivity"
+            android:name=".module.admin.profile.ProfileActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.component.activity.ConnectionErrorActivity"
+            android:name="com.harifrizki.core.component.activity.ConnectionErrorActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.dashboard.DashboardActivity"
+            android:name=".module.dashboard.DashboardActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.login.LoginActivity"
+            android:name=".module.login.LoginActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.module.splash.SplashScreenActivity"
+            android:name=".module.splash.SplashScreenActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -104,20 +90,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/path_file_image" />
-        </provider>
     </application>
 
 </manifest>

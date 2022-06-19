@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".ui.module.crimelocation.form.FormCrimeLocationActivity">
+    tools:context=".module.crimelocation.form.FormCrimeLocationActivity">
 
     <include
         android:id="@+id/i_app_bar_form_crime_location"

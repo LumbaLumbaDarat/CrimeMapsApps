@@ -6,7 +6,7 @@
     android:id="@+id/srl_dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.module.dashboard.DashboardActivity">
+    tools:context=".module.dashboard.DashboardActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
