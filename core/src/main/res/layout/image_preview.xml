@@ -8,7 +8,7 @@
     <ImageView
         android:id="@+id/iv_image_preview"
         android:layout_width="match_parent"
-        android:scaleType="centerCrop"
+        android:scaleType="centerInside"
         android:layout_height="@dimen/image_square_biggest_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

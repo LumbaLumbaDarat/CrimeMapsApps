@@ -34,7 +34,7 @@ class ImageSliderFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            ivPhoto.scaleType = ImageView.ScaleType.CENTER_CROP
+            ivPhoto.scaleType = ImageView.ScaleType.FIT_CENTER
             doGlide(
                 view.context,
                 ivPhoto,

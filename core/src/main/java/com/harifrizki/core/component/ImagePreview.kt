@@ -35,11 +35,12 @@ class ImagePreview(
                           imagePath: String?,
                           url: String?) {
         binding?.apply {
-            ivImagePreview.scaleType = ImageView.ScaleType.CENTER_CROP
+            ivImagePreview.scaleType = ImageView.ScaleType.FIT_CENTER
             doGlide(context,
                 ivImagePreview,
                 imagePath,
                 useLoadingResize = true,
+                scaleType = ImageView.ScaleType.FIT_CENTER,
                 url = url)
         }
     }
@@ -47,11 +48,12 @@ class ImagePreview(
     fun setImageToPreview(context: Context?,
                           imageUri: Uri?) {
         binding?.apply {
-            ivImagePreview.scaleType = ImageView.ScaleType.CENTER_CROP
+            ivImagePreview.scaleType = ImageView.ScaleType.FIT_CENTER
             doGlide(context,
                 ivImagePreview,
                 imageUri,
-                useLoadingResize = true)
+                useLoadingResize = true,
+                scaleType = ImageView.ScaleType.FIT_CENTER)
         }
     }
 

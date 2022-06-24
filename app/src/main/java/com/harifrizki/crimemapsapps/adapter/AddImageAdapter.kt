@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ImageView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.harifrizki.core.R
@@ -98,7 +99,7 @@ class AddImageAdapter(
                             updateLayoutParams {
                                 width = ViewGroup.LayoutParams.MATCH_PARENT
                                 height = resources.getDimensionPixelOffset(
-                                    R.dimen.image_width_rectangular_default)
+                                    R.dimen.image_height_rectangular_default)
                             }
                     }
                 }
@@ -107,15 +108,21 @@ class AddImageAdapter(
                         doGlide(context,
                             ivImage,
                             imageResource.imagePath,
+                            useLoadingResize = true,
+                            scaleType = ImageView.ScaleType.CENTER_CROP,
                             url = customParentPath)
-                    else doGlide(context, ivImage, imageResource.imageUri)
+                    else doGlide(context,
+                        ivImage,
+                        imageResource.imageUri,
+                        useLoadingResize = true,
+                        scaleType = ImageView.ScaleType.CENTER_CROP)
                     rrvImage.apply {
                         visibility = View.VISIBLE
                         if (useMaxWidth!!)
                             updateLayoutParams {
                                 width = ViewGroup.LayoutParams.MATCH_PARENT
                                 height = resources.getDimensionPixelOffset(
-                                    R.dimen.image_width_rectangular_default)
+                                    R.dimen.image_height_rectangular_default)
                             }
                     }
                 }
