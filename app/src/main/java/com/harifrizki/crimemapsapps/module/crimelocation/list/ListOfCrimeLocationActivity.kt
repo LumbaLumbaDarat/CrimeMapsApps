@@ -324,7 +324,7 @@ class ListOfCrimeLocationActivity : BaseActivity() {
         page = crimeLocationResponse?.page
         crimeLocationAdapter?.apply {
             if (crimeLocationResponse?.page?.pageNo == INITIALIZE_PAGE_NO)
-                setCrimeLocations(crimeLocationResponse?.crimeLocationArrayList)
+                setCrimeLocations(crimeLocationResponse.crimeLocationArrayList)
             else addCrimeLocations(crimeLocationResponse?.crimeLocationArrayList)
             notifyDataSetChanged()
             loadingList(

@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harifrizki.core.component.ParentArea
 import com.harifrizki.core.component.activity.BaseActivity
@@ -35,6 +36,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.IOException
 import com.harifrizki.core.R
+import com.harifrizki.core.data.remote.response.MessageResponse
 
 class FormCrimeLocationActivity : BaseActivity() {
     private val binding by lazy {
@@ -66,7 +68,8 @@ class FormCrimeLocationActivity : BaseActivity() {
     private var longitude: String? = null
 
     private var addImageAdapter: AddImageAdapter? = null
-    private var imageResources: ArrayList<ImageResource>? = ArrayList();
+    private var imageResources: ArrayList<ImageResource>? = ArrayList()
+    private var deleteImageResource: ImageResource? = null
     private var isAfterCRUD: CRUD? = NONE
     private var crud: CRUD? = null
     private var fromActivity: ActivityName? = null
@@ -100,7 +103,7 @@ class FormCrimeLocationActivity : BaseActivity() {
                 )
                 initializeForm()
             }
-            UPDATE -> {
+            UPDATE_DATA_NON_IMAGE -> {
                 crimeLocation = map!![CRIME_LOCATION_MODEL] as CrimeLocation
                 appBar(
                     binding.iAppBarFormCrimeLocation,
@@ -113,6 +116,20 @@ class FormCrimeLocationActivity : BaseActivity() {
                     R.drawable.frame_background_secondary
                 )
                 initializeEditForm(crimeLocation)
+            }
+            UPDATE_IMAGE -> {
+                crimeLocation = map!![CRIME_LOCATION_MODEL] as CrimeLocation
+                appBar(
+                    binding.iAppBarFormCrimeLocation,
+                    getString(R.string.label_edit,
+                        getString(R.string.label_plus_two_string,
+                            getString(R.string.label_photo),
+                            getString(R.string.crime_location_menu))),
+                    R.drawable.ic_round_location_on_24,
+                    R.color.primary,
+                    R.drawable.frame_background_secondary
+                )
+                initializeEditImage(crimeLocation)
             }
             else -> {}
         }
@@ -137,21 +154,40 @@ class FormCrimeLocationActivity : BaseActivity() {
                     CROP_PHOTO -> {
                         try {
                             val uriAfterCrop = Uri.parse(map[URI_IMAGE].toString())
-                            file = File(uriAfterCrop.path)
-                            imageResources?.add(
-                                ImageResource().apply {
-                                    imageState = IS_IMAGE
-                                    imageFile = file
-                                    imageName = file!!.name
-                                    imagePath = file!!.path
-                                    imageUri = uriAfterCrop
+                            file = File(uriAfterCrop.path!!)
+                            when (crud) {
+                                CREATE -> {
+                                    imageResources?.add(
+                                        ImageResource().apply {
+                                            imageState = IS_IMAGE
+                                            imageFile = file
+                                            imageName = file!!.name
+                                            imagePath = file!!.path
+                                            imageUri = uriAfterCrop
+                                        }
+                                    )
+                                    addImageAdapter?.apply {
+                                        setImageResources(imageResources = imageResources)
+                                        notifyDataSetChanged()
+                                    }
                                 }
-                            )
-                            addImageAdapter?.apply {
-                                setImageResources(imageResources = imageResources)
-                                notifyDataSetChanged()
+                                UPDATE_IMAGE -> {
+                                    crimeLocationAddImage(
+                                        CrimeLocation().apply {
+                                            crimeLocationId = crimeLocation?.crimeLocationId
+                                            updatedBy = Admin().apply {
+                                                adminId = admin?.adminId
+                                            }
+                                        },
+                                        arrayListOf(
+                                            file!!
+                                        )
+                                    )
+                                }
+                                else -> {}
                             }
-                        } catch (e: IOException) {
+                        }
+                        catch (e: IOException) {
                             Logger.e(e.message.toString())
                             showError(
                                 message = e.message.toString(),
@@ -328,11 +364,35 @@ class FormCrimeLocationActivity : BaseActivity() {
         }
 
     override fun onBackPressed() {
-        onBackPressed(
-            getNameOfActivity(FORM_CRIME_LOCATION),
-            isAfterCRUD
-        )
-        super.onBackPressed()
+        if (crud != UPDATE_IMAGE ||
+            (crud == UPDATE_IMAGE && imageResources?.size!! >= TWO)) {
+            onBackPressed(
+                getNameOfActivity(FORM_CRIME_LOCATION),
+                isAfterCRUD
+            )
+            super.onBackPressed()
+        }
+        else {
+            if ((crud == UPDATE_IMAGE && imageResources?.size!! < TWO))
+                showWarning(
+                    message = getString(
+                        R.string.label_plus_two_string,
+                        getString(
+                            R.string.message_error_empty,
+                            getString(
+                                R.string.label_plus_two_string,
+                                getString(R.string.label_photo),
+                                getString(R.string.crime_location_menu)
+                            )
+                        ), getString(
+                            R.string.message_minimum_upload_image,
+                            ONE.toString(),
+                            getString(R.string.label_photo),
+                            getString(R.string.crime_location_menu)
+                        )
+                    )
+                )
+        }
     }
 
     private val crimeLocationAdd = Observer<DataResource<CrimeLocationResponse>> {
@@ -460,6 +520,119 @@ class FormCrimeLocationActivity : BaseActivity() {
         }
     }
 
+    private val crimeLocationDeleteImage = Observer<DataResource<MessageResponse>> {
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(R.string.label_delete_append,
+                            getString(R.string.label_plus_two_string,
+                                getString(R.string.label_photo),
+                                getString(R.string.crime_location_menu)))
+                    )
+                )
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
+                    isAfterCRUD = DELETE
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_delete,
+                            getString(R.string.label_plus_two_string,
+                                getString(R.string.label_photo),
+                                getString(R.string.crime_location_menu))
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            dismissNotification()
+                            imageResources?.remove(deleteImageResource)
+                            addImageAdapter?.apply {
+                                setImageResources(imageResources = imageResources)
+                            }
+                            deleteImageResource = null
+                        }
+                    )
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun crimeLocationDeleteImage(crimeLocation: CrimeLocation?) {
+        if (networkConnected()) {
+            viewModel.crimeLocationDeleteImage(crimeLocation)
+                .observe(this, crimeLocationDeleteImage)
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private val crimeLocationAddImage = Observer<DataResource<CrimeLocationResponse>> { it ->
+        when (it.responseStatus) {
+            LOADING -> {
+                showLoading(
+                    getString(
+                        R.string.message_loading,
+                        getString(R.string.label_add_append,
+                            getString(R.string.label_plus_two_string,
+                                getString(R.string.label_photo),
+                                getString(R.string.crime_location_menu)))
+                    )
+                )
+            }
+            SUCCESS -> {
+                dismissLoading()
+                if (isResponseSuccess(it.data?.message)) {
+                    imageResources?.clear()
+                    initializeUploadImage()
+                    it.data?.crimeLocation?.imageCrimeLocations?.forEach { image ->
+                        imageResources?.add(
+                            ImageResource(
+                                imageId = image.imageCrimeLocationId,
+                                imageState = IS_IMAGE,
+                                imagePath = image.imageCrimeLocationName
+                            )
+                        )
+                    }
+                    isAfterCRUD = UPDATE
+                    showSuccess(
+                        titleNotification = getString(
+                            R.string.message_success_add,
+                            getString(R.string.label_plus_two_string,
+                                getString(R.string.label_photo),
+                                getString(R.string.crime_location_menu))
+                        ),
+                        message = it.data?.message?.message,
+                        onClick = {
+                            addImageAdapter?.apply {
+                                setImageResources(imageResources = imageResources)
+                                notifyDataSetChanged()
+                            }
+                            dismissNotification()
+                        }
+                    )
+                }
+            }
+            ERROR -> {
+                dismissLoading()
+                goTo(it.errorResponse)
+            }
+            else -> {}
+        }
+    }
+
+    private fun crimeLocationAddImage(crimeLocation: CrimeLocation?, files: ArrayList<File>?) {
+        if (networkConnected()) {
+            viewModel.crimeLocationAddImage(crimeLocation, files)
+                .observe(this, crimeLocationAddImage)
+        }
+    }
+
     private fun initializeUploadImage() {
         imageResources?.clear()
         imageResources = arrayListOf(
@@ -498,6 +671,9 @@ class FormCrimeLocationActivity : BaseActivity() {
                         resultLauncherPermission.launch(APP_PERMISSION_GET_IMAGE)
                         dismissBottomOption()
                     })
+            }
+            onClickPreviewImage = {
+                showImagePreview(it.imageUri)
             }
             onClickDelete = {
                 showOption(
@@ -808,6 +984,111 @@ class FormCrimeLocationActivity : BaseActivity() {
             )
             btnBackCrimeLocation.text = getString(R.string.cancel)
             rvPhoto.visibility = View.GONE
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun initializeEditImage(crimeLocation: CrimeLocation?) {
+        initializeUploadImage()
+        crimeLocation?.imageCrimeLocations?.forEach {
+            imageResources?.add(
+                ImageResource(
+                    imageId = it.imageCrimeLocationId,
+                    imageState = IS_IMAGE,
+                    imagePath = it.imageCrimeLocationName
+                )
+            )
+        }
+        addImageAdapter = AddImageAdapter(
+            this
+        ).apply {
+            customParentPath = PreferencesManager
+                .getInstance(this@FormCrimeLocationActivity)
+                .getPreferences(URL_CONNECTION_API_IMAGE_CRIME_LOCATION)
+            useMaxWidth = true
+            setImageResources(imageResources = imageResources)
+            notifyDataSetChanged()
+            onClickAdd = {
+                if (imageResources?.size!! >= (maxUploadImage + ONE))
+                    showInformation(
+                        titleNotification = getString(R.string.crime_location_menu),
+                        message = getString(
+                            R.string.message_overload_upload_image,
+                            getString(R.string.label_plus_two_string,
+                                getString(R.string.label_photo),
+                                getString(R.string.crime_location_menu)),
+                            maxUploadImage.toString(),
+                            getString(R.string.label_photo)
+                        )
+                    )
+                else showBottomOption(
+                    getString(R.string.label_get_image_from),
+                    imageMenus(),
+                    onClickMenu = {
+                        getImageFrom = it.menuSetting
+                        resultLauncherPermission.launch(APP_PERMISSION_GET_IMAGE)
+                        dismissBottomOption()
+                    })
+            }
+            onClickPreviewImage = {
+                showImagePreview(it.imagePath,
+                    PreferencesManager
+                        .getInstance(this@FormCrimeLocationActivity)
+                        .getPreferences(URL_CONNECTION_API_IMAGE_CRIME_LOCATION))
+            }
+            onClickDelete = {
+                showOption(
+                    titleOption = getString(
+                        R.string.message_title_delete,
+                        getString(R.string.label_plus_two_string,
+                            getString(R.string.label_photo),
+                            getString(R.string.crime_location_menu))
+                    ),
+                    message = getString(
+                        R.string.message_delete,
+                        getString(R.string.label_photo),
+                        getString(R.string.crime_location_menu)
+                    ),
+                    titlePositive = getString(R.string.yes_delete),
+                    titleNegative = getString(R.string.no),
+                    colorButtonPositive = R.color.red,
+                    onPositive = {
+                        deleteImageResource = it
+                        crimeLocationDeleteImage(CrimeLocation().apply {
+                            crimeLocationId = crimeLocation?.crimeLocationId
+                            imageCrimeLocations = arrayListOf(
+                                ImageCrimeLocation(
+                                    imageCrimeLocationId = it.imageId
+                                )
+                            )
+                            updatedBy = Admin().apply { adminId = admin?.adminId }
+                        })
+                        dismissOption()
+                    },
+                )
+            }
+        }
+        binding.apply {
+            dismissView(
+                arrayOf(
+                    iParentAreaProvince.root,
+                    iParentAreaCity.root,
+                    iParentAreaSubDistrict.root,
+                    iParentAreaUrbanVillage.root,
+                    iParentAreaAddAddress.root,
+                    llLatLang,
+                    tilName,
+                    tilDescription,
+                    btnSubmitCrimeLocation
+                )
+            )
+
+            rvPhoto.apply {
+                layoutManager = GridLayoutManager(
+                    this@FormCrimeLocationActivity, ROW_MENU_AREA)
+                adapter = addImageAdapter
+            }
+            btnBackCrimeLocation.text = getString(R.string.back)
         }
     }
 

@@ -15,6 +15,7 @@
     <dimen name="margin_smallest_default">2dp</dimen>
     <dimen name="margin_multiple_default">40dp</dimen>
     <dimen name="margin_multiple_add_default">50dp</dimen>
+    <dimen name="margin_half_multiple_add_default">25dp</dimen>
     <dimen name="margin_triple_default">60dp</dimen>
 
     <dimen name="image_width_rectangular_default">300dp</dimen>

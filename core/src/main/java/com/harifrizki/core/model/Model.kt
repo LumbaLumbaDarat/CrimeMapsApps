@@ -266,6 +266,7 @@ data class RegistrationArea(
 
 @Parcelize
 data class ImageResource(
+    var imageId: String? = null,
     var imageState: ImageState? = null,
     var imageName: String? = null,
     var imagePath: String? = null,

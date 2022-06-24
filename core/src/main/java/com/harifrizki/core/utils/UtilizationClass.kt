@@ -514,9 +514,34 @@ fun doGlide(
     context: Context?,
     imageView: ImageView?,
     uri: Uri?,
-    imageError: Int? = R.drawable.ic_round_broken_image_primary_24
+    imageError: Int? = R.drawable.ic_round_broken_image_primary_24,
+    useLoadingResize: Boolean? = false,
+    scaleType: ImageView.ScaleType? = ImageView.ScaleType.FIT_XY
 ) {
     Glide.with(context!!).applyDefaultRequestOptions(requestOptions)
-        .load(uri).error(imageError)
+        .load(uri).listener(object : RequestListener<Drawable> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                if (useLoadingResize!!)
+                    imageView?.scaleType = scaleType
+                return false
+            }
+
+            override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                return false
+            }
+
+        })
+        .error(imageError)
         .into(imageView!!)
 }

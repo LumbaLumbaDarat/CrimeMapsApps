@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <androidx.viewpager2.widget.ViewPager2
@@ -9,13 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/image_width_rectangular_default"/>
 
-    <LinearLayout
-        android:id="@+id/ll_dot_slider"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tl_indicator"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/margin_half_multiple_add_default"
+        android:background="@color/transparent"
         android:layout_marginStart="@dimen/margin_half_half_default"
         android:layout_marginBottom="@dimen/margin_half_half_default"
+        app:tabBackground="@drawable/tab_pager_selector"
+        app:tabGravity="start"
+        app:tabIndicatorHeight="0dp"
         android:layout_gravity="bottom"
-        android:padding="@dimen/padding_half_half_default"
-        android:orientation="horizontal"/>
+        />
 </FrameLayout>

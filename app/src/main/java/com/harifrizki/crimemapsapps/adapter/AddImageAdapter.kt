@@ -5,7 +5,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
+import com.harifrizki.core.R
 import com.harifrizki.core.model.ImageResource
 import com.harifrizki.core.utils.ImageState.ADD_IMAGE
 import com.harifrizki.core.utils.ImageState.IS_IMAGE
@@ -16,7 +19,11 @@ class AddImageAdapter(
     var context: Context?,
 ): RecyclerView.Adapter<AddImageAdapter.HolderView>() {
     private var imageResources: ArrayList<ImageResource>? = ArrayList()
+    var customParentPath: String? = null
+    var useMaxWidth: Boolean? = false
+
     var onClickAdd: (() -> Unit)? = null
+    var onClickPreviewImage: ((ImageResource) -> Unit)? = null
     var onClickDelete: ((ImageResource) -> Unit)? = null
 
     @JvmName("initializeImageResources")
@@ -54,13 +61,16 @@ class AddImageAdapter(
                     binding.ltAddImage.setOnClickListener { onClickAdd?.invoke() }
                 }
                 IS_IMAGE -> {
+                    itemView.setOnClickListener {
+                        onClickPreviewImage?.invoke(imageResource)
+                    }
                     binding.ivDeleteAdmin.setOnClickListener {
                         onClickDelete?.invoke(imageResource)
                     }
                 }
                 else -> {}
             }
-            bind(imageResource)
+            bind(imageResource, customParentPath)
         }
     }
 
@@ -73,15 +83,41 @@ class AddImageAdapter(
         private val context: Context?):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(imageResource: ImageResource?) = with(binding)
+        fun bind(imageResource: ImageResource?,
+                 customParentPath: String?) = with(binding)
         {
+            if (useMaxWidth!!)
+                clBackgroundItemAddImage.updateLayoutParams {
+                    width = ViewGroup.LayoutParams.MATCH_PARENT
+                }
             when (imageResource?.imageState) {
                 ADD_IMAGE -> {
-                    ltAddImage.visibility = View.VISIBLE
+                    ltAddImage.apply {
+                        visibility = View.VISIBLE
+                        if (useMaxWidth!!)
+                            updateLayoutParams {
+                                width = ViewGroup.LayoutParams.MATCH_PARENT
+                                height = resources.getDimensionPixelOffset(
+                                    R.dimen.image_width_rectangular_default)
+                            }
+                    }
                 }
                 IS_IMAGE -> {
-                    doGlide(context, ivImage, imageResource.imageUri)
-                    rrvImage.visibility = View.VISIBLE
+                    if (imageResource.imageUri == null)
+                        doGlide(context,
+                            ivImage,
+                            imageResource.imagePath,
+                            url = customParentPath)
+                    else doGlide(context, ivImage, imageResource.imageUri)
+                    rrvImage.apply {
+                        visibility = View.VISIBLE
+                        if (useMaxWidth!!)
+                            updateLayoutParams {
+                                width = ViewGroup.LayoutParams.MATCH_PARENT
+                                height = resources.getDimensionPixelOffset(
+                                    R.dimen.image_width_rectangular_default)
+                            }
+                    }
                 }
                 else -> {}
             }

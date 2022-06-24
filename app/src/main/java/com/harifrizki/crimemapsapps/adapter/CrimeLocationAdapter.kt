@@ -5,13 +5,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.harifrizki.core.R
-import com.harifrizki.core.component.imageslider.DotSlider
-import com.harifrizki.core.component.imageslider.ImagePagerAdapter
+import com.harifrizki.core.component.imageslider.ImageSlider
 import com.harifrizki.core.model.CrimeLocation
 import com.harifrizki.core.model.ImageCrimeLocation
 import com.harifrizki.core.utils.*
@@ -73,8 +69,7 @@ class CrimeLocationAdapter(
                 }
                 itemView.setOnClickListener { onClickCrimeLocation?.invoke(crimeLocation) }
             }
-        }
-        else crimeLocation = CrimeLocation()
+        } else crimeLocation = CrimeLocation()
         holder.bind(crimeLocation, isShimmer, onClickPreviewImage = {
             onClickPreviewImage?.invoke(it)
         })
@@ -98,40 +93,19 @@ class CrimeLocationAdapter(
         ) {
             binding.apply {
                 if (!isShimmer!!) {
-                    var currentPage: Int? = ZERO
-                    val imagePagerAdapter = ImagePagerAdapter(context as FragmentActivity).
-                    apply {
-                        isCanEdit = false
-                        setImageCrimeLocations(crimeLocation?.imageCrimeLocations)
-                        notifyDataSetChanged()
-                        onClickPreview = {
-                            onClickPreviewImage?.invoke(it)
-                        }
-                    }
-                    iImageLocation.apply {
-                        val dotSlider = DotSlider(
-                            context = context).
-                        apply {
-                            linearLayout = llDotSlider
-                            sizePage = imagePagerAdapter.getImageCrimeLocationSize()
-                            addBottomIcons(ZERO)
-                        }
-                        vpImage.apply {
-                            adapter = imagePagerAdapter
-                            updateLayoutParams {
-                                height = resources.getDimensionPixelOffset(
-                                    R.dimen.image_height_rectangular_default)
+                    ImageSlider()
+                        .apply {
+                            create(iImageLocation)
+                            isCanEdit = false
+                            setImageSlider(
+                                context as FragmentActivity,
+                                crimeLocation?.imageCrimeLocations
+                            )
+                            onClickPreview = {
+                                onClickPreviewImage?.invoke(it)
                             }
-                            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                                override fun onPageSelected(position: Int) {
-                                    super.onPageSelected(position)
-                                    dotSlider.addBottomIcons(position)
-                                    currentPage = position
-                                }
-                            })
+                            iImageLocation.root.visibility = View.VISIBLE
                         }
-                        root.visibility = View.VISIBLE
-                    }
                     ivImageLocation.visibility = View.GONE
                     tvNameLocation.text = crimeLocation?.crimeMapsName
                     tvAddressLocation.text = crimeLocation?.crimeMapsAddress
@@ -144,8 +118,7 @@ class CrimeLocationAdapter(
                     tvCreatedDate.text = makeSpannable(
                         text = getCreateAt(context, crimeLocation?.createdDate)
                     )
-                }
-                else {
+                } else {
                     layoutStartDrawableShimmer(
                         arrayOf(
                             llCrimeLocationBackground

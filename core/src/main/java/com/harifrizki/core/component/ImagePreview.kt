@@ -3,6 +3,7 @@ package com.harifrizki.core.component
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -40,6 +41,17 @@ class ImagePreview(
                 imagePath,
                 useLoadingResize = true,
                 url = url)
+        }
+    }
+
+    fun setImageToPreview(context: Context?,
+                          imageUri: Uri?) {
+        binding?.apply {
+            ivImagePreview.scaleType = ImageView.ScaleType.CENTER_CROP
+            doGlide(context,
+                ivImagePreview,
+                imageUri,
+                useLoadingResize = true)
         }
     }
 

@@ -7,14 +7,10 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
 import com.harifrizki.core.component.activity.BaseActivity
-import com.harifrizki.core.component.imageslider.DotSlider
-import com.harifrizki.core.component.imageslider.ImagePagerAdapter
 import com.harifrizki.core.data.remote.response.CrimeLocationResponse
 import com.harifrizki.core.model.CrimeLocation
 import com.harifrizki.core.model.RegistrationArea
@@ -29,7 +25,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.collections.ArrayList
 import com.harifrizki.core.R
-import com.lumbalumbadrt.colortoast.ColorToast
 
 class DetailCrimeLocationActivity : BaseActivity() {
     private val binding by lazy {
@@ -42,9 +37,6 @@ class DetailCrimeLocationActivity : BaseActivity() {
     private var map: HashMap<String, Any>? = null
     private var isAfterCRUD: CRUD? = NONE
     private var crimeLocation: CrimeLocation? = null
-    private var dotSlider: DotSlider? = null
-    private var imagePagerAdapter: ImagePagerAdapter? = null
-    private var currentPage: Int = ZERO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,17 +55,11 @@ class DetailCrimeLocationActivity : BaseActivity() {
             R.color.white,
             R.drawable.button_primary_ripple_white,
             onClick = {
-                goTo(
-                    FormCrimeLocationActivity(),
-                    hashMapOf(
-                        FROM_ACTIVITY to getNameOfActivity(FORM_CRIME_LOCATION),
-                        OPERATION_CRUD to UPDATE,
-                        CRIME_LOCATION_MODEL to crimeLocation!!
-                    )
-                )
+                goToEdit(UPDATE_DATA_NON_IMAGE)
             })
         binding.apply {
             initializeDetailCrimeLocation()
+            createImageSlider(iCrimeLocationImageSlider)
             srlDetailCrimeLocation.apply {
                 setThemeForSwipeRefreshLayoutLoadingAnimation(
                     this@DetailCrimeLocationActivity, this
@@ -110,7 +96,7 @@ class DetailCrimeLocationActivity : BaseActivity() {
 
     override fun onBackPressed() {
         onBackPressed(
-            ActivityName.getNameOfActivity(ActivityName.PROFILE),
+            getNameOfActivity(DETAIL_CRIME_LOCATION),
             isAfterCRUD
         )
         super.onBackPressed()
@@ -153,49 +139,7 @@ class DetailCrimeLocationActivity : BaseActivity() {
             context = this,
             isShimmer = false
         )
-        imagePagerAdapter = ImagePagerAdapter(this).
-        apply {
-            isCanEdit = true
-            notifyDataSetChanged()
-            onClickEdit = {
-                goTo(
-                    FormCrimeLocationActivity(),
-                    hashMapOf(
-                        FROM_ACTIVITY to getNameOfActivity(FORM_CRIME_LOCATION),
-                        OPERATION_CRUD to UPDATE,
-                        CRIME_LOCATION_MODEL to crimeLocation!!
-                    )
-                )
-            }
-            onClickPreview = {
-//                ColorToast.roundLineInfo(this@DetailCrimeLocationActivity, "TEST", Toast.LENGTH_SHORT)
-//                showLoading()
-                showImagePreview(it.imageCrimeLocationName,
-                    PreferencesManager
-                        .getInstance(this@DetailCrimeLocationActivity)
-                        .getPreferences(URL_CONNECTION_API_IMAGE_CRIME_LOCATION))
-            }
-        }
         binding.apply {
-            iCrimeLocationImageSlider.apply {
-                dotSlider = DotSlider(
-                    context = this@DetailCrimeLocationActivity).
-                apply {
-                    linearLayout = llDotSlider
-                    sizePage = imagePagerAdapter?.getImageCrimeLocationSize()
-                    addBottomIcons(ZERO)
-                }
-                vpImage.apply {
-                    adapter = imagePagerAdapter
-                    registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                        override fun onPageSelected(position: Int) {
-                            super.onPageSelected(position)
-                            dotSlider?.addBottomIcons(position)
-                            currentPage = position
-                        }
-                    })
-                }
-            }
             widgetStartDrawableShimmer(
                 arrayOf(
                     iNameShimmer.tvId,
@@ -327,15 +271,21 @@ class DetailCrimeLocationActivity : BaseActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setCrimeLocation(crimeLocation: CrimeLocation?) {
+        this.crimeLocation = crimeLocation
         binding.apply {
-            imagePagerAdapter?.apply {
-                setImageCrimeLocations(crimeLocation?.imageCrimeLocations)
-                dotSlider?.apply {
-                    sizePage = getImageCrimeLocationSize()
-                    addBottomIcons(ZERO)
+            setImageSlider(
+                imageCrimeLocations = crimeLocation?.imageCrimeLocations,
+                isCanEdit = true,
+                onClickPreview = {
+                    showImagePreview(it.imageCrimeLocationName,
+                        PreferencesManager
+                            .getInstance(this@DetailCrimeLocationActivity)
+                            .getPreferences(URL_CONNECTION_API_IMAGE_CRIME_LOCATION))
+                },
+                onClickEdit = {
+                    goToEdit(UPDATE_IMAGE)
                 }
-                notifyDataSetChanged()
-            }
+            )
             loadingImageSliderOff()
             iName.apply {
                 tvId.text = crimeLocation?.crimeLocationId?.uppercase()
@@ -436,6 +386,18 @@ class DetailCrimeLocationActivity : BaseActivity() {
                 getString(R.string.urban_village_menu)
             )))
         return areaRegistrations
+    }
+
+    private fun goToEdit(crud: CRUD?) {
+        goTo(
+            FormCrimeLocationActivity(),
+            hashMapOf(
+                FROM_ACTIVITY to getNameOfActivity(DETAIL_CRIME_LOCATION),
+                OPERATION_CRUD to crud!!,
+                CRIME_LOCATION_MODEL to crimeLocation!!,
+
+            )
+        )
     }
 
     private fun disableAccess() {

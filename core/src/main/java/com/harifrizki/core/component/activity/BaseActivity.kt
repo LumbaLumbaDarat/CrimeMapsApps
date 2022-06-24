@@ -12,16 +12,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.harifrizki.core.R
 import com.harifrizki.core.component.*
+import com.harifrizki.core.component.imageslider.ImageSlider
 import com.harifrizki.core.data.remote.ERROR_CODE_200_SUCCESS
 import com.harifrizki.core.data.remote.ERROR_CODE_404_PAGE_NOT_FOUND
 import com.harifrizki.core.data.remote.response.ErrorResponse
 import com.harifrizki.core.databinding.*
 import com.harifrizki.core.model.Admin
+import com.harifrizki.core.model.ImageCrimeLocation
 import com.harifrizki.core.model.Menu
 import com.harifrizki.core.model.Message
 import com.harifrizki.core.utils.*
@@ -68,6 +71,9 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     }
     private val notificationAndOptionMessage by lazy {
         NotificationAndOptionMessage()
+    }
+    private val imageSlider: ImageSlider by lazy {
+        ImageSlider()
     }
 
     private var context: Context? = null
@@ -166,6 +172,10 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
 
     fun createNotificationAndOptionMessage(binding: NotificationAndOptionMessageBinding?) {
         notificationAndOptionMessage.create(context, binding)
+    }
+
+    fun createImageSlider(binding: ImageSliderBinding?) {
+        imageSlider.create(binding)
     }
 
     fun createSearch(binding: SearchBinding?) {
@@ -446,6 +456,13 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
     fun showImagePreview(imagePath: String?, url: String?) {
         imagePreview.apply {
             setImageToPreview(context, imagePath, url)
+            show()
+        }
+    }
+
+    fun showImagePreview(imageUri: Uri?) {
+        imagePreview.apply {
+            setImageToPreview(context, imageUri)
             show()
         }
     }
@@ -864,6 +881,18 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                             }
                         }
                     }
+                    DETAIL_CRIME_LOCATION -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(
+                                R.string.message_success_update,
+                                getString(R.string.crime_location_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
+                        true
+                    }
                     FORM_CRIME_LOCATION -> {
                         ColorToast.roundLineSuccess(
                             this,
@@ -952,6 +981,30 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
                         }
                     }
                     LIST_OF_CRIME_LOCATION -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(
+                                R.string.message_success_delete,
+                                getString(R.string.crime_location_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
+                        true
+                    }
+                    DETAIL_CRIME_LOCATION -> {
+                        ColorToast.roundLineSuccess(
+                            this,
+                            getString(R.string.app_name),
+                            getString(
+                                R.string.message_success_delete,
+                                getString(R.string.crime_location_menu)
+                            ),
+                            Toast.LENGTH_LONG
+                        )
+                        true
+                    }
+                    FORM_CRIME_LOCATION -> {
                         ColorToast.roundLineSuccess(
                             this,
                             getString(R.string.app_name),
@@ -1137,6 +1190,20 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
 
     fun dismissNotificationAndOptionMessage() {
         notificationAndOptionMessage.dismiss()
+    }
+
+    fun setImageSlider(imageCrimeLocations: ArrayList<ImageCrimeLocation>?,
+                       isCanEdit: Boolean?,
+                       onClickPreview: ((ImageCrimeLocation) -> Unit)? = { },
+                       onClickEdit: ((ImageCrimeLocation) -> Unit)? = { }) {
+        imageSlider.apply {
+            this.isCanEdit = isCanEdit
+            this.setImageSlider(
+                context as FragmentActivity,
+                imageCrimeLocations)
+            this.onClickPreview = { onClickPreview?.invoke(it) }
+            this.onClickEdit = { onClickEdit?.invoke(it) }
+        }
     }
 
     fun search(
@@ -1399,7 +1466,8 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
 
         return FileProvider.getUriForFile(
             applicationContext, applicationId.plus(
-                context?.getString(R.string.file_provider_name)), tempFile
+                context?.getString(R.string.file_provider_name)
+            ), tempFile
         )
     }
 
@@ -1423,9 +1491,10 @@ open class BaseActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListe
         )
     }
 
-    fun goTo(appCompatActivity: AppCompatActivity?,
-             map: HashMap<String, Any>?,
-             errorCode: String? = ERROR_CODE_200_SUCCESS
+    fun goTo(
+        appCompatActivity: AppCompatActivity?,
+        map: HashMap<String, Any>?,
+        errorCode: String? = ERROR_CODE_200_SUCCESS
     ) {
         Intent(
             this,

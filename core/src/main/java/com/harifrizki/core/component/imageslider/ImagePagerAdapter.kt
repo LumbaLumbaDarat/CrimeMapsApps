@@ -25,10 +25,6 @@ class ImagePagerAdapter(fragmentActivity: FragmentActivity) :
         }
     }
 
-    fun getImageCrimeLocationSize(): Int {
-        return imageCrimeLocations.size
-    }
-
     override fun getItemCount(): Int {
         return imageCrimeLocations.size
     }

@@ -56,6 +56,8 @@ enum class CRUD {
     CREATE,
     READ,
     UPDATE,
+    UPDATE_IMAGE,
+    UPDATE_DATA_NON_IMAGE,
     DELETE;
 }
 

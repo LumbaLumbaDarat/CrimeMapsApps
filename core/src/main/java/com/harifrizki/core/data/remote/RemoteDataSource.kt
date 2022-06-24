@@ -485,7 +485,7 @@ class RemoteDataSource : DataSource {
         photoCrimeLocation: ArrayList<File>?
     ): LiveData<ApiResource<CrimeLocationResponse>> {
         return response(
-            NetworkApi.connectToApi().crimeLocationAdd(
+            NetworkApi.connectToApi().crimeLocationAddImage(
                 toRequestBody(
                     CrimeLocation.jsonObject(crimeLocation, CREATE).toString(),
                     "multipart/form-data"
@@ -511,7 +511,7 @@ class RemoteDataSource : DataSource {
     override fun crimeLocationDeleteImage(crimeLocation: CrimeLocation?): LiveData<ApiResource<MessageResponse>> {
         return response(
             NetworkApi.connectToApi().crimeLocationDeleteImage(
-                CrimeLocation.jsonObject(crimeLocation, CRUD.DELETE)
+                CrimeLocation.jsonObject(crimeLocation, CRUD.UPDATE)
             ),
             MessageResponse()
         )

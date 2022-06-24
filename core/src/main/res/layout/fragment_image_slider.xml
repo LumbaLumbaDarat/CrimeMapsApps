@@ -28,7 +28,7 @@
         android:clickable="true"
         android:focusable="true"
         android:background="@drawable/button_white_ripple_primary"
-        android:layout_margin="@dimen/margin_smallest_default"
+        android:layout_margin="@dimen/margin_half_half_default"
         android:padding="@dimen/padding_smallest_default"
         android:layout_gravity="end"
         android:src="@drawable/ic_round_edit_24"
