@@ -43,7 +43,6 @@ class NotificationHelper(base: Context?) : ContextWrapper(base) {
     }
 
     fun sendHighPriorityNotification(title: String?,
-                                     summary: String?,
                                      body: String?,
                                      crimeLocation: CrimeLocation?) {
         val pendingIntent = PendingIntent
@@ -61,9 +60,10 @@ class NotificationHelper(base: Context?) : ContextWrapper(base) {
         val notification = NotificationCompat.Builder(this, channelId).apply {
             setSmallIcon(R.drawable.ic_launcher_background)
             priority = NotificationCompat.PRIORITY_HIGH
+            setContentTitle(title)
+            setContentText(body)
             setStyle(NotificationCompat
                 .BigTextStyle()
-                .setSummaryText(summary)
                 .setBigContentTitle(title)
                 .bigText(body))
             setContentIntent(pendingIntent)

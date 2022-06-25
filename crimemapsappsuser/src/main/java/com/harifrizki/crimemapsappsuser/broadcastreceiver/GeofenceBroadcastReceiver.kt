@@ -23,7 +23,7 @@ class GeofenceBroadcastReceiver: BroadcastReceiver() {
         //bugs in here
         //val crimeLocation = intent.getParcelableExtra<CrimeLocation>(CRIME_LOCATION_MODEL)
 
-        //temporary fix
+        //temporary fix, but it's Works...
         val crimeLocation = context?.let {
             PreferencesManager.getInstance(it)
                 .getPreferences(CRIME_LOCATION_MODEL, CrimeLocation::class.java)
@@ -41,7 +41,6 @@ class GeofenceBroadcastReceiver: BroadcastReceiver() {
                 notificationHelper
                     .sendHighPriorityNotification(
                         title = context?.getString(R.string.message_geofence_enter),
-                        summary = context?.getString(R.string.message_geofence_enter_body),
                         body = context?.getString(R.string.message_geofence_enter_body),
                         crimeLocation)
             }
@@ -49,7 +48,6 @@ class GeofenceBroadcastReceiver: BroadcastReceiver() {
                 notificationHelper
                     .sendHighPriorityNotification(
                         title = context?.getString(R.string.message_geofence_dwell),
-                        summary = context?.getString(R.string.message_geofence_dwell_body),
                         body = context?.getString(R.string.message_geofence_dwell_body),
                         crimeLocation)
             }
@@ -57,7 +55,6 @@ class GeofenceBroadcastReceiver: BroadcastReceiver() {
                 notificationHelper
                     .sendHighPriorityNotification(
                         title = context?.getString(R.string.message_geofence_exit),
-                        summary = context?.getString(R.string.message_geofence_exit_body),
                         body = context?.getString(R.string.message_geofence_exit_body),
                         crimeLocation)
             }
