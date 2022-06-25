@@ -452,6 +452,20 @@ class RemoteDataSource : DataSource {
         )
     }
 
+    override fun crimeLocationByNearestLocation(
+        pageNo: String?,
+        crimeLocation: CrimeLocation?
+    ): LiveData<ApiResource<CrimeLocationResponse>> {
+        return response(
+            NetworkApi.connectToApi().crimeLocation(
+                PARAM_NEAREST_LOCATION,
+                pageNo!!,
+                CrimeLocation.jsonObject(crimeLocation, READ, PARAM_NEAREST_LOCATION)
+            ),
+            CrimeLocationResponse()
+        )
+    }
+
     override fun crimeLocationDetail(crimeLocation: CrimeLocation?): LiveData<ApiResource<CrimeLocationResponse>> {
         return response(
             NetworkApi.connectToApi().crimeLocationDetail(

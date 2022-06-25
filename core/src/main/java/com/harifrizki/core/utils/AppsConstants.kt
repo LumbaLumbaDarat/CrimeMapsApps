@@ -1,6 +1,8 @@
 package com.harifrizki.core.utils
 
 import android.Manifest
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 const val PREF_NAME = "com.harifrizki.crimemapsapps.Preferences"
 
@@ -24,6 +26,18 @@ val APP_PERMISSION_LOCATION: Array<String> = arrayOf(
     Manifest.permission.ACCESS_COARSE_LOCATION
 )
 
+@RequiresApi(Build.VERSION_CODES.Q)
+val APP_PERMISSION_GEOFENCE_LOCATION_Q: Array<String> = arrayOf(
+    Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.ACCESS_COARSE_LOCATION,
+    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+)
+
+val APP_PERMISSION_GEOFENCE_LOCATION: Array<String> = arrayOf(
+    Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.ACCESS_COARSE_LOCATION
+)
+
 const val ZERO   = 0
 const val ONE    = 1
 const val TWO    = 2
@@ -35,6 +49,9 @@ const val MAX_LIST_IN_RECYCLER_VIEW = 100
 const val MAX_ITEM_LIST_SHIMMER     = 4
 const val ROW_MENU_AREA             = 2
 const val INITIALIZE_PAGE_NO        = 1
+
+const val REQUEST_CODE_FOR_GEOFENCE_PENDING_INTENT = 2607
+const val GEOFENCE_ID = "LOCATION_2607"
 
 const val WAIT_FOR_RUN_HANDLER_100_MS  = 100
 const val WAIT_FOR_RUN_HANDLER_500_MS  = 500

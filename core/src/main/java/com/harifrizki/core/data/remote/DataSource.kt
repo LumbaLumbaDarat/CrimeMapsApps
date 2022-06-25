@@ -137,6 +137,9 @@ interface DataSource {
     fun crimeLocation(pageNo: String?, crimeLocation: CrimeLocation?):
             LiveData<ApiResource<CrimeLocationResponse>>
 
+    fun crimeLocationByNearestLocation(pageNo: String?, crimeLocation: CrimeLocation?):
+            LiveData<ApiResource<CrimeLocationResponse>>
+
     fun crimeLocationDetail(crimeLocation: CrimeLocation?):
             LiveData<ApiResource<CrimeLocationResponse>>
 

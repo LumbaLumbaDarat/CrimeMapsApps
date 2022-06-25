@@ -31,7 +31,8 @@
 
         <activity
             android:name=".module.maps.MapsActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".module.crimelocation.detail.DetailCrimeLocationActivity"
             android:exported="true"

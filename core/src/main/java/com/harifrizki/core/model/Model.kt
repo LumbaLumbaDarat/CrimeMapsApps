@@ -9,6 +9,7 @@ import com.harifrizki.core.utils.*
 import com.harifrizki.core.utils.CRUD.*
 import com.harifrizki.core.data.remote.ID
 import com.harifrizki.core.data.remote.PARAM_NAME
+import com.harifrizki.core.data.remote.PARAM_NEAREST_LOCATION
 import kotlinx.parcelize.Parcelize
 import java.io.File
 
@@ -352,6 +353,20 @@ fun createJson(
                         is CrimeLocation -> {
                             JsonObject().apply {
                                 addProperty(any::crimeLocationId.name, any.crimeLocationId)
+                            }
+                        }
+                        else -> {
+                            JsonObject()
+                        }
+                    }
+                }
+                PARAM_NEAREST_LOCATION -> {
+                    when (any) {
+                        is CrimeLocation -> {
+                            JsonObject().apply {
+                                addProperty(any::crimeMapsName.name, any.crimeMapsName)
+                                addProperty(any::crimeMapsLatitude.name, any.crimeMapsLatitude)
+                                addProperty(any::crimeMapsLongitude.name, any.crimeMapsLongitude)
                             }
                         }
                         else -> {

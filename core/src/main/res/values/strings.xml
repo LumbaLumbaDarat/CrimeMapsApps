@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Crime Maps Admin Apps</string>
+    <string name="app_user_name">Crime Maps Apps</string>
+
     <string name="app_package">com.harifrizki.crimemapsapps</string>
+    <string name="app_user_package">com.harifrizki.crimemapsappsuser</string>
 
     <bool name="app_debug_mode" translatable="false">true</bool>
     <string name="file_provider_name" translatable="false">.provider</string>
@@ -47,6 +50,8 @@
 
     <string name="label_show_password">Tampilkan Kata Sandi</string>
     <string name="label_hide_password">Sembunyikan Kata Sandi</string>
+
+    <string name="label_nearest_location">Anda berada [%s %s] dari Lokasi ini</string>
 
     <string name="label_count_data">%s</string>
     <string name="label_count_today">Data input per hari ini</string>
@@ -119,6 +124,8 @@
 
     <string name="message_your_location">Lokasi Anda</string>
 
+    <string name="description_channel_crime_maps_apps">Saluran ini untuk Pemberitahuan Geofence pada Aplikasi Crime Maps Apps. Saat Perangkat Anda Masuk, atau berada di Dalam, atau Keluar dari Area yang memiliki Geofence, maka Perangkat Anda akan mendapatkan Pemberitahuan</string>
+
     <string name="message_loading_splash">Memuat koneksi, mohon menunggu…</string>
     <string name="message_loading_login">[Mohon menunggu]\nKami sedang [mencari] data [Credential Anda]</string>
     <string name="message_loading">[Mohon menunggu]\nKami sedang [%s]</string>
@@ -153,4 +160,15 @@
     <string name="message_empty_list">Mohon Maaf, %s [tidak ditemukan]</string>
     <string name="message_empty_list_by_search">Mohon Maaf, [%s] yang Anda cari [tidak ditemukan]</string>
     <string name="message_all_data_was_load">Seluruh Data %s telah berhasil ditampilkan semua</string>
+
+    <string name="message_geofence_not_available">Geofence Tidak di Temukan</string>
+    <string name="message_geofence_to_many">Permintaan Geofence terlalu Banyak</string>
+    <string name="message_geofence_to_many_pending_intent">Pending Intent Geofence terlalu banyak</string>
+
+    <string name="message_geofence_enter">Anda memasuki Wilayah Rawan Tindak Kriminalitas</string>
+    <string name="message_geofence_enter_body">Peringatan Anda memasuki Wilayah Rawan Tindak Kriminalitas. Keluarlah dari Zona ini, dan Tingkatkan Kewaspadaan Anda.</string>
+    <string name="message_geofence_dwell">Anda berada di dalam Wilayah Rawan Tindak Kriminalitas</string>
+    <string name="message_geofence_dwell_body">Peringatan Anda berada di dalam Wilayah Rawan Tindak Kriminalitas. Keluarlah dari Zona ini, dan Tingkatkan Kewaspadaan Anda.</string>
+    <string name="message_geofence_exit">Anda telah keluar dari Wilayah Rawan Tindak Kriminalitas</string>
+    <string name="message_geofence_exit_body">Anda telah keluar dari Wilayah Rawan Tindak Kriminalitas. Tetaplah Waspada dan Jangan lengah.</string>
 </resources>

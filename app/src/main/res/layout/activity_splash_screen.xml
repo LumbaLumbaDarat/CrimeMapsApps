@@ -15,12 +15,12 @@
         android:layout_height="@dimen/image_square_biggest_default"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintVertical_bias="0.19"
         app:lottie_autoPlay="true"
-        app:lottie_fileName="splash_screen.json"
+        app:lottie_fileName="splash_screen_admin.json"
         app:lottie_loop="true"
         app:lottie_speed="1" />
 

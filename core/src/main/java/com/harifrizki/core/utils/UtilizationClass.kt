@@ -3,6 +3,8 @@ package com.harifrizki.core.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -17,6 +19,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.*
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -27,6 +30,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harifrizki.core.R
@@ -303,6 +308,12 @@ fun makeSpannable(
     return spannableStringBuilder
 }
 
+fun getNearestLocation(context: Context?, distance: String?): String? {
+    return context?.getString(R.string.label_nearest_location,
+        distance,
+        PreferencesManager.getInstance(context).getPreferences(DISTANCE_UNIT))
+}
+
 @SuppressLint("SimpleDateFormat")
 fun Date.localDateTimeToString(): String {
     return SimpleDateFormat("dd MMMM yyyy").format(this)
@@ -339,6 +350,17 @@ fun getClassName(classRaw: String?): String
 {
     return Class.forName(classRaw!!).simpleName
 }
+
+fun getBitmapDescriptorFromVector(context: Context,
+                                  @DrawableRes vectorDrawableResourceId: Int): BitmapDescriptor? {
+    val vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId)
+    val bitmap = Bitmap.createBitmap(vectorDrawable!!.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+    vectorDrawable.draw(canvas)
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
+
 fun layoutStartDrawableShimmer(
     linearLayouts: Array<LinearLayout>?,
     context: Context?

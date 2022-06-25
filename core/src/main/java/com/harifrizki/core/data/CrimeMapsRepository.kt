@@ -345,6 +345,16 @@ class CrimeMapsRepository(
         }.asLiveData()
     }
 
+    override fun crimeLocationByNearestLocation(
+        pageNo: String?,
+        crimeLocation: CrimeLocation?
+    ): LiveData<DataResource<CrimeLocationResponse>> {
+        return object : NetworkResource<CrimeLocationResponse>() {
+            override fun createCall(): LiveData<ApiResource<CrimeLocationResponse>> =
+                remote.crimeLocationByNearestLocation(pageNo, crimeLocation)
+        }.asLiveData()
+    }
+
     override fun crimeLocationDetail(crimeLocation: CrimeLocation?): LiveData<DataResource<CrimeLocationResponse>> {
         return object : NetworkResource<CrimeLocationResponse>() {
             override fun createCall(): LiveData<ApiResource<CrimeLocationResponse>> =

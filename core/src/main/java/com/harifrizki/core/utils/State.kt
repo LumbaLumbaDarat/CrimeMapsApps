@@ -104,7 +104,9 @@ enum class ActivityName(val nameOfActivity: String) {
     FORM_CRIME_LOCATION(
         getClassName("com.harifrizki.crimemapsapps.module.crimelocation.form.FormCrimeLocationActivity")),
     MAPS(
-        getClassName("com.harifrizki.crimemapsapps.module.maps.MapsActivity"));
+        getClassName("com.harifrizki.crimemapsapps.module.maps.MapsActivity")),
+    MAPS_USER(
+        getClassName("com.harifrizki.crimemapsappsuser.module.maps.MapsActivity"));
 
     companion object {
         fun getNameOfActivity(activityName: ActivityName): String = activityName.nameOfActivity

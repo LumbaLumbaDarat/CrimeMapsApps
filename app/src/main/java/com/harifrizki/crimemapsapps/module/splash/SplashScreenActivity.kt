@@ -118,7 +118,6 @@ class SplashScreenActivity : BaseActivity() {
 
     private fun loadingMessage(visibility: Int?) {
         binding.tvMessageLoadingSplashScreen.visibility = visibility!!
-
         BuildConfig.APPLICATION_ID
     }
 }

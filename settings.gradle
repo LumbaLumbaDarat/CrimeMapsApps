@@ -10,3 +10,4 @@ dependencyResolutionManagement {
 rootProject.name = "Crime Maps Apps"
 include ':app'
 include ':core'
+include ':crimemapsappsuser'

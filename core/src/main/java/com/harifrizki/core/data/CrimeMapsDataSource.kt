@@ -53,6 +53,7 @@ interface CrimeMapsDataSource {
     fun urbanVillageDelete(urbanVillage: UrbanVillage?): LiveData<DataResource<MessageResponse>>
 
     fun crimeLocation(pageNo: String?, crimeLocation: CrimeLocation?): LiveData<DataResource<CrimeLocationResponse>>
+    fun crimeLocationByNearestLocation(pageNo: String?, crimeLocation: CrimeLocation?): LiveData<DataResource<CrimeLocationResponse>>
     fun crimeLocationDetail(crimeLocation: CrimeLocation?): LiveData<DataResource<CrimeLocationResponse>>
     fun crimeLocationAdd(crimeLocation: CrimeLocation?, photoCrimeLocation: ArrayList<File>?): LiveData<DataResource<CrimeLocationResponse>>
     fun crimeLocationAddImage(crimeLocation: CrimeLocation?, photoCrimeLocation: ArrayList<File>?): LiveData<DataResource<CrimeLocationResponse>>
