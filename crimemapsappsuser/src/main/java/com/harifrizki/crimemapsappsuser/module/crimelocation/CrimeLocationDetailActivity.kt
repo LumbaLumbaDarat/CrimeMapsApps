@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.module.crimelocation.detail
+package com.harifrizki.crimemapsappsuser.module.crimelocation
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -10,33 +10,30 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.harifrizki.core.R
+import com.harifrizki.core.adapter.RegistrationAreaAdapter
 import com.harifrizki.core.component.activity.BaseActivity
 import com.harifrizki.core.data.remote.response.CrimeLocationResponse
 import com.harifrizki.core.model.CrimeLocation
 import com.harifrizki.core.model.RegistrationArea
 import com.harifrizki.core.utils.*
-import com.harifrizki.core.utils.ActivityName.*
-import com.harifrizki.core.utils.ActivityName.Companion.getNameOfActivity
-import com.harifrizki.core.utils.CRUD.*
-import com.harifrizki.core.adapter.RegistrationAreaAdapter
-import com.harifrizki.crimemapsapps.databinding.ActivityDetailCrimeLocationBinding
-import com.harifrizki.crimemapsapps.module.crimelocation.form.FormCrimeLocationActivity
+import com.harifrizki.crimemapsappsuser.databinding.ActivityCrimeLocationDetailBinding
+import com.harifrizki.crimemapsappsuser.module.maps.MapsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
-import kotlin.collections.ArrayList
-import com.harifrizki.core.R
+import java.util.HashMap
 
-class DetailCrimeLocationActivity : BaseActivity() {
+class CrimeLocationDetailActivity : BaseActivity() {
+
     private val binding by lazy {
-        ActivityDetailCrimeLocationBinding.inflate(layoutInflater)
+        ActivityCrimeLocationDetailBinding.inflate(layoutInflater)
     }
-    private val viewModel by viewModel<DetailCrimeLocationViewModel>()
+    private val viewModel by viewModel<CrimeLocationDetailViewModel>()
 
     private var registrationAreaAdapter: RegistrationAreaAdapter? = null
 
     private var map: HashMap<String, Any>? = null
-    private var isAfterCRUD: CRUD? = NONE
     private var crimeLocation: CrimeLocation? = null
+    private var distance: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,26 +42,21 @@ class DetailCrimeLocationActivity : BaseActivity() {
 
         map = getMap(intent)
         crimeLocation = map!![CRIME_LOCATION_MODEL] as CrimeLocation
+        distance = map!![DISTANCE_CRIME_LOCATION_MODEL] as Double
 
         appBar(binding.iAppBarDetailCrimeLocation,
             getString(R.string.crime_location_menu),
             R.drawable.ic_round_location_on_24,
             R.color.primary,
-            R.drawable.frame_background_secondary,
-            R.drawable.ic_round_edit_24,
-            R.color.white,
-            R.drawable.button_primary_ripple_white,
-            onClick = {
-                goToEdit(UPDATE_DATA_NON_IMAGE)
-            })
+            R.drawable.frame_background_secondary)
         binding.apply {
             initializeDetailCrimeLocation()
             createImageSlider(iCrimeLocationImageSlider)
             srlDetailCrimeLocation.apply {
                 setThemeForSwipeRefreshLayoutLoadingAnimation(
-                    this@DetailCrimeLocationActivity, this
+                    this@CrimeLocationDetailActivity, this
                 )
-                setOnRefreshListener(this@DetailCrimeLocationActivity)
+                setOnRefreshListener(this@CrimeLocationDetailActivity)
             }
             btnBackDetailCrimeLocation.setOnClickListener { onBackPressed() }
         }
@@ -79,12 +71,6 @@ class DetailCrimeLocationActivity : BaseActivity() {
         if (it.resultCode == Activity.RESULT_OK) {
             if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!!)
                 crimeLocationDetail(crimeLocation)
-            else {
-                if (showMessage(getMap(it.data))) {
-                    isAfterCRUD = getMap(it.data)[OPERATION_CRUD] as CRUD
-                    crimeLocationDetail(crimeLocation)
-                }
-            }
         }
     }
 
@@ -92,14 +78,6 @@ class DetailCrimeLocationActivity : BaseActivity() {
         super.onRefresh()
         binding.srlDetailCrimeLocation.isRefreshing = false
         crimeLocationDetail(crimeLocation)
-    }
-
-    override fun onBackPressed() {
-        onBackPressed(
-            getNameOfActivity(DETAIL_CRIME_LOCATION),
-            isAfterCRUD
-        )
-        super.onBackPressed()
     }
 
     private val crimeLocationDetail = Observer<DataResource<CrimeLocationResponse>> {
@@ -158,15 +136,15 @@ class DetailCrimeLocationActivity : BaseActivity() {
 
                     iCreatedAndUpdatedShimmer.tvCreated,
                     iCreatedAndUpdatedShimmer.tvUpdated
-                ), this@DetailCrimeLocationActivity
+                ), this@CrimeLocationDetailActivity
             )
             widgetStartDrawableShimmer(
-                arrayOf(ivShimmer), this@DetailCrimeLocationActivity
+                arrayOf(ivShimmer), this@CrimeLocationDetailActivity
             )
             iAreaRegistrationShimmer.rvListAreaRegistration.apply {
-                layoutManager = LinearLayoutManager(this@DetailCrimeLocationActivity)
+                layoutManager = LinearLayoutManager(this@CrimeLocationDetailActivity)
                 adapter = RegistrationAreaAdapter(
-                    context = this@DetailCrimeLocationActivity,
+                    context = this@CrimeLocationDetailActivity,
                     isShimmer = true
                 )
             }
@@ -275,15 +253,12 @@ class DetailCrimeLocationActivity : BaseActivity() {
         binding.apply {
             setImageSlider(
                 imageCrimeLocations = crimeLocation?.imageCrimeLocations,
-                isCanEdit = true,
+                isCanEdit = false,
                 onClickPreview = {
                     showImagePreview(it.imageCrimeLocationName,
                         PreferencesManager
-                            .getInstance(this@DetailCrimeLocationActivity)
+                            .getInstance(this@CrimeLocationDetailActivity)
                             .getPreferences(URL_CONNECTION_API_IMAGE_CRIME_LOCATION))
-                },
-                onClickEdit = {
-                    goToEdit(UPDATE_IMAGE)
                 }
             )
             loadingImageSliderOff()
@@ -295,21 +270,40 @@ class DetailCrimeLocationActivity : BaseActivity() {
             iAddress.apply {
                 tvAddress.text = crimeLocation?.crimeMapsAddress
                 tvLatitude.text = makeSpannable(
-                    text = getString(R.string.label_latitude_of,
+                    text = getString(
+                        R.string.label_latitude_of,
                         crimeLocation?.crimeMapsLatitude))
                 tvLongitude.text = makeSpannable(
-                    text = getString(R.string.label_longitude_of,
+                    text = getString(
+                        R.string.label_longitude_of,
                         crimeLocation?.crimeMapsLongitude)
                 )
+                tvDistance.text = makeSpannable(
+                    isSpanBold = true,
+                    getNearestLocation(this@CrimeLocationDetailActivity,
+                        String.format("%.3f", distance)),
+                    color = Color.RED)
+                tvDistance.visibility = View.VISIBLE
                 btnSeeLocation.setOnClickListener {
-                    Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.geo_google_maps,
+                    goTo(
+                        MapsActivity(),
+                        hashMapOf(
+                            FROM_ACTIVITY to ACTIVITY,
+                            CRIME_LOCATION_MODEL to crimeLocation!!
+                        )
+                    )
+                    /*
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(getString(
+                            R.string.geo_google_maps,
                             crimeLocation?.crimeMapsLatitude,
                             crimeLocation?.crimeMapsLongitude))).apply {
                         setPackage("com.google.android.apps.maps")
                         resolveActivity(packageManager)
                         resultLauncher.launch(this)
                     }
+                     */
                 }
             }
             loadingAddressOff()
@@ -318,7 +312,7 @@ class DetailCrimeLocationActivity : BaseActivity() {
             }
             loadingDescriptionOff()
             iAreaRegistration.rvListAreaRegistration.apply {
-                layoutManager = LinearLayoutManager(this@DetailCrimeLocationActivity)
+                layoutManager = LinearLayoutManager(this@CrimeLocationDetailActivity)
                 adapter = registrationAreaAdapter?.apply {
                     setRegistrationAreas(getListAreaRegistration(crimeLocation))
                     notifyDataSetChanged()
@@ -349,55 +343,59 @@ class DetailCrimeLocationActivity : BaseActivity() {
 
     private fun getListAreaRegistration(crimeLocation: CrimeLocation?): ArrayList<RegistrationArea> {
         val areaRegistrations: ArrayList<RegistrationArea> = ArrayList()
-        areaRegistrations.add(RegistrationArea(
-            label = getString(R.string.label_registered_of,
+        areaRegistrations.add(
+            RegistrationArea(
+            label = getString(
+                R.string.label_registered_of,
                 getString(R.string.province_menu)),
             areaRegistration = getContentArea(
-                this@DetailCrimeLocationActivity,
+                this,
                 MenuAreaType.MENU_AREA_PROVINCE_ID,
                 crimeLocation?.province,
                 getString(R.string.province_menu)
-            )))
-        areaRegistrations.add(RegistrationArea(
-            label = getString(R.string.label_registered_of,
+            )
+            )
+        )
+        areaRegistrations.add(
+            RegistrationArea(
+            label = getString(
+                R.string.label_registered_of,
                 getString(R.string.city_menu)),
             areaRegistration = getContentArea(
-                this@DetailCrimeLocationActivity,
+                this,
                 MenuAreaType.MENU_AREA_CITY_ID,
                 crimeLocation?.city,
                 getString(R.string.city_menu)
-            )))
-        areaRegistrations.add(RegistrationArea(
-            label = getString(R.string.label_registered_of,
+            )
+            )
+        )
+        areaRegistrations.add(
+            RegistrationArea(
+            label = getString(
+                R.string.label_registered_of,
                 getString(R.string.sub_district_menu)),
             areaRegistration = getContentArea(
-                this@DetailCrimeLocationActivity,
+                this,
                 MenuAreaType.MENU_AREA_SUB_DISTRICT_ID,
                 crimeLocation?.subDistrict,
                 getString(R.string.sub_district_menu)
-            )))
-        areaRegistrations.add(RegistrationArea(
-            label = getString(R.string.label_registered_of,
+            )
+            )
+        )
+        areaRegistrations.add(
+            RegistrationArea(
+            label = getString(
+                R.string.label_registered_of,
                 getString(R.string.urban_village_menu)),
             areaRegistration = getContentArea(
-                this@DetailCrimeLocationActivity,
+                this,
                 MenuAreaType.MENU_AREA_URBAN_VILLAGE_ID,
                 crimeLocation?.urbanVillage,
                 getString(R.string.urban_village_menu)
-            )))
-        return areaRegistrations
-    }
-
-    private fun goToEdit(crud: CRUD?) {
-        goTo(
-            FormCrimeLocationActivity(),
-            hashMapOf(
-                FROM_ACTIVITY to getNameOfActivity(DETAIL_CRIME_LOCATION),
-                OPERATION_CRUD to crud!!,
-                CRIME_LOCATION_MODEL to crimeLocation!!,
-
+            )
             )
         )
+        return areaRegistrations
     }
 
     private fun disableAccess() {

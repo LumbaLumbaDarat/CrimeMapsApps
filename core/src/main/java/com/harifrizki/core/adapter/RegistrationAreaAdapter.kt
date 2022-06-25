@@ -1,4 +1,4 @@
-package com.harifrizki.crimemapsapps.adapter
+package com.harifrizki.core.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context

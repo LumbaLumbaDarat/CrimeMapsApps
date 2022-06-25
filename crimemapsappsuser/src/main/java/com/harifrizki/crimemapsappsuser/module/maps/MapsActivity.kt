@@ -5,12 +5,9 @@ import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ResolvableApiException
@@ -19,7 +16,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -31,6 +27,7 @@ import com.harifrizki.core.utils.*
 import com.harifrizki.crimemapsappsuser.R
 import com.harifrizki.crimemapsappsuser.databinding.ActivityMapsBinding
 import com.harifrizki.crimemapsappsuser.helper.GeofenceHelper
+import com.harifrizki.crimemapsappsuser.module.splash.SplashScreenActivity
 import com.orhanobut.logger.Logger
 import java.util.*
 
@@ -45,6 +42,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
 
     private var map: HashMap<String, Any>? = null
     private var crimeLocation: CrimeLocation? = null
+    private var fromActivity: String? = null
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
@@ -64,6 +62,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         setContentView(binding.root)
 
         map = getMap(intent)
+        fromActivity = map!![FROM_ACTIVITY] as String
         crimeLocation = map!![CRIME_LOCATION_MODEL] as CrimeLocation
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -111,6 +110,17 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         if (!locationUpdateState) {
             startLocationUpdate()
         }
+    }
+
+    override fun onBackPressed() {
+        if (fromActivity.equals(PUSH_NOTIFICATION, true))
+        {
+            Intent(this, SplashScreenActivity::class.java)
+                .apply {
+                    startActivity(this)
+                    finishAffinity()
+                }
+        } else super.onBackPressed()
     }
 
     /**

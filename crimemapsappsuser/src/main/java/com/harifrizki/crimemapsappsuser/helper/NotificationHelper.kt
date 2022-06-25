@@ -10,9 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.harifrizki.core.model.CrimeLocation
-import com.harifrizki.core.utils.CRIME_LOCATION_MODEL
-import com.harifrizki.core.utils.INTENT_DATA
-import com.harifrizki.core.utils.REQUEST_CODE_FOR_GEOFENCE_PENDING_INTENT
+import com.harifrizki.core.utils.*
 import com.harifrizki.crimemapsappsuser.BuildConfig
 import com.harifrizki.crimemapsappsuser.R
 import com.harifrizki.crimemapsappsuser.module.maps.MapsActivity
@@ -53,6 +51,7 @@ class NotificationHelper(base: Context?) : ContextWrapper(base) {
                     .apply {
                         putExtra(INTENT_DATA,
                             hashMapOf(
+                                FROM_ACTIVITY to PUSH_NOTIFICATION,
                                 CRIME_LOCATION_MODEL to crimeLocation!!)
                         )
                     },

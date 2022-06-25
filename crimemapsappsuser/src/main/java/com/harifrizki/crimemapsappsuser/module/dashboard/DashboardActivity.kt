@@ -22,7 +22,7 @@ import com.harifrizki.core.model.Page
 import com.harifrizki.core.utils.*
 import com.harifrizki.crimemapsappsuser.adapter.CrimeLocationNearestAdapter
 import com.harifrizki.crimemapsappsuser.databinding.ActivityDashboardBinding
-import com.harifrizki.crimemapsappsuser.module.maps.MapsActivity
+import com.harifrizki.crimemapsappsuser.module.crimelocation.CrimeLocationDetailActivity
 import com.harifrizki.crimemapsappsuser.module.splash.SplashScreenActivity
 import com.lumbalumbadrt.colortoast.ColorToast
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -113,6 +113,12 @@ class DashboardActivity : BaseActivity() {
                     })
             else crimeLocationByNearest()
         }
+
+    override fun onRefresh() {
+        super.onRefresh()
+        binding.srlListNearestCrimeLocation.isRefreshing = false
+        crimeLocationByNearest()
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     private val crimeLocationByNearest = Observer<DataResource<CrimeLocationResponse>> {
@@ -258,9 +264,10 @@ class DashboardActivity : BaseActivity() {
         ).apply {
             onClickCrimeLocation = {
                 goTo(
-                    MapsActivity(),
+                    CrimeLocationDetailActivity(),
                     hashMapOf(
-                        CRIME_LOCATION_MODEL to it!!
+                        DISTANCE_CRIME_LOCATION_MODEL to it?.distance!!,
+                        CRIME_LOCATION_MODEL to it
                     )
                 )
             }

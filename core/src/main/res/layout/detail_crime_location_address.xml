@@ -34,6 +34,15 @@
         android:layout_height="wrap_content"
         android:text="@string/label_longitude_of" />
 
+    <TextView
+        android:id="@+id/tv_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_half_default"
+        android:text="@string/title"
+        android:textColor="@color/red"
+        android:visibility="gone"/>
+
     <Button
         android:id="@+id/btn_see_location"
         android:layout_width="match_parent"

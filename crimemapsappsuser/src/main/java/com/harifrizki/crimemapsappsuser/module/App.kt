@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.multidex.MultiDexApplication
 import com.harifrizki.core.utils.Injection
 import com.harifrizki.crimemapsappsuser.helper.NotificationHelper
+import com.harifrizki.crimemapsappsuser.module.crimelocation.CrimeLocationDetailViewModel
 import com.harifrizki.crimemapsappsuser.module.dashboard.DashboardViewModel
 import com.harifrizki.crimemapsappsuser.module.splash.SplashViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,5 +42,6 @@ class App : MultiDexApplication() {
     val viewModelModule = module {
         viewModel { _ -> SplashViewModel(crimeMapsRepository = Injection.provideRepository()) }
         viewModel { _ -> DashboardViewModel(crimeMapsRepository = Injection.provideRepository()) }
+        viewModel { _ -> CrimeLocationDetailViewModel(crimeMapsRepository = Injection.provideRepository()) }
     }
 }
