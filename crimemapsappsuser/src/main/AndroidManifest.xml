@@ -48,6 +48,10 @@
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.harifrizki.core.component.activity.ConnectionErrorActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".module.splash.SplashScreenActivity"
             android:exported="true">
             <intent-filter>

@@ -43,6 +43,10 @@ class DashboardActivity : BaseActivity() {
         ActivityDashboardBinding.inflate(layoutInflater)
     }
     private val viewModel by viewModel<DashboardViewModel>()
+    private val admin by lazy {
+        PreferencesManager.getInstance(this)
+            .getPreferences(LOGIN_MODEL, Admin::class.java)
+    }
 
     private var menuAreaCrimeLocation: MenuArea? = null
     private var menuAreaDetailCrimeLocation: MenuAreaDetail? = null
@@ -59,19 +63,28 @@ class DashboardActivity : BaseActivity() {
 
         binding.srlDashboard.apply {
             setThemeForSwipeRefreshLayoutLoadingAnimation(
-                this@DashboardActivity, this)
+                this@DashboardActivity, this
+            )
             setOnRefreshListener(this@DashboardActivity)
         }
 
         initializeAccount(
-            PreferencesManager.
-        getInstance(this).
-        getPreferences(LOGIN_MODEL, Admin::class.java))
+            PreferencesManager.getInstance(this).getPreferences(LOGIN_MODEL, Admin::class.java)
+        )
 
         initializeMenuAreaCrimeLocation()
-        initializeMenuAreaAdmin()
         initializeMenuArea()
         initializeMenuAreaDetail()
+
+        if (admin.adminRole?.equals(PreferencesManager.getInstance(this)
+                .getPreferences(ROLE_ROOT), true)!!)
+                    initializeMenuAreaAdmin()
+        else {
+            binding.apply {
+                iMenuAreaAdmin.root.visibility = View.GONE
+                iMenuAreaDetailAdmin.root.visibility = View.GONE
+            }
+        }
 
         utilization()
     }
@@ -80,18 +93,19 @@ class DashboardActivity : BaseActivity() {
         ActivityResultContracts.StartActivityForResult()
     )
     {
-        if (it.resultCode == Activity.RESULT_OK)
-        {
+        if (it.resultCode == Activity.RESULT_OK) {
             if (it.data?.getBooleanExtra(IS_AFTER_ERROR, false)!! ||
-                showMessage(getMap(it.data)))
+                showMessage(getMap(it.data))
+            )
                 utilization()
             else if (showMessage(getMap(it.data)) &&
-                getEnumActivityName(getMap(it.data)[FROM_ACTIVITY].toString()) == PROFILE)
-            {
-                initializeAccount(PreferencesManager.
-                getInstance(this).
-                getPreferences(LOGIN_MODEL, Admin::class.java),
-                    false)
+                getEnumActivityName(getMap(it.data)[FROM_ACTIVITY].toString()) == PROFILE
+            ) {
+                initializeAccount(
+                    PreferencesManager.getInstance(this)
+                        .getPreferences(LOGIN_MODEL, Admin::class.java),
+                    false
+                )
             }
         }
     }
@@ -103,8 +117,7 @@ class DashboardActivity : BaseActivity() {
     }
 
     private val utilization = Observer<DataResource<UtilizationResponse>> {
-        when (it.responseStatus)
-        {
+        when (it.responseStatus) {
             LOADING -> {
                 loadingMenuAreaCrimeLocation(true)
                 loadingMenuAreaDetailCrimeLocation(true)
@@ -114,12 +127,12 @@ class DashboardActivity : BaseActivity() {
                 loadingMenuAreaDetailAdmin(true)
             }
             SUCCESS -> {
-                if (isResponseSuccess(it.data?.message))
-                {
-                    initializeAccount(PreferencesManager.
-                    getInstance(this).
-                    getPreferences(LOGIN_MODEL, Admin::class.java),
-                        false)
+                if (isResponseSuccess(it.data?.message)) {
+                    initializeAccount(
+                        PreferencesManager.getInstance(this)
+                            .getPreferences(LOGIN_MODEL, Admin::class.java),
+                        false
+                    )
                     menuAreaCrimeLocation?.apply {
                         countMenuArea = it.data?.utilization?.countCrimeLocation
                         create()
@@ -139,16 +152,31 @@ class DashboardActivity : BaseActivity() {
                         addMenuAreaDetails(menuAreaDetails(it.data?.utilization))
                         loadingMenuAreaDetail(false)
                     }
-                    menuAreaAdmin?.apply {
-                        countMenuArea = it.data?.utilization?.countAdmin
-                        create()
-                        loadingMenuAreaAdmin(false)
-                    }
-                    menuAreaDetailAdmin?.apply {
-                        countAreaToday = it.data?.utilization?.countAdminToday
-                        countAreaMonth = it.data?.utilization?.countAdminMonth
-                        create()
-                        loadingMenuAreaDetailAdmin(false)
+                    when (admin.adminRole) {
+                        PreferencesManager.getInstance(this)
+                            .getPreferences(ROLE_ADMIN) -> {
+                            binding.apply {
+                                loadingMenuAreaAdmin(false)
+                                loadingMenuAreaDetailAdmin(false)
+                                iMenuAreaAdmin.root.visibility = View.GONE
+                                iMenuAreaDetailAdmin.root.visibility = View.GONE
+                            }
+                        }
+                        PreferencesManager.getInstance(this)
+                            .getPreferences(ROLE_ROOT) -> {
+                            menuAreaAdmin?.apply {
+                                countMenuArea = it.data?.utilization?.countAdmin
+                                create()
+                                loadingMenuAreaAdmin(false)
+                            }
+                            menuAreaDetailAdmin?.apply {
+                                countAreaToday = it.data?.utilization?.countAdminToday
+                                countAreaMonth = it.data?.utilization?.countAdminMonth
+                                create()
+                                loadingMenuAreaDetailAdmin(false)
+                            }
+                        }
+                        else -> { }
                     }
                     scrollToUp(binding.nsvDashboard)
                 }
@@ -173,15 +201,13 @@ class DashboardActivity : BaseActivity() {
     }
 
     private val logout = Observer<DataResource<MessageResponse>> {
-        when (it.responseStatus)
-        {
+        when (it.responseStatus) {
             LOADING -> {
                 showLoading()
             }
             SUCCESS -> {
                 dismissLoading()
-                if (isResponseSuccess(it.data?.message))
-                {
+                if (isResponseSuccess(it.data?.message)) {
                     PreferencesManager.getInstance(this).removePreferences(LOGIN_MODEL)
                     startActivity(
                         Intent(
@@ -215,9 +241,10 @@ class DashboardActivity : BaseActivity() {
                     this@DashboardActivity,
                     ivAccountPhotoProfile,
                     it,
-                    R.drawable.ic_round_account_box_primary_24) }
-            if (isInitialize!!)
-            {
+                    R.drawable.ic_round_account_box_primary_24
+                )
+            }
+            if (isInitialize!!) {
                 ivIconAccount.setOnClickListener { it ->
                     showOptionList(it,
                         settingMenus(),
@@ -225,8 +252,7 @@ class DashboardActivity : BaseActivity() {
                         ZERO,
                         TWENTY,
                         onClickMenu = {
-                            when (it.menuSetting)
-                            {
+                            when (it.menuSetting) {
                                 MENU_SETTING_EXIT -> {
                                     dismissOptionList()
                                     showOption(
@@ -236,9 +262,11 @@ class DashboardActivity : BaseActivity() {
                                             dismissOption()
                                             logout(
                                                 Admin(
-                                                    adminId = PreferencesManager.
-                                                    getInstance(this@DashboardActivity).
-                                                    getPreferences(LOGIN_MODEL, Admin::class.java).adminId
+                                                    adminId = PreferencesManager.getInstance(this@DashboardActivity)
+                                                        .getPreferences(
+                                                            LOGIN_MODEL,
+                                                            Admin::class.java
+                                                        ).adminId
                                                 )
                                             )
                                         },
@@ -409,18 +437,22 @@ class DashboardActivity : BaseActivity() {
                     ListOfAreaActivity(),
                     hashMapOf(
                         FROM_ACTIVITY to getNameOfActivity(DASHBOARD),
-                        AREA to (it.menuAreaType as MenuAreaType)))
+                        AREA to (it.menuAreaType as MenuAreaType)
+                    )
+                )
             }
             notifyDataSetChanged()
         }
         binding.rvMenuArea.apply {
             layoutManager = GridLayoutManager(
-                this@DashboardActivity, ROW_MENU_AREA)
+                this@DashboardActivity, ROW_MENU_AREA
+            )
             adapter = menuAreaAdapter
         }
         binding.rvMenuAreaShimmer.apply {
             layoutManager = GridLayoutManager(
-                this@DashboardActivity, ROW_MENU_AREA)
+                this@DashboardActivity, ROW_MENU_AREA
+            )
             adapter = MenuAreaAdapter(true)
         }
     }
@@ -438,13 +470,12 @@ class DashboardActivity : BaseActivity() {
         }
         binding.rvMenuAreaDetailShimmer.apply {
             layoutManager = LinearLayoutManager(this@DashboardActivity)
-            adapter = MenuAreaDetailAdapter( true)
+            adapter = MenuAreaDetailAdapter(true)
         }
     }
 
     private fun loadingMenuAreaCrimeLocation(isOn: Boolean?) {
-        if (isOn!!)
-        {
+        if (isOn!!) {
             binding.iMenuAreaCrimeLocation.root.visibility = View.GONE
             shimmerOn(
                 binding.sflMenuAreaCrimeLocation,
@@ -460,8 +491,7 @@ class DashboardActivity : BaseActivity() {
     }
 
     private fun loadingMenuAreaDetailCrimeLocation(isOn: Boolean?) {
-        if (isOn!!)
-        {
+        if (isOn!!) {
             binding.iMenuAreaDetailCrimeLocation.root.visibility = View.GONE
             shimmerOn(
                 binding.sflMenuAreaDetailCrimeLocation,
@@ -477,8 +507,7 @@ class DashboardActivity : BaseActivity() {
     }
 
     private fun loadingMenuAreaAdmin(isOn: Boolean?) {
-        if (isOn!!)
-        {
+        if (isOn!!) {
             binding.iMenuAreaAdmin.root.visibility = View.GONE
             shimmerOn(
                 binding.sflMenuAreaAdmin,
@@ -494,8 +523,7 @@ class DashboardActivity : BaseActivity() {
     }
 
     private fun loadingMenuAreaDetailAdmin(isOn: Boolean?) {
-        if (isOn!!)
-        {
+        if (isOn!!) {
             binding.iMenuAreaDetailAdmin.root.visibility = View.GONE
             shimmerOn(
                 binding.sflMenuAreaDetailAdmin,
@@ -511,8 +539,7 @@ class DashboardActivity : BaseActivity() {
     }
 
     private fun loadingMenuArea(isOn: Boolean?) {
-        if (isOn!!)
-        {
+        if (isOn!!) {
             binding.rvMenuArea.visibility = View.GONE
             shimmerOn(
                 binding.sflMenuArea,
@@ -528,8 +555,7 @@ class DashboardActivity : BaseActivity() {
     }
 
     private fun loadingMenuAreaDetail(isOn: Boolean?) {
-        if (isOn!!)
-        {
+        if (isOn!!) {
             binding.rvMenuAreaDetail.visibility = View.GONE
             shimmerOn(
                 binding.sflMenuAreaDetail,
@@ -619,10 +645,8 @@ class DashboardActivity : BaseActivity() {
     private fun menuAreaDetails(utilization: Utilization? = Utilization()): ArrayList<MenuAreaDetail> {
         val menuAreaDetails: ArrayList<MenuAreaDetail> = ArrayList()
         menuAreaDetails.clear()
-        for (menuArea: MenuArea in menuAreas())
-        {
-            when (menuArea.menuAreaType)
-            {
+        for (menuArea: MenuArea in menuAreas()) {
+            when (menuArea.menuAreaType) {
                 MENU_AREA_PROVINCE_ID -> {
                     menuAreaDetails.add(
                         MenuAreaDetail(

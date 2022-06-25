@@ -104,6 +104,7 @@ class DashboardActivity : BaseActivity() {
                 showWarning(
                     message = getString(R.string.message_error_permission_location),
                     onClick = {
+                        dismissNotification()
                         Intent(this, SplashScreenActivity::class.java)
                             .apply {
                                 startActivity(this)

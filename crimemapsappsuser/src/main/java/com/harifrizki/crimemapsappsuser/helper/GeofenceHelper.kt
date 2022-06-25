@@ -1,6 +1,7 @@
 package com.harifrizki.crimemapsappsuser.helper
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
@@ -10,7 +11,10 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.maps.model.LatLng
+import com.harifrizki.core.model.CrimeLocation
+import com.harifrizki.core.utils.CRIME_LOCATION_MODEL
 import com.harifrizki.core.utils.REQUEST_CODE_FOR_GEOFENCE_PENDING_INTENT
+import com.harifrizki.core.utils.WAIT_FOR_RUN_HANDLER_1000_MS
 import com.harifrizki.core.utils.WAIT_FOR_RUN_HANDLER_3000_MS
 import com.harifrizki.crimemapsappsuser.R
 import com.harifrizki.crimemapsappsuser.broadcastreceiver.GeofenceBroadcastReceiver
@@ -18,6 +22,7 @@ import com.harifrizki.crimemapsappsuser.broadcastreceiver.GeofenceBroadcastRecei
 class GeofenceHelper(base: Context?) : ContextWrapper(base) {
 
     private var pendingIntent: PendingIntent? = null
+    var crimeLocation: CrimeLocation? = null
 
     fun getGeofencingRequest(geofence: Geofence?): GeofencingRequest {
         return GeofencingRequest.Builder()
@@ -31,13 +36,13 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
             .setCircularRegion(latLng?.latitude!!, latLng.longitude, radius)
             .setRequestId(id!!)
             .setTransitionTypes(transitionTypes)
-            .setLoiteringDelay(WAIT_FOR_RUN_HANDLER_3000_MS)
+            .setLoiteringDelay(WAIT_FOR_RUN_HANDLER_1000_MS)
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .build()
     }
 
     @JvmName("getPendingIntentGeofenceBroadcastReceiver")
-    @SuppressLint("UnspecifiedImmutableFlag")
+    @SuppressLint("UnspecifiedImmutableFlag", "ShortAlarm")
     fun getPendingIntent(): PendingIntent? {
         return if (pendingIntent != null)
             pendingIntent!!
@@ -46,8 +51,12 @@ class GeofenceHelper(base: Context?) : ContextWrapper(base) {
                 .getBroadcast(
                     this,
                     REQUEST_CODE_FOR_GEOFENCE_PENDING_INTENT,
-                    Intent(this, GeofenceBroadcastReceiver::class.java),
-                    PendingIntent.FLAG_UPDATE_CURRENT)
+                    Intent(this, GeofenceBroadcastReceiver::class.java)
+                        .apply {
+                            putExtra(CRIME_LOCATION_MODEL, crimeLocation)
+                        },
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
             pendingIntent
         }
     }

@@ -74,7 +74,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
 
         locationCallback = object : LocationCallback() { }
         geofencingClient = LocationServices.getGeofencingClient(this)
-        geofenceHelper = GeofenceHelper(this)
+        geofenceHelper = GeofenceHelper(this).apply {
+            this.crimeLocation = this@MapsActivity.crimeLocation
+        }
 
         createLocationRequest()
     }
@@ -201,8 +203,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun createLocationRequest() {
         locationRequest = LocationRequest.create()
-        locationRequest.interval = 10000
-        locationRequest.fastestInterval = 5000
+        locationRequest.interval = WAIT_FOR_RUN_HANDLER_3000_MS.toLong()
+        locationRequest.fastestInterval = WAIT_FOR_RUN_HANDLER_3000_MS.toLong()
         locationRequest.priority = Priority.PRIORITY_HIGH_ACCURACY
 
         val builder = LocationSettingsRequest.Builder()
@@ -242,6 +244,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
                     or Geofence.GEOFENCE_TRANSITION_EXIT)
         val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
         val pendingIntent = geofenceHelper.getPendingIntent()
+        PreferencesManager.getInstance(this)
+            .setPreferences(CRIME_LOCATION_MODEL, crimeLocation)
 
         if (ActivityCompat.checkSelfPermission(
                 this,
