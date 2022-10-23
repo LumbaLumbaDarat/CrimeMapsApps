@@ -13,7 +13,7 @@
 </p>
 <br/><br/>
 <p align='center'>
-  📱 Test Apps Tool and Resource<br/><br/>
+  📱 Test Apps Tool & Resource<br/><br/>
   <a href="https://www.mi.co.id/id/redmi-5-plus/">
     <img src="https://img.shields.io/badge/xiaomi redmi 5 plus-%23FA6709.svg?&style=for-the-badge&logo=xiaomi&logoColor=white" />
   </a>&nbsp;&nbsp;
