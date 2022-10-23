@@ -39,4 +39,4 @@
 </p>
 
 # About
-Crime Maps Apps Android application, created using the Kotlin programming language. This application was made as one of the requirements for graduation from the Nusa Mandiri University Undergraduate Program.
+Crime Maps Apps Android application, created using the Kotlin programming language. This application was made as one of the requirements for graduation from the Nusa Mandiri University Bachelor Program.
